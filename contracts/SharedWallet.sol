@@ -2,14 +2,8 @@
 pragma solidity ^0.8.0;
 
 contract SharedWallet {
-    address creator;
     uint256 public maxMembers;
     address[] members;
-
-    modifier onlyCreator() {
-        require(msg.sender == creator);
-        _;
-    }
 
     modifier onlyMember() {
         bool isMember = false;
@@ -29,7 +23,6 @@ contract SharedWallet {
             "Cannot have more than 12 members in a single shared wallet!"
         );
 
-        creator = msg.sender;
         maxMembers = _maxMembers;
         members.push(msg.sender);
     }
@@ -54,7 +47,7 @@ contract SharedWallet {
         return false;
     }
 
-    function destroy(address _benefieciery) external onlyCreator onlyMember {
+    function destroy(address _benefieciery) external onlyMember {
         selfdestruct(payable(_benefieciery));
     }
 }
