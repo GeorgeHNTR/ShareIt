@@ -16,8 +16,7 @@ contract SharedWalletStorage {
         view
         returns (bool)
     {
-        address[] memory walletMembers = SharedWallet(_walletAddress)
-            .getMembers();
+        address[] memory walletMembers = SharedWallet(payable(_walletAddress)).getMembers();
         for (uint8 i = 0; i < walletMembers.length; i++)
             if (walletMembers[i] == _user) return true;
 
