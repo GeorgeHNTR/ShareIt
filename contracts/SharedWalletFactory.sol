@@ -4,26 +4,28 @@ pragma solidity ^0.8.0;
 import "./SharedWallet.sol";
 
 contract SharedWalletFactory {
-    // All wallets ever created
-    address[] public wallets;
-
-    // All wallets a specific user is a member of
     mapping(address => address[]) public userWallets;
 
-    // Creates a new wallet instance
     function createNewSharedWallet(uint256 _maxMembers) external {
         SharedWallet wallet = new SharedWallet(_maxMembers);
-        _addNewSharedWallet(msg.sender, address(wallet));
+        addWalletToUser(address(wallet), msg.sender);
     }
 
-    // Stores a newly created wallet in both "wallets" address array and "userWallets" mapping
-    function _addNewSharedWallet(address user, address _walletAddress) private {
-        wallets.push(_walletAddress);
-        userWallets[user].push(_walletAddress);
+    function addWalletToUser(address _walletAddress, address _user) public {
+        require(_participatesIn(_user, _walletAddress));
+        userWallets[_user].push(_walletAddress);
     }
 
-    // Getter function that returns "wallets" address array (all wallets ever created)
-    function getWallets() public view returns (address[] memory) {
-        return wallets;
+    function _participatesIn(address user, address walletAddress)
+        private
+        view
+        returns (bool)
+    {
+        address[] memory walletMembers = SharedWallet(walletAddress)
+            .getMembers();
+        for (uint8 i = 0; i < walletMembers.length; i++)
+            if (walletMembers[i] == user) return true;
+
+        return false;
     }
 }

@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract SharedWallet {
     uint256 public maxMembers;
-    address[] members;
+    address[] public members;
 
     modifier onlyMember() {
         bool isMember = false;
@@ -25,6 +25,10 @@ contract SharedWallet {
 
         maxMembers = _maxMembers;
         members.push(msg.sender);
+    }
+
+    function getMembers() public view returns(address[] memory) {
+        return members;
     }
 
     function addMember(address _newMember) private returns (bool) {
