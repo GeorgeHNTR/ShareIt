@@ -11,15 +11,15 @@ contract SharedWalletStorage {
         usersWallets[_user].push(_walletAddress);
     }
 
-    function _participatesIn(address user, address walletAddress)
+    function _participatesIn(address _user, address _walletAddress)
         private
         view
         returns (bool)
     {
-        address[] memory walletMembers = SharedWallet(walletAddress)
+        address[] memory walletMembers = SharedWallet(_walletAddress)
             .getMembers();
         for (uint8 i = 0; i < walletMembers.length; i++)
-            if (walletMembers[i] == user) return true;
+            if (walletMembers[i] == _user) return true;
 
         return false;
     }

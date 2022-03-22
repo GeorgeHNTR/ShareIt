@@ -1,7 +1,11 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+import "./SharedWalletStorage.sol";
+import "./SharedWalletFactory.sol";
+
 contract SharedWallet {
+    address storage_;
     uint256 public maxMembers;
     address[] public members;
 
@@ -17,12 +21,13 @@ contract SharedWallet {
         _;
     }
 
-    constructor(uint256 _maxMembers) {
+    constructor(uint256 _maxMembers, address _storage) {
         require(
             _maxMembers <= 12,
             "Cannot have more than 12 members in a single shared wallet!"
         );
 
+        storage_ = _storage;
         maxMembers = _maxMembers;
         members.push(msg.sender);
     }
@@ -31,17 +36,20 @@ contract SharedWallet {
         return members;
     }
 
-    function addMember(address _newMember) private returns (bool) {
+    function _addMember(address _newMember) private returns (bool) {
+        // add voting
         require(
             members.length < maxMembers,
             "Maximum number of members reached!"
         );
 
         members.push(_newMember);
+        SharedWalletStorage(storage_).addWalletToUser(address(this), _newMember);
         return true;
     }
 
-    function removeMember(address _member) private returns (bool) {
+    function _removeMember(address _member) private returns (bool) {
+        // add voting
         for (uint8 i = 0; i < members.length; i++)
             if (members[i] == _member) {
                 delete members[i];
@@ -52,6 +60,7 @@ contract SharedWallet {
     }
 
     function destroy(address _benefieciery) external onlyMember {
+        // add voting
         selfdestruct(payable(_benefieciery));
     }
 }
