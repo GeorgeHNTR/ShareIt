@@ -8,10 +8,10 @@ contract SharedWalletFactory {
 
     function createNewSharedWallet(uint256 _maxMembers) external {
         SharedWallet wallet = new SharedWallet(_maxMembers);
-        addWalletToUser(address(wallet), msg.sender);
+        userWallets[msg.sender].push(address(wallet));
     }
 
-    function addWalletToUser(address _walletAddress, address _user) public {
+    function addWalletToUser(address _walletAddress, address _user) external {
         require(_participatesIn(_user, _walletAddress));
         userWallets[_user].push(_walletAddress);
     }
