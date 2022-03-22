@@ -13,7 +13,7 @@ contract SharedWallet {
         bool isMember = false;
         for (uint8 i = 0; i < members.length; i++)
             if (members[i] == tx.origin) {
-                isMember = true; 
+                isMember = true;
                 break;
             }
 
@@ -32,7 +32,7 @@ contract SharedWallet {
         members.push(msg.sender);
     }
 
-    function getMembers() public view returns(address[] memory) {
+    function getMembers() public view returns (address[] memory) {
         return members;
     }
 
@@ -44,7 +44,10 @@ contract SharedWallet {
         );
 
         members.push(_newMember);
-        SharedWalletStorage(storage_).addWalletToUser(address(this), _newMember);
+        SharedWalletStorage(storage_).addWalletToUser(
+            address(this),
+            _newMember
+        );
         return true;
     }
 
@@ -59,8 +62,19 @@ contract SharedWallet {
         return false;
     }
 
+    function _withdraw(uint256 amountInWei) private returns (bool) {
+        // add voting
+        require(amountInWei <= address(this).balance);
+
+        return payable(msg.sender).send(amountInWei);
+    }
+
     function destroy(address _benefieciery) external onlyMember {
         // add voting
         selfdestruct(payable(_benefieciery));
     }
+
+    receive() external payable {}
+
+    fallback() external payable {}
 }
