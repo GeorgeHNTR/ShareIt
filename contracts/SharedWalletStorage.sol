@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "./SharedWallet.sol";
-
 contract SharedWalletStorage {
     uint8 public maxWalletsPerUser = 8;
     mapping(address => address[]) public usersWallets;
