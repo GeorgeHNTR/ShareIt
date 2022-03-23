@@ -12,9 +12,10 @@ abstract contract Voting {
     }
 
     struct Request {
-        address proposer;
+        address author;
         RequestTypes requestType;
-        bytes20 data; // either an address or an amount of wei to withdraw (bytes20 can be casted to both uint256 and address types)
+        address addr;
+        uint256 value;
         uint256 proVotersCount;
         mapping(address => bool) voters;
         bool approved;
@@ -24,17 +25,26 @@ abstract contract Voting {
 
     uint256 public requestsCounter;
 
-    function createRequest(RequestTypes _requestType, bytes20 _data)
+    function createRequest(RequestTypes _requestType, uint256 _value, address _addr)
         external
         returns (uint256)
     {
         require(uint256(_requestType) <= 3, "Invalid request type!");
 
+        if (_requestType == RequestTypes.Withdraw) {
+            require(_value >= 0);
+            require(_addr == address(0x0));
+        } else {
+            require(_value == 0);
+            require(_addr != address(0x0));
+        }
+
         Request storage request = requests[requestsCounter];
 
-        request.proposer = msg.sender;
+        request.author = msg.sender;
         request.requestType = _requestType;
-        request.data = _data;
+        request.addr = _addr;
+        request.value = _value;
         request.proVotersCount = 0;
         request.approved = false;
 
@@ -55,8 +65,12 @@ abstract contract Voting {
     }
 
     function tryApproveRequest(uint256 _requestID) public virtual {
-        uint256 goal = 1;  // <- change
+        uint256 goal = _getMajority(1);  // <- change
         if (requests[_requestID].proVotersCount == goal)
             requests[_requestID].approved = true;
+    }
+    
+    function _getMajority(uint256 _total) internal pure returns (uint256) {
+        return _total / 2 + 1;
     }
 }
