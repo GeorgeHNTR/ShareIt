@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./SharedWallet.sol";
 
-contract Voting {
+abstract contract Voting {
     enum RequestTypes {
         AddMember,
         RemoveMember,
@@ -55,8 +55,8 @@ contract Voting {
     }
 
     function tryApproveRequest(uint256 _requestID) public virtual {
-        // uint256 goal = 1;  // <- change
-        // if (requests[_requestID].votersCount == goal)
-        //     requests[_requestID].approved = true;
+        uint256 goal = 1;  // <- change
+        if (requests[_requestID].proVotersCount == goal)
+            requests[_requestID].approved = true;
     }
 }
