@@ -114,7 +114,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.12+commit.f00d7308\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestID\",\"type\":\"uint256\"}],\"name\":\"acceptRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum Voting.RequestTypes\",\"name\":\"_requestType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"createRequest\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"requests\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"author\",\"type\":\"address\"},{\"internalType\":\"enum Voting.RequestTypes\",\"name\":\"requestType\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"proVotersCount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"requestsCounter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestID\",\"type\":\"uint256\"}],\"name\":\"tryApproveRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Voting.sol\":\"Voting\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Voting.sol\":{\"keccak256\":\"0xd19f720515d63af2e58962940ab385e327a1bd840e649bf20063247407014bbc\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://a41f84c8126bb47d86bc4fb1427ac1f6c0c5e87f0450cc30d34941db9e412be9\",\"dweb:/ipfs/QmQFpmo31vQJow9r2vBdZ9dNWwAoW8L92zacegCKXFZSHk\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.12+commit.f00d7308\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestID\",\"type\":\"uint256\"}],\"name\":\"acceptRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum Voting.RequestTypes\",\"name\":\"_requestType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"createRequest\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"requests\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"author\",\"type\":\"address\"},{\"internalType\":\"enum Voting.RequestTypes\",\"name\":\"requestType\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"proVotersCount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"requestsCounter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_requestID\",\"type\":\"uint256\"}],\"name\":\"tryApproveRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Voting.sol\":\"Voting\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Voting.sol\":{\"keccak256\":\"0xe3357dc825f58bf4e60402b70b7b9594f15d1be2051415aa6fef84ef44f3861d\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://9eaa39344962c1aaebfce3d0bbfb3c918d68cb0af5f3f2677fdf09bd18ac05a9\",\"dweb:/ipfs/QmY4VxZ9SwqHCDCrYd8wMKxp3uQWeKdfpgiwMqS5tVSKqQ\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -122,7 +122,7 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "//SPDX-License-Identifier: UNLICENSED\r\npragma solidity ^0.8.0;\r\n\r\nabstract contract Voting {\r\n    enum RequestTypes {\r\n        AddMember,\r\n        RemoveMember,\r\n        Withdraw,\r\n        Destroy\r\n    }\r\n\r\n    struct Request {\r\n        address author;\r\n        RequestTypes requestType;\r\n        address addr;\r\n        uint256 value;\r\n        uint256 proVotersCount;\r\n        mapping(address => bool) voters;\r\n        bool approved;\r\n    }\r\n\r\n    mapping(uint256 => Request) public requests;\r\n\r\n    uint256 public requestsCounter;\r\n\r\n    function createRequest(RequestTypes _requestType, uint256 _value, address _addr)\r\n        external\r\n        returns (uint256)\r\n    {\r\n        require(uint256(_requestType) <= 3, \"Invalid request type!\");\r\n\r\n        if (_requestType == RequestTypes.Withdraw) {\r\n            require(_value >= 0);\r\n            require(_addr == address(0x0));\r\n        } else {\r\n            require(_value == 0);\r\n            require(_addr != address(0x0));\r\n        }\r\n\r\n        Request storage request = requests[requestsCounter];\r\n\r\n        request.author = msg.sender;\r\n        request.requestType = _requestType;\r\n        request.addr = _addr;\r\n        request.value = _value;\r\n        request.proVotersCount = 0;\r\n        request.approved = false;\r\n\r\n        uint256 requestID = requestsCounter;\r\n        requestsCounter++;\r\n\r\n        return requestID;\r\n    }\r\n\r\n    function acceptRequest(uint256 _requestID) external {\r\n        require(\r\n            requests[_requestID].voters[msg.sender] == false,\r\n            \"Already voted to this request!\"\r\n        );\r\n        requests[_requestID].voters[msg.sender] == true;\r\n        requests[_requestID].proVotersCount++;\r\n        tryApproveRequest(_requestID);\r\n    }\r\n\r\n    function tryApproveRequest(uint256 _requestID) public virtual {\r\n        uint256 goal = _getMajority(1);  // <- change\r\n        if (requests[_requestID].proVotersCount == goal)\r\n            requests[_requestID].approved = true;\r\n    }\r\n    \r\n    function _getMajority(uint256 _total) internal pure returns (uint256) {\r\n        return _total / 2 + 1;\r\n    }\r\n}\r\n",
+  "source": "//SPDX-License-Identifier: UNLICENSED\r\npragma solidity ^0.8.0;\r\n\r\nabstract contract Voting {\r\n    enum RequestTypes {\r\n        AddMember,\r\n        RemoveMember,\r\n        Withdraw,\r\n        Destroy\r\n    }\r\n\r\n    struct Request {\r\n        address author;\r\n        RequestTypes requestType;\r\n        address addr;\r\n        uint256 value;\r\n        uint256 proVotersCount;\r\n        mapping(address => bool) voters;\r\n        bool approved;\r\n    }\r\n\r\n    mapping(uint256 => Request) public requests;\r\n\r\n    uint256 public requestsCounter;\r\n\r\n    function createRequest(RequestTypes _requestType, uint256 _value, address _addr)\r\n        external\r\n        returns (uint256)\r\n    {\r\n        require(uint256(_requestType) <= 3, \"Invalid request type!\");\r\n\r\n        if (_requestType == RequestTypes.Withdraw) {\r\n            require(_value >= 0);\r\n            require(_addr == address(0x0));\r\n        } else {\r\n            require(_value == 0);\r\n            require(_addr != address(0x0));\r\n        }\r\n\r\n        Request storage request = requests[requestsCounter];\r\n\r\n        request.author = msg.sender;\r\n        request.requestType = _requestType;\r\n        request.addr = _addr;\r\n        request.value = _value;\r\n        request.proVotersCount = 1;\r\n        request.approved = false;\r\n\r\n        uint256 requestID = requestsCounter;\r\n        requestsCounter++;\r\n\r\n        return requestID;\r\n    }\r\n\r\n    function acceptRequest(uint256 _requestID) external {\r\n        require(\r\n            requests[_requestID].voters[msg.sender] == false,\r\n            \"Already voted to this request!\"\r\n        );\r\n        requests[_requestID].voters[msg.sender] == true;\r\n        requests[_requestID].proVotersCount++;\r\n        tryApproveRequest(_requestID);\r\n    }\r\n\r\n    function tryApproveRequest(uint256 _requestID) public virtual {\r\n        uint256 goal = _getMajority(1);  // <- change\r\n        if (requests[_requestID].proVotersCount == goal)\r\n            requests[_requestID].approved = true;\r\n    }\r\n    \r\n    function _getMajority(uint256 _total) internal pure returns (uint256) {\r\n        return _total / 2 + 1;\r\n    }\r\n}\r\n",
   "sourcePath": "C:\\Users\\Joro\\Documents\\GitHub\\ShareIt\\contracts\\Voting.sol",
   "ast": {
     "absolutePath": "project:/contracts/Voting.sol",
@@ -1558,7 +1558,7 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "hexValue": "30",
+                      "hexValue": "31",
                       "id": 686,
                       "isConstant": false,
                       "isLValue": false,
@@ -1568,10 +1568,10 @@
                       "nodeType": "Literal",
                       "src": "1235:1:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_rational_0_by_1",
-                        "typeString": "int_const 0"
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
                       },
-                      "value": "0"
+                      "value": "1"
                     },
                     "src": "1210:26:4",
                     "typeDescriptions": {
@@ -4338,7 +4338,7 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "hexValue": "30",
+                      "hexValue": "31",
                       "id": 686,
                       "isConstant": false,
                       "isLValue": false,
@@ -4348,10 +4348,10 @@
                       "nodeType": "Literal",
                       "src": "1235:1:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_rational_0_by_1",
-                        "typeString": "int_const 0"
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
                       },
-                      "value": "0"
+                      "value": "1"
                     },
                     "src": "1210:26:4",
                     "typeDescriptions": {
@@ -5690,7 +5690,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-03-23T20:38:02.794Z",
+  "updatedAt": "2022-03-23T20:39:44.423Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

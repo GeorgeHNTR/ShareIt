@@ -43,7 +43,7 @@ abstract contract Voting {
         request.requestType = _requestType;
         request.addr = _addr;
         request.value = _value;
-        request.proVotersCount = 0;
+        request.proVotersCount = 1;
         request.approved = false;
 
         uint256 requestID = requestsCounter;
