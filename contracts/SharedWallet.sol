@@ -5,7 +5,7 @@ import "./SharedWalletStorage.sol";
 import "./SharedWalletFactory.sol";
 
 contract SharedWallet {
-    address storage_;
+    SharedWalletStorage walletStorage;
     uint256 public maxMembers;
     address[] public members;
 
@@ -21,15 +21,17 @@ contract SharedWallet {
         _;
     }
 
-    constructor(uint256 _maxMembers, address _storage) {
+    constructor(address _creator, uint256 _maxMembers, SharedWalletStorage _walletStorage) {
         require(
             _maxMembers <= 12,
             "Cannot have more than 12 members in a single shared wallet!"
         );
 
-        storage_ = _storage;
+        walletStorage = _walletStorage;
         maxMembers = _maxMembers;
-        members.push(msg.sender);
+
+        members.push(_creator);
+        _addMember(_creator);
     }
 
     function getMembers() public view returns (address[] memory) {
@@ -44,18 +46,17 @@ contract SharedWallet {
         );
 
         members.push(_newMember);
-        SharedWalletStorage(storage_).addWalletToUser(
-            address(this),
-            _newMember
-        );
+        walletStorage.addWalletToUser(address(this), _newMember);
         return true;
     }
 
     function _removeMember(address _member) private returns (bool) {
         // add voting
-        for (uint8 i = 0; i < members.length; i++)
+        for (uint256 i = 0; i < members.length; i++)
             if (members[i] == _member) {
+                address deletedMember = members[i];
                 delete members[i];
+                walletStorage.removeWalletForUser(address(this), deletedMember);
                 return true;
             }
 
@@ -77,4 +78,5 @@ contract SharedWallet {
     receive() external payable {}
 
     fallback() external payable {}
+
 }

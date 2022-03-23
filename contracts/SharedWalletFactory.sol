@@ -5,17 +5,13 @@ import "./SharedWallet.sol";
 import "./SharedWalletStorage.sol";
 
 contract SharedWalletFactory {
-    address public storageAddress;
+    SharedWalletStorage public walletStorage;
 
     constructor() {
-        storageAddress = address(new SharedWalletStorage());
+        walletStorage = new SharedWalletStorage();
     }
 
     function createNewSharedWallet(uint256 _maxMembers) external {
-        SharedWallet wallet = new SharedWallet(_maxMembers, storageAddress);
-        SharedWalletStorage(storageAddress).addWalletToUser(
-            address(wallet),
-            msg.sender
-        );
+        new SharedWallet(msg.sender, _maxMembers, walletStorage);
     }
 }
