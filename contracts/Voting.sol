@@ -7,13 +7,14 @@ contract Voting {
     enum RequestTypes {
         AddMember,
         RemoveMember,
-        Withdraw
+        Withdraw,
+        Destroy
     }
 
     struct Request {
         address proposer;
         RequestTypes requestType;
-        bytes20 data; // either a member address or an amount of wei to withdraw (bytes20 can be casted to both uint256 and address types)
+        bytes20 data; // either an address or an amount of wei to withdraw (bytes20 can be casted to both uint256 and address types)
         uint256 proVotersCount;
         mapping(address => bool) voters;
         bool approved;
@@ -27,7 +28,7 @@ contract Voting {
         external
         returns (uint256)
     {
-        require(uint256(_requestType) <= 2, "Invalid request type!");
+        require(uint256(_requestType) <= 3, "Invalid request type!");
 
         Request storage request = requests[requestsCounter];
 
