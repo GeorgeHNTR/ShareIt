@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./SharedWallet.sol";
 
 contract SharedWalletsStorage {
-    uint8 public maxWalletsPerUser = 8;
+    uint8 private maxWalletsPerUser = 8;
     mapping(address => address[]) public usersWallets;
 
     function addWalletToUser(address _user) external {

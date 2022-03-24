@@ -5,7 +5,7 @@ import "./Voting.sol";
 import "./SharedWalletsStorage.sol";
 
 contract SharedWallet is Voting {
-    SharedWalletsStorage walletsStorage;
+    SharedWalletsStorage public walletsStorage;
     mapping(address => bool) public isMember;
     address[] public members;
 
@@ -16,9 +16,9 @@ contract SharedWallet is Voting {
 
     constructor(
         address _creator,
-        SharedWalletsStorage _walletsStorage
+        address _walletsStorageAddress
     ) {
-        walletsStorage = _walletsStorage;
+        walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
 
         members.push(_creator);
         isMember[_creator] = true;
