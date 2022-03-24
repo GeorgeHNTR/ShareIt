@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "./Voting.sol";
-import "./SharedWalletStorage.sol";
+import "./SharedWalletsStorage.sol";
 
 contract SharedWallet is Voting {
-    SharedWalletStorage walletStorage;
+    SharedWalletsStorage walletsStorage;
     uint256 public maxMembers;
     mapping(address => bool) isMember;
     address[] public members;
@@ -18,19 +18,19 @@ contract SharedWallet is Voting {
     constructor(
         address _creator,
         uint256 _maxMembers,
-        SharedWalletStorage _walletStorage
+        SharedWalletsStorage _walletsStorage
     ) {
         require(
             _maxMembers <= 12,
             "Cannot have more than 12 members in a single shared wallet!"
         );
 
-        walletStorage = _walletStorage;
+        walletsStorage = _walletsStorage;
         maxMembers = _maxMembers;
 
         members.push(_creator);
         isMember[_creator] = true;
-        walletStorage.addWalletToUser(address(this), _creator);
+        walletsStorage.addWalletToUser(address(this), _creator);
     }
 
     function getMembers() public view returns (address[] memory) {
@@ -48,7 +48,7 @@ contract SharedWallet is Voting {
 
         members.push(request.addr);
         isMember[request.addr] = true;
-        walletStorage.addWalletToUser(address(this), request.addr);
+        walletsStorage.addWalletToUser(address(this), request.addr);
         return true;
     }
 
@@ -61,7 +61,7 @@ contract SharedWallet is Voting {
                 address deletedMember = members[i];
                 delete members[i];
                 delete isMember[deletedMember];
-                walletStorage.removeWalletForUser(address(this), deletedMember);
+                walletsStorage.removeWalletForUser(address(this), deletedMember);
                 return true;
             }
 

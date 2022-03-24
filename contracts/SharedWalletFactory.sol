@@ -2,16 +2,16 @@
 pragma solidity ^0.8.0;
 
 import "./SharedWallet.sol";
-import "./SharedWalletStorage.sol";
+import "./SharedWalletsStorage.sol";
 
 contract SharedWalletFactory {
-    SharedWalletStorage public walletStorage;
+    SharedWalletsStorage public walletsStorage;
 
     constructor() {
-        walletStorage = new SharedWalletStorage();
+        walletsStorage = new SharedWalletsStorage();
     }
 
     function createNewSharedWallet(uint256 _maxMembers) external {
-        new SharedWallet(msg.sender, _maxMembers, walletStorage);
+        new SharedWallet(msg.sender, _maxMembers, walletsStorage);
     }
 }
