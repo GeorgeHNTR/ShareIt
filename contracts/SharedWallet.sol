@@ -7,17 +7,11 @@ import "./SharedWalletStorage.sol";
 contract SharedWallet is Voting {
     SharedWalletStorage walletStorage;
     uint256 public maxMembers;
+    mapping(address => bool) isMember;
     address[] public members;
 
     modifier onlyMember() override {
-        bool isMember = false;
-        for (uint8 i = 0; i < members.length; i++)
-            if (members[i] == tx.origin) {
-                isMember = true;
-                break;
-            }
-
-        require(isMember);
+        require(isMember[msg.sender]);
         _;
     }
 
@@ -35,6 +29,7 @@ contract SharedWallet is Voting {
         maxMembers = _maxMembers;
 
         members.push(_creator);
+        isMember[_creator] = true;
         walletStorage.addWalletToUser(address(this), _creator);
     }
 
@@ -60,6 +55,7 @@ contract SharedWallet is Voting {
         );
 
         members.push(request.addr);
+        isMember[request.addr] = true;
         walletStorage.addWalletToUser(address(this), request.addr);
         return true;
     }
@@ -80,6 +76,7 @@ contract SharedWallet is Voting {
             if (members[i] == request.addr) {
                 address deletedMember = members[i];
                 delete members[i];
+                delete isMember[deletedMember];
                 walletStorage.removeWalletForUser(address(this), deletedMember);
                 return true;
             }
