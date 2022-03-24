@@ -39,15 +39,7 @@ contract SharedWallet is Voting {
 
     function addMember(uint256 _requestId) external returns (bool) {
         Request storage request = requests[_requestId];
-        require(
-            request.author == msg.sender,
-            "You are not the author of this request!"
-        );
-        require(request.approved == true, "Request is not approved yet!");
-        require(
-            request.requestType == RequestTypes.AddMember,
-            "Wrong request id!"
-        );
+        _validateRequest(request, RequestTypes.AddMember);
 
         require(
             members.length < maxMembers,
@@ -62,15 +54,7 @@ contract SharedWallet is Voting {
 
     function removeMember(uint256 _requestId) external returns (bool) {
         Request storage request = requests[_requestId];
-        require(
-            request.author == msg.sender,
-            "You are not the author of this request!"
-        );
-        require(request.approved == true, "Request is not approved yet!");
-        require(
-            request.requestType == RequestTypes.RemoveMember,
-            "Wrong request id!"
-        );
+        _validateRequest(request, RequestTypes.RemoveMember);
 
         for (uint256 i = 0; i < members.length; i++)
             if (members[i] == request.addr) {
@@ -86,15 +70,7 @@ contract SharedWallet is Voting {
 
     function withdraw(uint256 _requestId) external returns (bool) {
         Request storage request = requests[_requestId];
-        require(
-            request.author == msg.sender,
-            "You are not the author of this request!"
-        );
-        require(request.approved == true, "Request is not approved yet!");
-        require(
-            request.requestType == RequestTypes.Withdraw,
-            "Wrong request id!"
-        );
+        _validateRequest(request, RequestTypes.Withdraw);
 
         require(request.value <= address(this).balance);
 
@@ -103,15 +79,7 @@ contract SharedWallet is Voting {
 
     function destroy(uint256 _requestId) external returns (bool) {
         Request storage request = requests[_requestId];
-        require(
-            request.author == msg.sender,
-            "You are not the author of this request!"
-        );
-        require(request.approved == true, "Request is not approved yet!");
-        require(
-            request.requestType == RequestTypes.Withdraw,
-            "Wrong request id!"
-        );
+        _validateRequest(request, RequestTypes.Destroy);
 
         selfdestruct(payable(request.addr));
         return true;
@@ -121,6 +89,18 @@ contract SharedWallet is Voting {
         uint256 goal = _getMajority(members.length);
         if (requests[_requestID].proVotersCount == goal)
             requests[_requestID].approved = true;
+    }
+
+    function _validateRequest(
+        Request storage _request,
+        RequestTypes _requestType
+    ) private view {
+        require(
+            _request.author == msg.sender,
+            "You are not the author of this request!"
+        );
+        require(_request.approved == true, "Request is not approved yet!");
+        require(_request.requestType == _requestType, "Wrong request id!");
     }
 
     receive() external payable {}
