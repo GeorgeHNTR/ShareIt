@@ -19,7 +19,6 @@ contract SharedWallet is Voting {
 
         members.push(_creator);
         isMember[_creator] = true;
-        walletsStorage.addWalletToUser(_creator);
     }
 
     function getMembers() public view returns (address[] memory) {
@@ -32,7 +31,7 @@ contract SharedWallet is Voting {
 
         members.push(request.addr);
         isMember[request.addr] = true;
-        walletsStorage.addWalletToUser(request.addr);
+        walletsStorage.addWalletToUser(address(this), request.addr);
         return true;
     }
 
@@ -45,7 +44,10 @@ contract SharedWallet is Voting {
                 address deletedMember = members[i];
                 delete members[i];
                 delete isMember[deletedMember];
-                walletsStorage.removeWalletForUser(deletedMember);
+                walletsStorage.removeWalletForUser(
+                    address(this),
+                    deletedMember
+                );
                 return true;
             }
 

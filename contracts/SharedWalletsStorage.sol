@@ -5,38 +5,34 @@ import "./SharedWallet.sol";
 
 contract SharedWalletsStorage {
     uint8 private maxWalletsPerUser = 8;
-    mapping(address => address[]) public usersWallets;
+    mapping(address => address[]) private usersWallets;
 
-    modifier onlyMember(address _user) {
-        // address[] memory members = SharedWallet(msg.sender).getMembers();
-        // bool isMember = false;
-        // for (uint256 i; i < members.length; i++) {
-        //     if (members[i] == _user) {
-        //         isMember = true;
-        //         break;
-        //     }
-        // }
-        // require(isMember);
-
-        //                    ^
-        // both not working   |   |
-        //                        v
-
-        // require(SharedWallet(msg.sender).isMember(_user));
+    modifier onlyWalletMember(address _newWallet, address _user) {
+        require(SharedWallet(_newWallet).isMember(_user));
         _;
     }
 
-    function addWalletToUser(address _user) external onlyMember(_user){
+    function getUserWallets() public view returns (address[] memory) {
+        return usersWallets[msg.sender];
+    }
+
+    function addWalletToUser(address _newWallet, address _user)
+        external
+        onlyWalletMember(_newWallet, _user)
+    {
         require(
             usersWallets[_user].length <= maxWalletsPerUser,
             "A single user cannot participate in more than 8 wallets!"
         );
-        usersWallets[_user].push(msg.sender);
+        usersWallets[_user].push(_newWallet);
     }
 
-    function removeWalletForUser(address _user) external onlyMember(_user) {
+    function removeWalletForUser(address _newWallet, address _user)
+        external
+        onlyWalletMember(_newWallet, _user)
+    {
         for (uint256 i = 0; i < usersWallets[_user].length; i++)
-            if (usersWallets[_user][i] == msg.sender) {
+            if (usersWallets[_user][i] == _newWallet) {
                 delete usersWallets[_user][i];
                 break;
             }
