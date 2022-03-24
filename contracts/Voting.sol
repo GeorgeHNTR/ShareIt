@@ -23,10 +23,15 @@ abstract contract Voting {
 
     uint256 public requestsCounter;
 
-    function createRequest(RequestTypes _requestType, uint256 _value, address _addr)
-        external
-        returns (uint256)
-    {
+    modifier onlyMember() virtual {
+        _;
+    }
+
+    function createRequest(
+        RequestTypes _requestType,
+        uint256 _value,
+        address _addr
+    ) external onlyMember returns (uint256) {
         require(uint256(_requestType) <= 3, "Invalid request type!");
 
         if (_requestType == RequestTypes.Withdraw) {
@@ -52,22 +57,22 @@ abstract contract Voting {
         return requestID;
     }
 
-    function acceptRequest(uint256 _requestID) external {
+    function acceptRequest(uint256 _requestID) external onlyMember {
         require(
             requests[_requestID].voters[msg.sender] == false,
             "Already voted to this request!"
         );
         requests[_requestID].voters[msg.sender] == true;
         requests[_requestID].proVotersCount++;
-        tryApproveRequest(_requestID);
+        _tryApproveRequest(_requestID);
     }
 
-    function tryApproveRequest(uint256 _requestID) public virtual {
-        uint256 goal = _getMajority(1);  // <- change
+    function _tryApproveRequest(uint256 _requestID) internal virtual {
+        uint256 goal = _getMajority(1); // override
         if (requests[_requestID].proVotersCount == goal)
             requests[_requestID].approved = true;
     }
-    
+
     function _getMajority(uint256 _total) internal pure returns (uint256) {
         return _total / 2 + 1;
     }
