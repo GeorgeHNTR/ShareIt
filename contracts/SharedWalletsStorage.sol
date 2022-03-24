@@ -8,7 +8,6 @@ contract SharedWalletsStorage {
     mapping(address => address[]) public usersWallets;
 
     function addWalletToUser(address _user) external {
-        require(SharedWallet(payable(msg.sender)).isMember(_user));
         require(
             usersWallets[_user].length <= maxWalletsPerUser,
             "A single user cannot participate in more than 8 wallets!"
@@ -16,10 +15,7 @@ contract SharedWalletsStorage {
         usersWallets[_user].push(msg.sender);
     }
 
-    function removeWalletForUser(address _user)
-        external
-    {
-        require(SharedWallet(payable(msg.sender)).isMember(_user));
+    function removeWalletForUser(address _user) external {
         for (uint256 i = 0; i < usersWallets[_user].length; i++)
             if (usersWallets[_user][i] == msg.sender) {
                 delete usersWallets[_user][i];

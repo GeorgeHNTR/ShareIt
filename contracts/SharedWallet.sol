@@ -72,6 +72,10 @@ contract SharedWallet is Voting {
         return true;
     }
 
+    function deposit() external payable {
+        
+    }
+
     function _tryApproveRequest(uint256 _requestID) internal override {
         uint256 goal = _getMajority(members.length);
         if (requests[_requestID].proVotersCount == goal)
@@ -90,7 +94,4 @@ contract SharedWallet is Voting {
         require(_request.requestType == _requestType, "Wrong request id!");
     }
 
-    receive() external payable {}
-
-    fallback() external payable {}
 }
