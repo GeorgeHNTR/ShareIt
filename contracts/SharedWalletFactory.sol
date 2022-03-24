@@ -11,7 +11,7 @@ contract SharedWalletFactory {
         walletsStorage = new SharedWalletsStorage();
     }
 
-    function createNewSharedWallet(uint256 _maxMembers) external {
-        new SharedWallet(msg.sender, _maxMembers, walletsStorage);
+    function createNewSharedWallet() external {
+        new SharedWallet(msg.sender, walletsStorage);
     }
 }

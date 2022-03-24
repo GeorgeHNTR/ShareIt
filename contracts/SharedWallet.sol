@@ -6,7 +6,6 @@ import "./SharedWalletsStorage.sol";
 
 contract SharedWallet is Voting {
     SharedWalletsStorage walletsStorage;
-    uint256 public maxMembers;
     mapping(address => bool) public isMember;
     address[] public members;
 
@@ -17,16 +16,9 @@ contract SharedWallet is Voting {
 
     constructor(
         address _creator,
-        uint256 _maxMembers,
         SharedWalletsStorage _walletsStorage
     ) {
-        require(
-            _maxMembers <= 12,
-            "Cannot have more than 12 members in a single shared wallet!"
-        );
-
         walletsStorage = _walletsStorage;
-        maxMembers = _maxMembers;
 
         members.push(_creator);
         isMember[_creator] = true;
@@ -40,11 +32,6 @@ contract SharedWallet is Voting {
     function addMember(uint256 _requestId) external returns (bool) {
         Request storage request = requests[_requestId];
         _validateRequest(request, RequestTypes.AddMember);
-
-        require(
-            members.length < maxMembers,
-            "Maximum number of members reached!"
-        );
 
         members.push(request.addr);
         isMember[request.addr] = true;
