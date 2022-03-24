@@ -14,10 +14,7 @@ contract SharedWallet is Voting {
         _;
     }
 
-    constructor(
-        address _creator,
-        address _walletsStorageAddress
-    ) {
+    constructor(address _creator, address _walletsStorageAddress) {
         walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
 
         members.push(_creator);
@@ -72,9 +69,7 @@ contract SharedWallet is Voting {
         return true;
     }
 
-    function deposit() external payable {
-        
-    }
+    function deposit() external payable {}
 
     function _tryApproveRequest(uint256 _requestID) internal override {
         uint256 goal = _getMajority(members.length);
@@ -93,5 +88,4 @@ contract SharedWallet is Voting {
         require(_request.approved == true, "Request is not approved yet!");
         require(_request.requestType == _requestType, "Wrong request id!");
     }
-
 }
