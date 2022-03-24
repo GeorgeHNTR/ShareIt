@@ -7,7 +7,7 @@ import "./SharedWalletsStorage.sol";
 contract SharedWallet is Voting {
     SharedWalletsStorage walletsStorage;
     uint256 public maxMembers;
-    mapping(address => bool) isMember;
+    mapping(address => bool) public isMember;
     address[] public members;
 
     modifier onlyMember() override {
@@ -30,7 +30,7 @@ contract SharedWallet is Voting {
 
         members.push(_creator);
         isMember[_creator] = true;
-        walletsStorage.addWalletToUser(address(this), _creator);
+        walletsStorage.addWalletToUser(_creator);
     }
 
     function getMembers() public view returns (address[] memory) {
@@ -48,7 +48,7 @@ contract SharedWallet is Voting {
 
         members.push(request.addr);
         isMember[request.addr] = true;
-        walletsStorage.addWalletToUser(address(this), request.addr);
+        walletsStorage.addWalletToUser(request.addr);
         return true;
     }
 
@@ -61,7 +61,7 @@ contract SharedWallet is Voting {
                 address deletedMember = members[i];
                 delete members[i];
                 delete isMember[deletedMember];
-                walletsStorage.removeWalletForUser(address(this), deletedMember);
+                walletsStorage.removeWalletForUser(deletedMember);
                 return true;
             }
 
