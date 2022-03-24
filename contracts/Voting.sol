@@ -14,9 +14,10 @@ abstract contract Voting {
         RequestTypes requestType;
         address addr;
         uint256 value;
+        bool approved;
+        bool accepted;
         uint256 proVotersCount;
         mapping(address => bool) voters;
-        bool approved;
     }
 
     mapping(uint256 => Request) public requests;
@@ -67,10 +68,29 @@ abstract contract Voting {
         _tryApproveRequest(_requestID);
     }
 
+    function acceptInvitation(uint256 _requestID) external {
+        require(
+            requests[_requestID].requestType == RequestTypes.AddMember,
+            "Wrong request id!"
+        );
+        require(requests[_requestID].addr == msg.sender);
+        requests[_requestID].accepted = true;
+    }
+
     function _tryApproveRequest(uint256 _requestID) internal virtual {
         uint256 goal = _getMajority(1); // override
-        if (requests[_requestID].proVotersCount == goal)
+        if (
+            requests[_requestID].proVotersCount == goal &&
+            requests[_requestID].requestType != RequestTypes.AddMember
+        ) {
             requests[_requestID].approved = true;
+        } else if (
+            requests[_requestID].proVotersCount == goal &&
+            requests[_requestID].requestType == RequestTypes.AddMember &&
+            requests[_requestID].accepted
+        ) {
+            requests[_requestID].approved = true;
+        }
     }
 
     function _getMajority(uint256 _total) internal pure returns (uint256) {
