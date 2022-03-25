@@ -4,16 +4,20 @@ pragma solidity ^0.8.0;
 import "./SharedWallet.sol";
 
 contract SharedWalletsStorage {
-    uint8 private maxWalletsPerUser = 8;
-    mapping(address => address[]) private usersWallets;
+    uint8 private _maxWalletsPerUser = 8;
+    mapping(address => address[]) private _usersWallets;
 
     modifier onlyWalletMember(address _newWallet, address _user) {
         require(SharedWallet(_newWallet).isMember(_user));
         _;
     }
 
-    function getUserWallets() public view returns (address[] memory) {
-        return usersWallets[msg.sender];
+    function userWallets() public view returns (address[] memory) {
+        return _usersWallets[msg.sender];
+    }
+
+    function maxWalletsPerUser() public view returns (uint8) {
+        return _maxWalletsPerUser;
     }
 
     function addWalletToUser(address _newWallet, address _user)
@@ -21,19 +25,19 @@ contract SharedWalletsStorage {
         onlyWalletMember(_newWallet, _user)
     {
         require(
-            usersWallets[_user].length <= maxWalletsPerUser,
+            _usersWallets[_user].length <= _maxWalletsPerUser,
             "A single user cannot participate in more than 8 wallets!"
         );
-        usersWallets[_user].push(_newWallet);
+        _usersWallets[_user].push(_newWallet);
     }
 
     function removeWalletForUser(address _newWallet, address _user)
         external
         onlyWalletMember(_newWallet, _user)
     {
-        for (uint256 i = 0; i < usersWallets[_user].length; i++)
-            if (usersWallets[_user][i] == _newWallet) {
-                delete usersWallets[_user][i];
+        for (uint256 i = 0; i < _usersWallets[_user].length; i++)
+            if (_usersWallets[_user][i] == _newWallet) {
+                delete _usersWallets[_user][i];
                 break;
             }
     }

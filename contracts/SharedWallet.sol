@@ -5,46 +5,59 @@ import "./Voting.sol";
 import "./SharedWalletsStorage.sol";
 
 contract SharedWallet is Voting {
-    SharedWalletsStorage public walletsStorage;
-    mapping(address => bool) public isMember;
-    address[] public members;
+    SharedWalletsStorage private _walletsStorage;
+    mapping(address => bool) private _isMember;
+    address[] private _members;
+    string private _name;
 
     modifier onlyMember() override {
-        require(isMember[msg.sender]);
+        require(_isMember[msg.sender]);
         _;
     }
 
     constructor(address _creator, address _walletsStorageAddress) {
-        walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
+        _walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
 
-        members.push(_creator);
-        isMember[_creator] = true;
+        _members.push(_creator);
+        _isMember[_creator] = true;
     }
 
-    function getMembers() public view returns (address[] memory) {
-        return members;
+    function members() public view returns (address[] memory) {
+        return _members;
+    }
+
+    function name() public view returns (string memory) {
+        return _name;
+    }
+
+    function walletsStorage() public view returns (SharedWalletsStorage) {
+        return _walletsStorage;
+    }
+
+    function isMember(address _user) public view returns (bool) {
+        return _isMember[_user];
     }
 
     function addMember(uint256 _requestId) external returns (bool) {
-        Request storage request = requests[_requestId];
+        Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.AddMember);
 
-        members.push(request.addr);
-        isMember[request.addr] = true;
-        walletsStorage.addWalletToUser(address(this), request.addr);
+        _members.push(request.addr);
+        _isMember[request.addr] = true;
+        _walletsStorage.addWalletToUser(address(this), request.addr);
         return true;
     }
 
     function removeMember(uint256 _requestId) external returns (bool) {
-        Request storage request = requests[_requestId];
+        Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.RemoveMember);
 
-        for (uint256 i = 0; i < members.length; i++)
-            if (members[i] == request.addr) {
-                address deletedMember = members[i];
-                delete members[i];
-                delete isMember[deletedMember];
-                walletsStorage.removeWalletForUser(
+        for (uint256 i = 0; i < _members.length; i++)
+            if (_members[i] == request.addr) {
+                address deletedMember = _members[i];
+                delete _members[i];
+                delete _isMember[deletedMember];
+                _walletsStorage.removeWalletForUser(
                     address(this),
                     deletedMember
                 );
@@ -55,7 +68,7 @@ contract SharedWallet is Voting {
     }
 
     function withdraw(uint256 _requestId) external returns (bool) {
-        Request storage request = requests[_requestId];
+        Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Withdraw);
 
         require(request.value <= address(this).balance);
@@ -64,19 +77,27 @@ contract SharedWallet is Voting {
     }
 
     function destroy(uint256 _requestId) external returns (bool) {
-        Request storage request = requests[_requestId];
+        Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Destroy);
 
         selfdestruct(payable(request.addr));
         return true;
     }
 
-    function deposit() external payable {}
-
     function _tryApproveRequest(uint256 _requestID) internal override {
-        uint256 goal = _getMajority(members.length);
-        if (requests[_requestID].proVotersCount == goal)
-            requests[_requestID].approved = true;
+        uint256 goal = _getMajority(_members.length);
+        if (
+            _requests[_requestID].proVotersCount == goal &&
+            _requests[_requestID].requestType != RequestTypes.AddMember
+        ) {
+            _requests[_requestID].approved = true;
+        } else if (
+            _requests[_requestID].proVotersCount == goal &&
+            _requests[_requestID].requestType == RequestTypes.AddMember &&
+            _requests[_requestID].accepted
+        ) {
+            _requests[_requestID].approved = true;
+        }
     }
 
     function _validateRequest(
@@ -90,4 +111,6 @@ contract SharedWallet is Voting {
         require(_request.approved == true, "Request is not approved yet!");
         require(_request.requestType == _requestType, "Wrong request id!");
     }
+
+    function deposit() external payable {}
 }

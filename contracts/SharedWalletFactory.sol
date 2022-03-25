@@ -5,17 +5,21 @@ import "./SharedWallet.sol";
 import "./SharedWalletsStorage.sol";
 
 contract SharedWalletFactory {
-    SharedWalletsStorage public walletsStorage;
+    SharedWalletsStorage private _walletsStorage;
 
     constructor() {
-        walletsStorage = new SharedWalletsStorage();
+        _walletsStorage = new SharedWalletsStorage();
+    }
+
+    function walletsStorage() public view returns (SharedWalletsStorage) {
+        return _walletsStorage;
     }
 
     function createNewSharedWallet() external returns (address) {
         address newSharedWalletAddress = address(
-            new SharedWallet(msg.sender, address(walletsStorage))
+            new SharedWallet(msg.sender, address(_walletsStorage))
         );
-        walletsStorage.addWalletToUser(newSharedWalletAddress, msg.sender);
+        _walletsStorage.addWalletToUser(newSharedWalletAddress, msg.sender);
 
         return newSharedWalletAddress;
     }

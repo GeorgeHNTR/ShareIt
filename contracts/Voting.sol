@@ -20,12 +20,44 @@ abstract contract Voting {
         mapping(address => bool) voters;
     }
 
-    mapping(uint256 => Request) public requests;
+    mapping(uint256 => Request) internal _requests;
 
-    uint256 public requestsCounter;
+    uint256 private _requestsCounter;
 
     modifier onlyMember() virtual {
         _;
+    }
+
+    function requestsCounter() public view returns (uint256) {
+        return _requestsCounter;
+    }
+
+    function getRequestAuthorById(uint256 _id) public view returns (address) {
+        return _requests[_id].author;
+    }
+
+    function getRequestTypeById(uint256 _id)
+        public
+        view
+        returns (RequestTypes)
+    {
+        return _requests[_id].requestType;
+    }
+
+    function getRequestAddrById(uint256 _id) public view returns (address) {
+        return _requests[_id].addr;
+    }
+
+    function getRequestValueById(uint256 _id) public view returns (uint256) {
+        return _requests[_id].value;
+    }
+
+    function getRequestProVotersCountById(uint256 _id)
+        public
+        view
+        returns (uint256)
+    {
+        return _requests[_id].proVotersCount;
     }
 
     function createRequest(
@@ -43,7 +75,7 @@ abstract contract Voting {
             require(_addr != address(0x0));
         }
 
-        Request storage request = requests[requestsCounter];
+        Request storage request = _requests[_requestsCounter];
 
         request.author = msg.sender;
         request.requestType = _requestType;
@@ -52,45 +84,45 @@ abstract contract Voting {
         request.proVotersCount = 1;
         request.approved = false;
 
-        uint256 requestID = requestsCounter;
-        requestsCounter++;
+        uint256 requestID = _requestsCounter;
+        _requestsCounter++;
 
         return requestID;
     }
 
     function acceptRequest(uint256 _requestID) external onlyMember {
         require(
-            requests[_requestID].voters[msg.sender] == false,
+            _requests[_requestID].voters[msg.sender] == false,
             "Already voted to this request!"
         );
-        requests[_requestID].voters[msg.sender] == true;
-        requests[_requestID].proVotersCount++;
+        _requests[_requestID].voters[msg.sender] == true;
+        _requests[_requestID].proVotersCount++;
         _tryApproveRequest(_requestID);
     }
 
     function acceptInvitation(uint256 _requestID) external {
         require(
-            requests[_requestID].requestType == RequestTypes.AddMember,
+            _requests[_requestID].requestType == RequestTypes.AddMember,
             "Wrong request id!"
         );
-        require(requests[_requestID].addr == msg.sender);
-        requests[_requestID].accepted = true;
+        require(_requests[_requestID].addr == msg.sender);
+        _requests[_requestID].accepted = true;
     }
 
     function _tryApproveRequest(uint256 _requestID) internal virtual {
-        uint256 goal = _getMajority(1); // override
-        if (
-            requests[_requestID].proVotersCount == goal &&
-            requests[_requestID].requestType != RequestTypes.AddMember
-        ) {
-            requests[_requestID].approved = true;
-        } else if (
-            requests[_requestID].proVotersCount == goal &&
-            requests[_requestID].requestType == RequestTypes.AddMember &&
-            requests[_requestID].accepted
-        ) {
-            requests[_requestID].approved = true;
-        }
+        // uint256 goal = _getMajority(1); // override
+        // if (
+        //     _requests[_requestID].proVotersCount == goal &&
+        //     _requests[_requestID].requestType != RequestTypes.AddMember
+        // ) {
+        //     _requests[_requestID].approved = true;
+        // } else if (
+        //     _requests[_requestID].proVotersCount == goal &&
+        //     _requests[_requestID].requestType == RequestTypes.AddMember &&
+        //     _requests[_requestID].accepted
+        // ) {
+        //     _requests[_requestID].approved = true;
+        // }
     }
 
     function _getMajority(uint256 _total) internal pure returns (uint256) {
