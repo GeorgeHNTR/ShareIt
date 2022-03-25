@@ -7,6 +7,8 @@ import "./SharedWalletsStorage.sol";
 contract SharedWalletFactory {
     SharedWalletsStorage private _walletsStorage;
 
+    event newSharedWalletCreated(address newSharedWalletAddress);
+
     constructor() {
         _walletsStorage = new SharedWalletsStorage();
     }
@@ -15,12 +17,12 @@ contract SharedWalletFactory {
         return _walletsStorage;
     }
 
-    function createNewSharedWallet() external returns (address) {
+    function createNewSharedWallet() external {
         address newSharedWalletAddress = address(
             new SharedWallet(msg.sender, address(_walletsStorage))
         );
         _walletsStorage.addWalletToUser(newSharedWalletAddress, msg.sender);
 
-        return newSharedWalletAddress;
+        emit newSharedWalletCreated(newSharedWalletAddress);
     }
 }

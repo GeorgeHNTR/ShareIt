@@ -24,6 +24,8 @@ abstract contract Voting {
 
     uint256 private _requestsCounter;
 
+    event RequestCreated(uint256 requestId);
+
     modifier onlyMember() virtual {
         _;
     }
@@ -61,13 +63,16 @@ abstract contract Voting {
     }
 
     function createRequest(
-        RequestTypes _requestType,
+        uint256 _requestTypeIdx,
         uint256 _value,
         address _addr
-    ) external onlyMember returns (uint256) {
-        require(uint256(_requestType) <= 3, "Invalid request type!");
+    ) external onlyMember {
+        require(
+            _requestTypeIdx <= uint256(type(RequestTypes).max),
+            "Invalid request type!"
+        );
 
-        if (_requestType == RequestTypes.Withdraw) {
+        if (_requestTypeIdx == uint8(RequestTypes.Withdraw)) {
             require(_value >= 0);
             require(_addr == address(0x0));
         } else {
@@ -78,19 +83,23 @@ abstract contract Voting {
         Request storage request = _requests[_requestsCounter];
 
         request.author = msg.sender;
-        request.requestType = _requestType;
+        request.requestType = RequestTypes(_requestTypeIdx);
         request.addr = _addr;
         request.value = _value;
-        request.proVotersCount = 1;
+        request.proVotersCount = 0;
         request.approved = false;
 
         uint256 requestID = _requestsCounter;
         _requestsCounter++;
 
-        return requestID;
+        emit RequestCreated(requestID);
     }
 
     function acceptRequest(uint256 _requestID) external onlyMember {
+        require(
+            _requests[_requestID].approved == false,
+            "Request has already passed!"
+        );
         require(
             _requests[_requestID].voters[msg.sender] == false,
             "Already voted to this request!"
@@ -102,11 +111,16 @@ abstract contract Voting {
 
     function acceptInvitation(uint256 _requestID) external {
         require(
+            _requests[_requestID].accepted == false,
+            "Invitation already accepted!"
+        );
+        require(
             _requests[_requestID].requestType == RequestTypes.AddMember,
             "Wrong request id!"
         );
         require(_requests[_requestID].addr == msg.sender);
         _requests[_requestID].accepted = true;
+        _tryApproveRequest(_requestID);
     }
 
     function _tryApproveRequest(uint256 _requestID) internal virtual {
