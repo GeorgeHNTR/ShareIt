@@ -38,7 +38,7 @@ contract SharedWallet is Voting {
         return _isMember[_user];
     }
 
-    function addMember(uint256 _requestId) external {
+    function _addMember(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.AddMember);
 
@@ -47,7 +47,7 @@ contract SharedWallet is Voting {
         _walletsStorage.addWalletToUser(address(this), request.addr);
     }
 
-    function removeMember(uint256 _requestId) external {
+    function _removeMember(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.RemoveMember);
 
@@ -63,7 +63,7 @@ contract SharedWallet is Voting {
             }
     }
 
-    function withdraw(uint256 _requestId) external {
+    function _withdraw(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Withdraw);
 
@@ -72,37 +72,43 @@ contract SharedWallet is Voting {
         payable(msg.sender).transfer(request.value);
     }
 
-    function destroy(uint256 _requestId) external {
+    function _destroy(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Destroy);
 
         selfdestruct(payable(request.addr));
     }
 
-    function _tryApproveRequest(uint256 _requestID) internal override {
+    function _tryApproveRequest(uint256 _requestId) internal override {
         uint256 goal = _getMajority(_members.length);
         if (
-            _requests[_requestID].proVotersCount == goal &&
-            _requests[_requestID].requestType != RequestTypes.AddMember
-        ) {
-            _requests[_requestID].approved = true;
-        } else if (
-            _requests[_requestID].proVotersCount == goal &&
-            _requests[_requestID].requestType == RequestTypes.AddMember &&
-            _requests[_requestID].accepted
-        ) {
-            _requests[_requestID].approved = true;
-        }
+            _requests[_requestId].proVotersCount == goal &&
+            _requests[_requestId].requestType != RequestTypes.AddMember
+        ) _requests[_requestId].approved = true;
+        else if (
+            _requests[_requestId].proVotersCount == goal &&
+            _requests[_requestId].requestType == RequestTypes.AddMember &&
+            _requests[_requestId].accepted
+        ) _requests[_requestId].approved = true;
+
+        if (_requests[_requestId].approved) _executeRequest(_requestId);
+    }
+
+    function _executeRequest(uint256 _requestId) private {
+        if (_requests[_requestId].requestType == RequestTypes.AddMember)
+            _addMember(_requestId);
+        else if (_requests[_requestId].requestType == RequestTypes.RemoveMember)
+            _removeMember(_requestId);
+        else if (_requests[_requestId].requestType == RequestTypes.Withdraw)
+            _withdraw(_requestId);
+        else if (_requests[_requestId].requestType == RequestTypes.Destroy)
+            _destroy(_requestId);
     }
 
     function _validateRequest(
         Request storage _request,
         RequestTypes _requestType
     ) private view {
-        require(
-            _request.author == msg.sender,
-            "You are not the author of this request!"
-        );
         require(_request.requestType == _requestType, "Wrong request id!");
         require(_request.approved == true, "Request is not approved yet!");
     }

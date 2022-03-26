@@ -256,7 +256,6 @@ contract('Voting', async function (accounts) {
                     const requestId = (await this.wallet.requestsCounter()) - 1;
                     await this.wallet.acceptRequest(requestId, { from: creator });
                     await this.wallet.acceptInvitation(requestId, { from: testAddr });
-                    await this.wallet.addMember(requestId, { from: creator });
 
                     // now there are 2 members in this shared wallet so the request won't be set to "approved" when only the creator votes
                     // and we will have the opportunity to test what will happen when one member votes twice
