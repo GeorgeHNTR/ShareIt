@@ -42,6 +42,7 @@ contract SharedWallet is Voting {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.AddMember);
 
+        require(!isMember(request.addr));
         _members.push(request.addr);
         _isMember[request.addr] = true;
         _walletsStorage.addWalletToUser(address(this), request.addr);
@@ -70,7 +71,7 @@ contract SharedWallet is Voting {
 
         require(request.value <= address(this).balance);
 
-        payable(msg.sender).transfer(request.value);
+        payable(tx.origin).transfer(request.value);
     }
 
     function _destroy(uint256 _requestId) private {

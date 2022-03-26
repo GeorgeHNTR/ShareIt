@@ -7,6 +7,7 @@ const SharedWalletsStorage = artifacts.require('SharedWalletsStorage');
 
 contract('SharedWalletsStorage', function (accounts) {
     const [creator, newMember, nonMember] = accounts;
+    const nullAddress = "0x0000000000000000000000000000000000000000";
 
     beforeEach(async function () {
         this.factory = await SharedWalletFactory.new();
@@ -20,12 +21,23 @@ contract('SharedWalletsStorage', function (accounts) {
 
     });
 
+    it('should add wallets to member\'s list', async function () {
+        await this.wallet.createRequest(0, 0, newMember, { from: creator });
+        const requestId = (await this.wallet.requestsCounter()) - 1;
+        await this.wallet.acceptInvitation(requestId, { from: newMember });
+        expect((await this.storage.userWallets({from :newMember}))[0]).to.equal(this.walletAddr);
+    });
+
+    it('should remove wallets to member\'s list', async function () {
+        await this.wallet.createRequest(1, 0, creator, { from: creator });
+        expect((await this.storage.userWallets({ from: creator }))[0]).to.equal(nullAddress);
+    });
+
     describe('Only wallet members', function () {
         it('should be able to add wallet address in their own list', async function () {
             // they
             await this.wallet.createRequest(0, 0, newMember, { from: creator });
             const requestId = (await this.wallet.requestsCounter()) - 1;
-            await this.wallet.acceptRequest(requestId, { from: creator });
             await this.wallet.acceptInvitation(requestId, { from: newMember });
 
             expect((await this.storage.userWallets({ from: newMember }))[0]).to.equal(this.walletAddr);
@@ -40,23 +52,18 @@ contract('SharedWalletsStorage', function (accounts) {
     });
 
     describe('Only not wallet members', function () {
-        it.only('should be able to remove wallet address from their own list', async function () {
+        it('should be able to remove wallet address from their own list', async function () {
             // others
             try {
-                console.log('failed here 1');
                 await this.storage.removeWalletForUser(this.walletAddr, creator, { from: nonMember });
-                console.log('failed here');
                 expect.fail();
             } catch (err) {
-                console.log('catched')
             }
 
             // they
             await this.wallet.createRequest(1, 0, creator, { from: creator });
-            const requestId = (await this.wallet.requestsCounter()) - 1;
-            await this.wallet.acceptRequest(requestId, { from: creator });
 
-            expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
+            expect((await this.storage.userWallets({ from: creator }))[0]).to.equal(nullAddress);
         });
     });
 });

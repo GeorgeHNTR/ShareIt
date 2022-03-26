@@ -94,7 +94,7 @@ abstract contract Voting {
         );
 
         if (_requestTypeIdx == uint8(RequestTypes.Withdraw)) {
-            require(_value >= 0);
+            require(_value > 0 && _value <= address(this).balance);
         } else {
             require(_addr != address(0x0));
         }
@@ -105,8 +105,9 @@ abstract contract Voting {
         request.requestType = RequestTypes(_requestTypeIdx);
         request.addr = _addr;
         request.value = _value;
-        request.proVotersCount = 0;
+        request.proVotersCount = 1;
         request.approved = false;
+        request.voters[msg.sender] = true;
 
         uint256 requestID = _requestsCounter;
         _requestsCounter++;
@@ -114,6 +115,7 @@ abstract contract Voting {
         emit RequestCreated(requestID);
         if (request.requestType == RequestTypes.AddMember)
             emit InvitationSent(requestID, request.addr);
+        _tryApproveRequest(requestID);
     }
 
     function acceptRequest(uint256 _requestID) external onlyMember {
