@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 
 const SharedWalletFactory = artifacts.require('SharedWalletFactory');
+const SharedWalletsStorage = artifacts.require('SharedWalletsStorage');
 const SharedWallet = artifacts.require('SharedWallet');
 
 contract('SharedWallet', function (accounts) {
@@ -8,31 +9,24 @@ contract('SharedWallet', function (accounts) {
 
     beforeEach(async function () {
         this.factory = await SharedWalletFactory.new();
+        this.storage = await SharedWalletsStorage.at(await this.factory.walletsStorage());
     });
 
-    it('should add members without throwing', async function () {
-        this.factory.newSharedWalletCreated()
-            .on('data', async function (event) {
-                const newSharedWalletAddress = event.returnValues.newSharedWalletAddress;
-                const sharedWalletInstance = await SharedWallet.at(newSharedWalletAddress);
-
-                sharedWalletInstance.RequestCreated()
-                    .on('data', async function (event) {
-                        await sharedWalletInstance.acceptInvitation(event.returnValues.requestId, { from: newMember });
-                        await sharedWalletInstance.acceptRequest(event.returnValues.requestId, { from: creator });
-                        await sharedWalletInstance.addMember(event.returnValues.requestId, { from: creator });
-                        expect((await sharedWalletInstance.members()).length).to.equal(2);
-                    });
-
-                await sharedWalletInstance.createRequest(0, 0, newMember, { from: creator });
-
-            });
-            
+    it('should add/register members correctly', async function () {
         await this.factory.createNewSharedWallet();
-        await new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, 60000);
-        });
+        const newSharedWalletAddress = await this.factory.lastWalletCreated();
+        this.wallet = await SharedWallet.at(newSharedWalletAddress);
+
+        await this.wallet.createRequest(0, 0, newMember, { from: creator });
+        const requestId = (await this.wallet.requestsCounter()) - 1;
+
+        await this.wallet.acceptInvitation(requestId, { from: newMember });
+        await this.wallet.acceptRequest(requestId, { from: creator });
+        await this.wallet.addMember(requestId, { from: creator });
+
+        expect((await this.wallet.members()).length).to.equal(2);
+        expect(await this.storage.userWallets({ from: creator })).to.not.be.empty;
+        expect(await this.storage.userWallets({ from: newMember })).to.not.be.empty;
+        
     });
 });
