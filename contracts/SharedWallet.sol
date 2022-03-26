@@ -38,17 +38,16 @@ contract SharedWallet is Voting {
         return _isMember[_user];
     }
 
-    function addMember(uint256 _requestId) external returns (bool) {
+    function addMember(uint256 _requestId) external {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.AddMember);
 
         _members.push(request.addr);
         _isMember[request.addr] = true;
         _walletsStorage.addWalletToUser(address(this), request.addr);
-        return true;
     }
 
-    function removeMember(uint256 _requestId) external returns (bool) {
+    function removeMember(uint256 _requestId) external {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.RemoveMember);
 
@@ -61,27 +60,23 @@ contract SharedWallet is Voting {
                     address(this),
                     deletedMember
                 );
-                return true;
             }
-
-        return false;
     }
 
-    function withdraw(uint256 _requestId) external returns (bool) {
+    function withdraw(uint256 _requestId) external {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Withdraw);
 
         require(request.value <= address(this).balance);
 
-        return payable(msg.sender).send(request.value);
+        payable(msg.sender).transfer(request.value);
     }
 
-    function destroy(uint256 _requestId) external returns (bool) {
+    function destroy(uint256 _requestId) external {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Destroy);
 
         selfdestruct(payable(request.addr));
-        return true;
     }
 
     function _tryApproveRequest(uint256 _requestID) internal override {
@@ -108,8 +103,8 @@ contract SharedWallet is Voting {
             _request.author == msg.sender,
             "You are not the author of this request!"
         );
-        require(_request.approved == true, "Request is not approved yet!");
         require(_request.requestType == _requestType, "Wrong request id!");
+        require(_request.approved == true, "Request is not approved yet!");
     }
 
     function deposit() external payable {}

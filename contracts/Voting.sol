@@ -25,13 +25,34 @@ abstract contract Voting {
     uint256 internal _requestsCounter;
 
     event RequestCreated(uint256 requestId);
+    event InvitationSent(uint256 requestId, address indexed to);
 
     modifier onlyMember() virtual {
+        require(false);
         _;
     }
 
     function requestsCounter() public view returns (uint256) {
         return _requestsCounter;
+    }
+
+    function checkRequestIsApprovedById(uint256 _id)
+        public
+        view
+        returns (bool)
+    {
+        return _requests[_id].approved;
+    }
+
+    function checkRequestIsAcceptedById(uint256 _id)
+        public
+        view
+        returns (bool)
+    {
+        return _requests[_id].accepted;
+    }
+    function checkMemberHasVotedById(uint256 _id) public view returns (bool) {
+        return _requests[_id].voters[msg.sender];
     }
 
     function getRequestAuthorById(uint256 _id) public view returns (address) {
@@ -74,9 +95,7 @@ abstract contract Voting {
 
         if (_requestTypeIdx == uint8(RequestTypes.Withdraw)) {
             require(_value >= 0);
-            require(_addr == address(0x0));
         } else {
-            require(_value == 0);
             require(_addr != address(0x0));
         }
 
@@ -93,6 +112,8 @@ abstract contract Voting {
         _requestsCounter++;
 
         emit RequestCreated(requestID);
+        if (request.requestType == RequestTypes.AddMember)
+            emit InvitationSent(requestID, request.addr);
     }
 
     function acceptRequest(uint256 _requestID) external onlyMember {
@@ -104,12 +125,13 @@ abstract contract Voting {
             _requests[_requestID].voters[msg.sender] == false,
             "Already voted to this request!"
         );
-        _requests[_requestID].voters[msg.sender] == true;
+        _requests[_requestID].voters[msg.sender] = true;
         _requests[_requestID].proVotersCount++;
         _tryApproveRequest(_requestID);
     }
 
     function acceptInvitation(uint256 _requestID) external {
+        require(_requests[_requestID].addr == msg.sender);
         require(
             _requests[_requestID].accepted == false,
             "Invitation already accepted!"
@@ -118,7 +140,6 @@ abstract contract Voting {
             _requests[_requestID].requestType == RequestTypes.AddMember,
             "Wrong request id!"
         );
-        require(_requests[_requestID].addr == msg.sender);
         _requests[_requestID].accepted = true;
         _tryApproveRequest(_requestID);
     }

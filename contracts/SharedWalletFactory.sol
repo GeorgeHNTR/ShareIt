@@ -18,8 +18,8 @@ contract SharedWalletFactory {
         return _lastWalletCreated;
     }
 
-    function walletsStorage() public view returns (SharedWalletsStorage) {
-        return _walletsStorage;
+    function walletsStorage() public view returns (address) {
+        return address(_walletsStorage);
     }
 
     function createNewSharedWallet() external {
