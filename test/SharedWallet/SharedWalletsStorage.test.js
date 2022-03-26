@@ -20,9 +20,9 @@ contract('SharedWalletsStorage', function (accounts) {
 
     });
 
-    describe('Only wallet member', function () {
-        it.only('should be able to add wallet address in their own list', async function () {
-            // him
+    describe('Only wallet members', function () {
+        it('should be able to add wallet address in their own list', async function () {
+            // they
             await this.wallet.createRequest(0, 0, newMember, { from: creator });
             const requestId = (await this.wallet.requestsCounter()) - 1;
             await this.wallet.acceptRequest(requestId, { from: creator });
@@ -37,5 +37,26 @@ contract('SharedWalletsStorage', function (accounts) {
             } catch (err) { }
         });
 
+    });
+
+    describe('Only not wallet members', function () {
+        it.only('should be able to remove wallet address from their own list', async function () {
+            // others
+            try {
+                console.log('failed here 1');
+                await this.storage.removeWalletForUser(this.walletAddr, creator, { from: nonMember });
+                console.log('failed here');
+                expect.fail();
+            } catch (err) {
+                console.log('catched')
+            }
+
+            // they
+            await this.wallet.createRequest(1, 0, creator, { from: creator });
+            const requestId = (await this.wallet.requestsCounter()) - 1;
+            await this.wallet.acceptRequest(requestId, { from: creator });
+
+            expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
+        });
     });
 });

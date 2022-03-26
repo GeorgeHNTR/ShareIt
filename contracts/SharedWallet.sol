@@ -60,6 +60,7 @@ contract SharedWallet is Voting {
                     address(this),
                     deletedMember
                 );
+                break;
             }
     }
 
