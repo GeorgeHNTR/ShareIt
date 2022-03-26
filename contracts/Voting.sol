@@ -22,7 +22,7 @@ abstract contract Voting {
 
     mapping(uint256 => Request) internal _requests;
 
-    uint256 private _requestsCounter;
+    uint256 internal _requestsCounter;
 
     event RequestCreated(uint256 requestId);
 
