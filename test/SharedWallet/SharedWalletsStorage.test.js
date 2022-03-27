@@ -8,6 +8,7 @@ const SharedWalletsStorage = artifacts.require('SharedWalletsStorage');
 contract('SharedWalletsStorage', function (accounts) {
     const [creator, newMember, nonMember] = accounts;
     const nullAddress = "0x0000000000000000000000000000000000000000";
+    const name = "test";
 
     beforeEach(async function () {
         this.factory = await SharedWalletFactory.new();
@@ -15,17 +16,23 @@ contract('SharedWalletsStorage', function (accounts) {
         this.storageAddr = await this.factory.walletsStorage();
         this.storage = await SharedWalletsStorage.at(this.storageAddr);
 
-        await this.factory.createNewSharedWallet({ from: creator });
+        await this.factory.createNewSharedWallet(name, { from: creator });
         this.walletAddr = await this.factory.lastWalletCreated();
         this.wallet = await SharedWallet.at(this.walletAddr);
 
+    });
+
+    it('should pass correct properties to newly created wallet', async function () {
+        expect(await this.wallet.name()).to.equal(name);
+        expect((await this.wallet.members())[0]).to.equal(creator);
+        expect(await this.wallet.walletsStorage()).to.equal(this.storageAddr);
     });
 
     it('should add wallets to member\'s list', async function () {
         await this.wallet.createRequest(0, 0, newMember, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
         await this.wallet.acceptInvitation(requestId, { from: newMember });
-        expect((await this.storage.userWallets({from :newMember}))[0]).to.equal(this.walletAddr);
+        expect((await this.storage.userWallets({ from: newMember }))[0]).to.equal(this.walletAddr);
     });
 
     it('should remove wallets to member\'s list', async function () {

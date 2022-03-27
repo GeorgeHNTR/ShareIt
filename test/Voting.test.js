@@ -6,10 +6,11 @@ const SharedWalletFactory = artifacts.require('SharedWalletFactory');
 contract('Voting', async function (accounts) {
   const [creator, notMember, testAddr, randomAddr] = accounts;
   const nullAddress = "0x0000000000000000000000000000000000000000";
+  const name = "test";
 
   beforeEach(async function () {
     this.factory = await SharedWalletFactory.new({ from: creator });
-    await this.factory.createNewSharedWallet();
+    await this.factory.createNewSharedWallet(name);
     const newSharedWalletAddress = await this.factory.lastWalletCreated();
     this.wallet = await SharedWallet.at(newSharedWalletAddress);
   });

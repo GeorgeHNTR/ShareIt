@@ -6,6 +6,7 @@ const SharedWalletsStorage = artifacts.require('SharedWalletsStorage');
 
 contract('SharedWalletFactory', async function (accounts) {
     const [creator] = accounts;
+    const name = "test";
 
     describe('Deployment', async function () {
         it('should not fail', async function () {
@@ -30,7 +31,7 @@ contract('SharedWalletFactory', async function (accounts) {
     describe('Creating new shared wallet', async function () {
         it('should save last created wallet address and provide a getter', async function () {
             const factory = await SharedWalletFactory.new();
-            await factory.createNewSharedWallet({ from: creator });
+            await factory.createNewSharedWallet(name, { from: creator });
             const walletAddr = await factory.lastWalletCreated();
 
             const wallet = await SharedWallet.at(walletAddr);

@@ -15,11 +15,12 @@ contract SharedWallet is Voting {
         _;
     }
 
-    constructor(address _creator, address _walletsStorageAddress) {
+    constructor(address _creator, address _walletsStorageAddress, string memory name_) {
         _walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
 
         _members.push(_creator);
         _isMember[_creator] = true;
+        _name = name_;
     }
 
     function members() public view returns (address[] memory) {
