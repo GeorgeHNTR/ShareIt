@@ -56,13 +56,14 @@ contract SharedWallet is Voting {
         for (uint256 i = 0; i < _members.length; i++)
             if (_members[i] == request.addr) {
                 address deletedMember = _members[i];
-                delete _members[i];
+                _members[i] = _members[_members.length - 1];
+                _members.pop();
                 delete _isMember[deletedMember];
                 _walletsStorage.removeWalletForUser(
                     address(this),
                     deletedMember
                 );
-                break;
+                return;
             }
     }
 

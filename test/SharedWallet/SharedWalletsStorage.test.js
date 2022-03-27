@@ -35,9 +35,9 @@ contract('SharedWalletsStorage', function (accounts) {
         expect((await this.storage.userWallets({ from: newMember }))[0]).to.equal(this.walletAddr);
     });
 
-    it('should remove wallets to member\'s list', async function () {
+    it('should remove wallets from member\'s list', async function () {
         await this.wallet.createRequest(1, 0, creator, { from: creator });
-        expect((await this.storage.userWallets({ from: creator }))[0]).to.equal(nullAddress);
+        expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
     });
 
     describe('Only wallet members', function () {
@@ -70,7 +70,7 @@ contract('SharedWalletsStorage', function (accounts) {
             // they
             await this.wallet.createRequest(1, 0, creator, { from: creator });
 
-            expect((await this.storage.userWallets({ from: creator }))[0]).to.equal(nullAddress);
+            expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
         });
     });
 });
