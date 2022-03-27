@@ -15,7 +15,11 @@ contract SharedWallet is Voting {
         _;
     }
 
-    constructor(address _creator, address _walletsStorageAddress, string memory name_) {
+    constructor(
+        address _creator,
+        address _walletsStorageAddress,
+        string memory name_
+    ) {
         _walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
 
         _members.push(_creator);
@@ -53,15 +57,15 @@ contract SharedWallet is Voting {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.RemoveMember);
 
+        require(isMember(request.addr));
         for (uint256 i = 0; i < _members.length; i++)
             if (_members[i] == request.addr) {
-                address deletedMember = _members[i];
                 _members[i] = _members[_members.length - 1];
                 _members.pop();
-                delete _isMember[deletedMember];
+                delete _isMember[request.addr];
                 _walletsStorage.removeWalletForUser(
                     address(this),
-                    deletedMember
+                    request.addr
                 );
                 return;
             }
@@ -73,7 +77,7 @@ contract SharedWallet is Voting {
 
         require(request.value <= address(this).balance);
 
-        payable(tx.origin).transfer(request.value);
+        payable(request.author).transfer(request.value);
     }
 
     function _destroy(uint256 _requestId) private {
@@ -81,6 +85,21 @@ contract SharedWallet is Voting {
         _validateRequest(request, RequestTypes.Destroy);
 
         selfdestruct(payable(request.addr));
+    }
+
+    function leave() external {
+        require(isMember(msg.sender));
+        for (uint256 i = 0; i < _members.length; i++)
+            if (_members[i] == msg.sender) {
+                _members[i] = _members[_members.length - 1];
+                _members.pop();
+                delete _isMember[msg.sender];
+                _walletsStorage.removeWalletForUser(
+                    address(this),
+                    msg.sender
+                );
+                return;
+            }
     }
 
     function _tryApproveRequest(uint256 _requestId) internal override {
