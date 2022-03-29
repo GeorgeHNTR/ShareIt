@@ -7,9 +7,11 @@
 <style scoped>
 .card {
   border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 10px 10px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
   color: white;
-  /* padding: 2rem 4rem; */
   max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

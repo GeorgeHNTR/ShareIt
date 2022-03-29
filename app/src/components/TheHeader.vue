@@ -43,11 +43,10 @@ nav {
   margin: 1rem 15%;
   border-radius: 50px 50px 50px 50px;
   box-shadow: 5px 5px 36px 20px rgba(0, 0, 0, 0.5);
-  background: rgb(145, 0, 58);
-  background-image: linear-gradient(
-    315deg,
-    rgba(81, 0, 140, 1) 25%,
-    rgb(108, 37, 223) 100%
+  background: linear-gradient(
+    to right,
+    rgb(124, 20, 110) 0,
+    rgb(36, 11, 54) 100%
   );
 }
 
@@ -70,8 +69,7 @@ a {
 }
 
 a:hover {
-  color: rgb(228, 228, 228);
-  text-shadow: 2px 2px #000000;
+  text-shadow: 3px 2px #000000;
 }
 
 #left-aside,

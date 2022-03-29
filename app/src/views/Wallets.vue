@@ -1,6 +1,6 @@
 <template>
   <base-card>
-    <div>Your wallets</div>
+    <div>No wallets available</div>
   </base-card>
 </template>
 

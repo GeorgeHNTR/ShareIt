@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="content">
-      <div class="heading">The Ultimate Shared Wallet Platform</div>
+      <h1 class="heading">The Ultimate Shared Wallet Platform</h1>
     </div>
     <img src="../assets/eth_wallet.png" />
   </div>
-  <base-button link to="/about">Learn more</base-button>
+  <base-button link to="/about">Learn More</base-button>
 </template>
 
 <style scoped>
@@ -37,6 +37,7 @@
   text-align: right;
   max-height: 100%;
   padding-left: 2rem;
+  text-shadow: 5px 5px #000000;
 }
 
 img {

@@ -25,14 +25,13 @@ export default {
 
 <style scoped>
 a {
-  color: white;
-  background-image: linear-gradient(
-    315deg,
-    rgba(81, 0, 140, 1) 25%,
-    rgb(108, 37, 223) 100%
+  background: linear-gradient(
+    to right,
+    rgb(124, 20, 110) 0,
+    rgb(36, 11, 54) 100%
   );
+  color: rgb(255, 255, 255);
   padding: 0.5rem 0.8rem;
-  text-transform: capitalize;
   cursor: pointer;
   transition: all 200ms ease-in-out;
   text-align: center;
@@ -41,26 +40,29 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 8px 2px #ffffff;
 }
 button {
   background-color: transparent;
   color: white;
   border-radius: 50px;
   padding: 0.5rem 0.8rem;
-  border-color: white;
+  border: 2px solid white;
   text-transform: capitalize;
   cursor: pointer;
   transition: all 200ms ease-in-out;
 }
 
-a:hover,
+a:hover {
+  transform: translateY(-5%);
+}
 button:hover {
   background-image: linear-gradient(
     315deg,
     rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0.1) 100%
   );
-  text-shadow: 2px 2px #000000;
+  text-shadow: 1px 1px #000000;
   transform: translateY(-5%);
 }
 </style>

@@ -1,19 +1,160 @@
 <template>
-  <base-card>
-    <div>About us</div>
-  </base-card>
+  <section class="container">
+    <base-card class="mission">
+      <article>
+        <h2>Mission</h2>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
+          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
+          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
+          ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+          Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
+          culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
+          Quidem, dolorem ducimus?
+        </p>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
+          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
+          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
+          ducimus?
+        </p>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
+          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
+          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
+          ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+          Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
+          culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
+          Quidem, dolorem ducimus?
+        </p>
+      </article>
+    </base-card>
+    <div id="separator"></div>
+    <aside>
+      <base-card class="use">
+        <article>
+          <h2>How to use</h2>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
+            porro, quibusdam consequuntur perferendis sequi, eaque reprehenderit
+            laborum maxime nobis dolor hic maiores, nisi facere doloremque
+            dolores quas itaque eius voluptates.
+          </p>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
+            porro, quibusdam consequuntur perferendis sequi, eaque reprehenderit
+            laborum maxime nobis dolor hic maiores, nisi facere doloremque
+            dolores quas itaque eius voluptates.
+          </p>
+        </article>
+      </base-card>
+      <base-card class="guide">
+        <article>
+          <h2>Metamask</h2>
+          <a href="https://metamask.io/" target="_blank"
+            >https://metamask.io/</a
+          >
+        </article>
+      </base-card>
+    </aside>
+  </section>
+  <base-card> </base-card>
 </template>
 
 <style scoped>
 .card {
+  padding: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-areas: "mission aside";
+  gap: 5vw;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 40vw;
-  margin: 50vh 50vw;
-  transform: translateY(-50%) translateX(-50%);
+  left: 50%;
+  min-width: 55vw;
+  max-width: 55vw;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  height: 65vh;
+}
+
+aside {
+  grid-area: aside;
+  min-width: calc((55vw - 5vw) / 2);
+  max-width: calc((55vw - 5vw) / 2);
+  min-height: 100%;
+  max-height: 100%;
+
+  display: grid;
+  grid-template-areas: "." "use" "use" "guide" ".";
+  gap: 2rem;
+}
+
+.mission {
+  min-width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  grid-area: mission;
+  background: rgba(230, 15, 15, 0.185);
+}
+
+.use {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  grid-area: use;
+  background: rgba(230, 15, 15, 0.185);
+}
+
+.use p {
+  max-width: calc((55vw - 5vw) / 2);
+  max-height: 100%;
+}
+
+.guide {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  grid-area: guide;
+  background: rgba(230, 15, 15, 0.185);
+}
+
+article {
+  padding: 2rem 3rem;
+}
+
+p {
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+}
+
+h2 {
+  text-shadow: 4px 4px #000000;
+  font-size: 4rem;
   text-align: center;
-  font-size: 6rem;
-  font-weight: 400;
+  margin-bottom: 1.5rem;
+}
+
+a {
+  color: white;
+  min-width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+#separator {
+  position: absolute;
+  left: 50%;
+  min-width: 0.5rem;
+  max-width: 0.5rem;
+  border-radius: 5px;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  height: 62vh;
+  background: linear-gradient(rgb(0, 0, 0), rgb(140, 5, 250));
 }
 </style>
