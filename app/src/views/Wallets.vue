@@ -1,18 +1,19 @@
 <template>
-  <div>Your wallets</div>
+  <base-card>
+    <div>Your wallets</div>
+  </base-card>
 </template>
 
 <style scoped>
-div {
+.card {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  margin-top: 50vh;
-  transform: translateY(-50%);
+  width: 40vw;
+  margin: 50vh 50vw;
+  transform: translateY(-50%) translateX(-50%);
   text-align: center;
   font-size: 6rem;
   font-weight: 400;
-  color: white;
 }
 </style>

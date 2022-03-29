@@ -1,18 +1,82 @@
 <template>
-  <div>Welcome</div>
+  <div class="container">
+    <div class="content">
+      <div class="heading">The Ultimate Shared Wallet Platform</div>
+    </div>
+    <img src="../assets/eth_wallet.png" />
+  </div>
+  <base-button link to="/about">Learn more</base-button>
 </template>
 
 <style scoped>
-div {
+.container {
   position: absolute;
-  top: 0;
-  left: 0;
+  left: 50%;
   width: 100vw;
-  margin-top: 50vh;
-  transform: translateY(-50%);
-  text-align: center;
-  font-size: 6rem;
-  font-weight: 400;
+  top: 45%;
+  transform: translateX(-50%) translateY(-50%);
+  height: 50vh;
+  display: grid;
+  grid-template-areas: "content image";
+  gap: 4rem;
+}
+
+.content {
+  position: absolute;
+  grid-area: content;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 100%;
+  max-width: 100%;
+}
+
+.heading {
   color: white;
+  font-size: 7rem;
+  text-align: right;
+  max-height: 100%;
+  padding-left: 2rem;
+}
+
+img {
+  grid-area: image;
+  position: absolute;
+  max-height: 100%;
+  max-width: 80%;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+}
+
+a {
+  position: absolute;
+  left: 50%;
+  height: 3rem;
+  width: 16rem;
+  font-size: 2rem;
+  top: calc(45% + (50vh / 2) + 5rem);
+  transform: translateX(-50%) translateY(-50%);
+  transition: all 300ms ease-in-out;
+}
+
+a:hover {
+  transform: translateX(-50%) translateY(-55%);
+}
+
+@media only screen and (max-width: 1380px) {
+  .heading {
+    font-size: 6rem;
+  }
+}
+
+@media only screen and (max-width: 1202px) {
+  .heading {
+    font-size: 5rem;
+  }
+
+  img {
+    left: 0;
+  }
 }
 </style>

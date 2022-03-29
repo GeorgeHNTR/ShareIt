@@ -15,7 +15,7 @@
             <router-link to="/wallets">Wallets</router-link>
           </li>
           <li id="notConnected">
-            <button>+ connect</button>
+            <base-button>+ Connect</base-button>
           </li>
         </div>
       </ul>
@@ -24,13 +24,16 @@
 </template>
 
 <script>
-export default {}
+import BaseButton from "./UI/BaseButton.vue"
+
+export default {
+  components: { BaseButton },
+}
 </script>
 
 <style scoped>
 header {
-  position: fixed;
-  z-index: 10000;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
@@ -63,6 +66,18 @@ li {
 a {
   text-decoration: none;
   color: white;
+  transition: all 200ms ease-in-out;
+}
+
+a:hover {
+  color: rgb(228, 228, 228);
+  text-shadow: 2px 2px #000000;
+}
+
+#left-aside,
+#right-aside {
+  display: flex;
+  align-items: center;
 }
 
 @media only screen and (max-width: 640px) {
