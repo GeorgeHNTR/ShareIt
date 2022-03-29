@@ -12,5 +12,7 @@ div {
   transform: translateY(-50%);
   text-align: center;
   font-size: 6rem;
+  font-weight: 400;
+  color: white;
 }
 </style>

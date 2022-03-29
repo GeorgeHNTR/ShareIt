@@ -39,7 +39,13 @@ header {
 nav {
   margin: 1rem 15%;
   border-radius: 50px 50px 50px 50px;
-  box-shadow: 5px 5px 36px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 5px 36px 20px rgba(0, 0, 0, 0.5);
+  background: rgb(145, 0, 58);
+  background-image: linear-gradient(
+    315deg,
+    rgba(81, 0, 140, 1) 25%,
+    rgb(108, 37, 223) 100%
+  );
 }
 
 ul {
@@ -56,7 +62,7 @@ li {
 
 a {
   text-decoration: none;
-  color: darkblue;
+  color: white;
 }
 
 @media only screen and (max-width: 640px) {
