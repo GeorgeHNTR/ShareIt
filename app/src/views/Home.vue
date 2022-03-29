@@ -48,6 +48,8 @@ img {
   top: 50%;
   left: 10%;
   transform: translateY(-50%);
+  animation: move 1.4s infinite ease-in-out alternate;
+  cursor: pointer;
 }
 
 a {
@@ -78,6 +80,15 @@ a:hover {
 
   img {
     left: 0;
+  }
+}
+
+@keyframes move {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(calc(-50% - 20px));
   }
 }
 </style>
