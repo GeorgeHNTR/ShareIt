@@ -1,15 +1,19 @@
 <template>
   <div class="container">
     <base-card class="details">
-      <div class="details-title">{{ title }} Wallet</div>
-      <div class="details-balance"></div>
-      <div class="details-members"></div>
+      <h2 class="details-title">{{ title }} Wallet</h2>
+      <div class="stats">
+        <base-card class="details-balance"></base-card>
+        <base-card class="details-members"></base-card>
+      </div>
     </base-card>
     <base-card class="requests">
-      <div class="requests-heading">Requests</div>
-      <div class="requests-request"></div>
-      <div class="requests-request"></div>
-      <div class="requests-request"></div>
+      <h2 class="requests-heading">Requests</h2>
+      <div class="stats">
+        <base-card class="requests-request"></base-card>
+        <base-card class="requests-request"></base-card>
+        <base-card class="requests-request"></base-card>
+      </div>
     </base-card>
   </div>
 </template>
@@ -32,7 +36,6 @@ export default {
 .container {
   display: grid;
   grid-template-areas: "details details requests";
-  /* background-color: green; */
   position: absolute;
   top: 50%;
   left: 50%;
@@ -42,41 +45,52 @@ export default {
   gap: 5vw;
 }
 
+.details,
+.requests {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
 .details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  grid-area: details;
   min-width: calc((55vw - 5vw) / 3 * 2);
   max-width: calc((55vw - 5vw) / 3 * 2);
-  grid-area: details;
-  background-color: rgba(0, 0, 0, 0.25);
 }
 
 .requests {
+  grid-area: requests;
   min-width: calc((55vw - 5vw) / 3 * 1);
   max-width: calc((55vw - 5vw) / 3 * 1);
-  grid-area: requests;
-  background-color: rgba(0, 0, 0, 0.25);
 }
 
-.details-title {
-    text-decoration: underline;
-  text-align: center;
-  padding: 2rem 0.5rem;
-  font-size: 3.5rem;
-}
-
+.details-title,
 .requests-heading {
-    text-decoration: underline;
+  text-decoration: underline;
   word-wrap: break-word;
   text-align: center;
-  padding: 2rem 0.5rem;
+  padding: 3rem 0.5rem 1rem 0.5rem;
   font-size: 3.5rem;
+  text-shadow: 4px 4px #000000;
 }
 
-.details-balance {
-    background-color: red;
+.stats {
+  height: 67%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
 
+.details-balance,
+.details-members {
+  background-color: rgba(0, 0, 0, 0.26);
+  width: 80%;
+  height: 25%;
+}
+
+.requests-request {
+  background-color: rgba(0, 0, 0, 0.26);
+  width: 80%;
+  height: 20%;
 }
 
 @media only screen and (max-width: 1064px) {
