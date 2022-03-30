@@ -6,7 +6,7 @@
 
 <style scoped>
 .container {
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;

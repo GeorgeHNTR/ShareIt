@@ -53,6 +53,7 @@ img {
 }
 
 a {
+  text-shadow: 2px 2px #000000;
   position: absolute;
   left: 50%;
   height: 3rem;
@@ -64,7 +65,9 @@ a {
 }
 
 a:hover {
-  transform: translateX(-50%) translateY(-55%);
+  transform: translateX(-50%) translateY(-50%);
+  padding: 0.75rem 1rem;
+  font-size: 2.1rem;
 }
 
 @media only screen and (max-width: 1380px) {
@@ -81,6 +84,10 @@ a:hover {
   img {
     left: 0;
   }
+}
+
+@media only screen and (max-width: 835px) {
+  /* mobile view */
 }
 
 @keyframes move {

@@ -4,15 +4,30 @@
       <ul>
         <div id="left-aside">
           <li>
-            <router-link to="/">ShareIt</router-link>
+            <router-link
+              @click="current = 0"
+              :class="current == 0 ? 'active' : ''"
+              to="/"
+              >ShareIt</router-link
+            >
           </li>
           <li>
-            <router-link to="/about">About</router-link>
+            <router-link
+              @click="current = 1"
+              :class="current == 1 ? 'active' : ''"
+              to="/about"
+              >About</router-link
+            >
           </li>
         </div>
         <div id="right-aside">
           <li id="connected">
-            <router-link to="/wallets">Wallets</router-link>
+            <router-link
+              @click="current = 2"
+              :class="current == 2 ? 'active' : ''"
+              to="/wallets"
+              >Wallets</router-link
+            >
           </li>
           <li id="notConnected">
             <base-button>+ Connect</base-button>
@@ -28,12 +43,17 @@ import BaseButton from "./UI/BaseButton.vue"
 
 export default {
   components: { BaseButton },
+  data() {
+    return {
+      current: 0,
+    }
+  },
 }
 </script>
 
 <style scoped>
 header {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -64,11 +84,18 @@ li {
 
 a {
   text-decoration: none;
-  color: white;
+  color: rgb(192, 192, 192);
   transition: all 200ms ease-in-out;
+  text-shadow: 3px 2px 10px #000000;
 }
 
 a:hover {
+  color: rgb(255, 255, 255);
+  text-shadow: 3px 2px #000000;
+}
+
+.active {
+  color: rgb(255, 255, 255);
   text-shadow: 3px 2px #000000;
 }
 
@@ -78,7 +105,7 @@ a:hover {
   align-items: center;
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 835px) {
   header {
     display: none;
   }

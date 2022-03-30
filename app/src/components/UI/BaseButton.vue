@@ -1,8 +1,8 @@
 <template>
-  <button v-if="!link">
+  <button class="common" v-if="!link">
     <slot />
   </button>
-  <router-link v-else :to="to">
+  <router-link class="common" v-else :to="to">
     <slot />
   </router-link>
 </template>
@@ -24,45 +24,39 @@ export default {
 </script>
 
 <style scoped>
-a {
-  background: linear-gradient(
+.common {
+  background-image: linear-gradient(
     to right,
-    rgb(124, 20, 110) 0,
-    rgb(36, 11, 54) 100%
+    rgb(168, 2, 2) 0,
+    rgb(113, 9, 145) 100%
   );
   color: rgb(255, 255, 255);
+  border-radius: 50px;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
+  text-transform: capitalize;
   transition: all 200ms ease-in-out;
+}
+
+a {
   text-align: center;
   text-decoration: none;
-  border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 8px 2px #ffffff;
 }
+
 button {
-  background-color: transparent;
-  color: white;
-  border-radius: 50px;
-  padding: 0.5rem 0.8rem;
+  font-weight: bold;
   border: 2px solid white;
-  text-transform: capitalize;
-  cursor: pointer;
-  transition: all 200ms ease-in-out;
 }
 
 a:hover {
-  transform: translateY(-5%);
+  transform: translateY(-15%);
 }
 button:hover {
-  background-image: linear-gradient(
-    315deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  text-shadow: 1px 1px #000000;
-  transform: translateY(-5%);
+  text-shadow: 2px 2px #000000;
+  transform: translateY(-7%);
 }
 </style>

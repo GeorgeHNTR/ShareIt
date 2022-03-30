@@ -64,6 +64,17 @@
 <style scoped>
 .card {
   padding: 0;
+  word-break: break-word;
+  cursor: pointer;
+  transition: max-width 1s ease-in-out, min-width 1s ease-in-out,
+    max-height 1s ease-in-out, min-height 1s ease-in-out;
+}
+.card:hover {
+  min-width: 102%;
+  max-width: 102%;
+  min-height: 102%;
+  max-height: 102%;
+  transform: translateX(-1%) translateY(-1%);
 }
 
 .container {
@@ -92,18 +103,11 @@ aside {
 }
 
 .mission {
-  min-width: 100%;
-  max-width: 100%;
-  max-height: 100%;
   grid-area: mission;
   background: rgba(230, 15, 15, 0.185);
 }
 
 .use {
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
   grid-area: use;
   background: rgba(230, 15, 15, 0.185);
 }
@@ -114,10 +118,6 @@ aside {
 }
 
 .guide {
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
   grid-area: guide;
   background: rgba(230, 15, 15, 0.185);
 }
@@ -155,6 +155,19 @@ a {
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
   height: 62vh;
-  background: linear-gradient(rgb(0, 0, 0), rgb(140, 5, 250));
+  background: linear-gradient(rgb(140, 5, 250), rgb(49, 1, 45), rgb(140, 5, 250));
+}
+
+@media only screen and (max-width: 1510px) {
+  h2 {
+    font-size: 2rem;
+  }
+  article {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media only screen and (max-width: 1088px) {
+  /* mobile view */
 }
 </style>
