@@ -2,27 +2,54 @@
   <base-card v-if="!isConnected">
     <div>No wallets available</div>
   </base-card>
-  <base-card v-else class="wallet main"> Family Wallet </base-card>
+  <base-card @click="seeWallet(currentWallet.id)" v-else class="wallet main">
+    {{ currentWallet.title }} Wallet
+  </base-card>
   <base-card
     v-if="walletIdx !== 0"
     @click="--walletIdx"
     class="wallet side left"
   ></base-card>
   <base-card
-    v-if="wallets !== walletIdx + 1"
+    v-if="wallets.length !== walletIdx + 1"
     @click="++walletIdx"
     class="wallet side right"
   ></base-card>
 </template>
 
 <script>
+import router from "../router"
+
 export default {
   data() {
     return {
       isConnected: true,
       walletIdx: 0,
-      wallets: 3,
+      wallets: [
+        {
+          title: "Family",
+          id: "0x1",
+        },
+        {
+          title: "School",
+          id: "0x2",
+        },
+        {
+          title: "Personal",
+          id: "0x3",
+        },
+      ],
     }
+  },
+  computed: {
+    currentWallet() {
+      return this.wallets[this.walletIdx]
+    },
+  },
+  methods: {
+    seeWallet(id) {
+      router.push(`/wallets/${id}`)
+    },
   },
 }
 </script>
@@ -33,6 +60,7 @@ body {
 }
 
 .card {
+  padding: 1.5rem;
   word-break: break-word;
   position: absolute;
   top: 50%;
@@ -46,7 +74,7 @@ body {
 
 .wallet {
   cursor: pointer;
-  background-color: rgba(224, 19, 19, 0.05);
+  background-color: rgba(224, 19, 19, 0.1);
   height: 35vh;
   border-radius: 75px;
   display: flex;
@@ -69,7 +97,7 @@ body {
 }
 
 .side {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.25);
   height: 24vh;
   width: 5vw;
 }

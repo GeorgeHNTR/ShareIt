@@ -122,6 +122,12 @@ aside {
   background: rgba(230, 15, 15, 0.185);
 }
 
+.guide article {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 article {
   padding: 2rem 3rem;
 }

@@ -14,6 +14,10 @@ const router = createRouter({
     {
       path: '/wallets',
       component: () => import('../views/Wallets.vue')
+    },
+    {
+      path: '/wallets/:id',
+      component: () => import('../views/WalletDetails.vue')
     }
   ]
 });
