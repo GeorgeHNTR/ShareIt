@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <base-card class="details">
-      <h2 class="details-title">{{ title }} Wallet</h2>
+      <h2 class="details-title">{{ title }}</h2>
       <div class="stats">
         <wallet-stat
           text="Balance"

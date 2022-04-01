@@ -10,6 +10,10 @@
       vero repellendus vel repudiandae quas perspiciatis! Commodi sunt beatae
       mollitia! Quod! Lorem ipsum dolor sit amet, consectetur adipisicing elit.
     </p>
+    <div class="input-container">
+      <label for="name">Enter wallet name:</label>
+      <input id="name" type="text" placeholder="Example: My Family Wallet" />
+    </div>
     <base-button id="submit">Create now</base-button>
   </base-modal>
 </template>
@@ -20,7 +24,7 @@
   overflow: visible;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   padding-bottom: 4rem;
 }
 
@@ -41,12 +45,36 @@ p {
   text-align: center;
   font-size: 1.6rem;
   transition: all 0.4s ease-in-out;
+  transform: translateY(-14%);
 }
 
 p:hover {
   color: rgb(240, 240, 240);
   font-size: 1.65rem;
-  transform: translateY(-5%);
+}
+
+label {
+  display: inline-block;
+  font-size: 1.8rem;
+  text-align: center;
+  animation: move 0.5s infinite ease-in alternate;
+}
+
+input {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  width: 40%;
+  font-size: 1.2rem;
+  text-align: center;
+  text-shadow: 1px 1px rgb(141, 141, 141);
+  text-overflow: ellipsis;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 #submit {
@@ -84,4 +112,32 @@ p:hover {
     font-size: 3.2rem;
   }
 }
+
+@media only screen and (max-width: 1048px) {
+  h2 {
+    font-size: 2.6rem;
+  }
+
+  h2:hover {
+    font-size: 3.5rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  p:hover {
+    font-size: 1.4rem;
+  }
+}
+
+@keyframes move {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(10px);
+  }
+}
+
 </style>

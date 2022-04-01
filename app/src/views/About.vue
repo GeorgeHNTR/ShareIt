@@ -4,30 +4,22 @@
       <base-card class="mission">
         <article>
           <h2>Mission</h2>
-          <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores
-            odit ullam doloremque cupiditate labore aliquid corrupti cum culpa
-            optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
-            dolorem ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing
-            elit. Maiores odit ullam doloremque cupiditate labore aliquid
-            corrupti cum culpa optio molestiae alias facere ipsa non ex, eaque
-            assumenda. Quidem, dolorem ducimus?
-          </p>
-          <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores
-            odit ullam doloremque cupiditate labore aliquid corrupti cum culpa
-            optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
-            dolorem ducimus?
-          </p>
-          <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores
-            odit ullam doloremque cupiditate labore aliquid corrupti cum culpa
-            optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
-            dolorem ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing
-            elit. Maiores odit ullam doloremque cupiditate labore aliquid
-            corrupti cum culpa optio molestiae alias facere ipsa non ex, eaque
-            assumenda. Quidem, dolorem ducimus?
-          </p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
+          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
+          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
+          ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+          Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
+          culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
+          Quidem, dolorem ducimus? Lorem ipsum dolor sit, amet consectetur
+          adipisicing elit. Maiores odit ullam doloremque cupiditate labore
+          aliquid corrupti cum culpa optio molestiae alias facere ipsa non ex,
+          eaque assumenda. Quidem, dolorem ducimus? Lorem ipsum dolor sit, amet
+          consectetur adipisicing elit. Maiores odit ullam doloremque cupiditate
+          labore aliquid corrupti cum culpa optio molestiae alias facere ipsa
+          non ex, eaque assumenda. Quidem, dolorem ducimus? Lorem ipsum dolor
+          sit, amet consectetur adipisicing elit. Maiores odit ullam doloremque
+          cupiditate labore aliquid corrupti cum culpa optio molestiae alias
+          facere ipsa non ex, eaque assumenda. Quidem, dolorem ducimus?
         </article>
       </base-card>
       <div id="separator"></div>
@@ -59,7 +51,6 @@
         </base-card>
       </aside>
     </section>
-    <base-card> </base-card>
   </div>
 </template>
 
@@ -132,6 +123,8 @@ aside {
 
 article {
   padding: 2rem 3rem;
+  max-height: 50%;
+  text-overflow: ellipsis;
 }
 
 p {

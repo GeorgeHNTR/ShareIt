@@ -13,11 +13,11 @@ const router = createRouter({
     },
     {
       path: '/wallets',
-      component: () => import('../views/Wallets/Wallets.vue')
+      component: () => import('../views/Wallets/WalletCatalog.vue')
     },
     {
       path: '/wallets/new',
-      component: () => import('../views/Wallets/WalletsCreate.vue')
+      component: () => import('../views/Wallets/WalletCreate.vue')
     },
     {
       path: '/wallets/:id',
@@ -25,7 +25,7 @@ const router = createRouter({
     },
     {
       path: '/requests/new',
-      component: () => import('../views/Requests/RequestsCreate.vue')
+      component: () => import('../views/Requests/RequestCreate.vue')
     },
     {
       path: '/requests/:id',
