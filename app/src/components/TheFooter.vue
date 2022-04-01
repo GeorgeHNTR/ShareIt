@@ -17,7 +17,7 @@
   transform: translateX(-50%);
   background-color: #110000;
   border-radius: 0;
-  box-shadow: 0 -20px 10px 10px #110000;
+  box-shadow: 0 -20px 10px 1px #110000;
 }
 
 .content {

@@ -119,7 +119,7 @@ input {
   }
 
   h2:hover {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
   }
 
   p {
@@ -127,7 +127,7 @@ input {
   }
 
   p:hover {
-    font-size: 1.4rem;
+    font-size: 1.21rem;
   }
 }
 

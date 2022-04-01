@@ -3,43 +3,53 @@
     <base-card class="details">
       <h2 class="details-title">{{ title }}</h2>
       <div class="stats">
-        <wallet-stat
-          text="Balance"
-          value="0.2 ETH"
-          class="details-balance"
-        ></wallet-stat>
-        <wallet-stat
-          text="Members"
-          value="7"
-          class="details-members"
-        ></wallet-stat>
+        <stat-card text="Balance:" value="0.2 ETH"></stat-card>
+        <stat-card text="Members:" value="7"></stat-card>
       </div>
     </base-card>
     <base-card class="requests">
       <h2 class="requests-heading">Requests</h2>
       <div class="stats">
-        <wallet-request
-          addr="0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
-          class="requests-request"
-        ></wallet-request>
-        <wallet-request class="requests-request"></wallet-request>
-        <wallet-request class="requests-request"></wallet-request>
+        <stat-card
+          text="0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
+          value="👁"
+          link
+          to="/requests/0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
+        ></stat-card>
+        <stat-card
+          text="0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
+          value="👁"
+          link
+          to="/requests/0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
+        ></stat-card>
+        <stat-card
+          text="0xA153E837fE6cd51D72658C1746b952279199D434"
+          value="👁"
+          link
+          to="/requests/0xA153E837fE6cd51D72658C1746b952279199D434"
+        ></stat-card>
       </div>
-      <base-button class="requests-create" link to="/requests/new">+</base-button>
+      <base-button class="requests-create" link to="/requests/new"
+        >+</base-button
+      >
     </base-card>
   </div>
 </template>
 
 <script>
-import WalletStat from "../../components/Wallet/WalletStat.vue"
-import WalletRequest from "../../components/Wallet/WalletRequest.vue"
+import StatCard from "../../components/Stat/StatCard.vue"
 
 export default {
-  components: { WalletStat, WalletRequest },
+  components: { StatCard },
   data() {
     return {
       title: "Family",
     }
+  },
+  methods: {
+    seeRequest(_requests) {
+      this.$router.push(`/requests/${_requests}`)
+    },
   },
 }
 </script>
