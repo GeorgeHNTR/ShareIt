@@ -7,6 +7,7 @@ import store from './store/store';
 
 import BaseCard from './components/UI/BaseCard.vue';
 import BaseButton from './components/UI/BaseButton.vue';
+import BaseModal from "./components/UI/BaseModal.vue";
 
 const app = createApp(App);
 
@@ -15,5 +16,6 @@ app.use(store);
 
 app.component('base-card', BaseCard);
 app.component('base-button', BaseButton);
+app.component('base-modal', BaseModal);
 
 app.mount('#app');

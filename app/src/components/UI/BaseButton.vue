@@ -43,10 +43,10 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-shadow: 2px 2px #000000;
 }
 
 button:hover {
-  text-shadow: 2px 2px #000000;
   transform: translateY(-7%);
 }
 </style>

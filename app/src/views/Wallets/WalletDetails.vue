@@ -25,7 +25,7 @@
         <wallet-request class="requests-request"></wallet-request>
         <wallet-request class="requests-request"></wallet-request>
       </div>
-      <base-button class="requests-create" link to="/create/request">+</base-button>
+      <base-button class="requests-create" link to="/requests/new">+</base-button>
     </base-card>
   </div>
 </template>
