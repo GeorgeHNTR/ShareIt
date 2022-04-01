@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import router from "../router"
+import router from "../../router"
 
 export default {
   data() {
@@ -61,7 +61,6 @@ body {
 
 .card {
   padding: 1.5rem;
-  word-break: break-word;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -70,11 +69,11 @@ body {
   text-align: center;
   font-size: 4rem;
   font-weight: 400;
+  background-color: rgba(230, 15, 15, 0.185);
 }
 
 .wallet {
   cursor: pointer;
-  background-color: rgba(224, 19, 19, 0.1);
   height: 35vh;
   border-radius: 75px;
   display: flex;

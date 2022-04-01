@@ -3,23 +3,38 @@
     <base-card class="details">
       <h2 class="details-title">{{ title }} Wallet</h2>
       <div class="stats">
-        <base-card class="details-balance"></base-card>
-        <base-card class="details-members"></base-card>
+        <wallet-stat
+          text="Balance"
+          value="0.2 ETH"
+          class="details-balance"
+        ></wallet-stat>
+        <wallet-stat
+          text="Members"
+          value="7"
+          class="details-members"
+        ></wallet-stat>
       </div>
     </base-card>
     <base-card class="requests">
       <h2 class="requests-heading">Requests</h2>
       <div class="stats">
-        <base-card class="requests-request"></base-card>
-        <base-card class="requests-request"></base-card>
-        <base-card class="requests-request"></base-card>
+        <wallet-request
+          addr="0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
+          class="requests-request"
+        ></wallet-request>
+        <wallet-request class="requests-request"></wallet-request>
+        <wallet-request class="requests-request"></wallet-request>
       </div>
     </base-card>
   </div>
 </template>
 
 <script>
+import WalletStat from "../../components/Wallet/WalletStat.vue"
+import WalletRequest from "../../components/Wallet/WalletRequest.vue"
+
 export default {
+  components: { WalletStat, WalletRequest },
   data() {
     return {
       title: "Family",
@@ -33,6 +48,11 @@ export default {
   padding: 0;
 }
 
+.details,
+.requests {
+  background-color: rgba(230, 15, 15, 0.085);
+}
+
 .container {
   display: grid;
   grid-template-areas: "details details requests";
@@ -43,11 +63,6 @@ export default {
   width: 55vw;
   height: 55vh;
   gap: 5vw;
-}
-
-.details,
-.requests {
-  background-color: rgba(0, 0, 0, 0.25);
 }
 
 .details {
@@ -69,7 +84,13 @@ export default {
   text-align: center;
   padding: 3rem 0.5rem 1rem 0.5rem;
   font-size: 3.5rem;
-  text-shadow: 4px 4px #000000;
+  text-shadow: 5px 5px 1px #000000;
+  transition: all 0.2s ease-in-out;
+}
+
+.details-title:hover,
+.requests-heading:hover {
+  font-size: 3.6rem;
 }
 
 .stats {
@@ -80,20 +101,7 @@ export default {
   justify-content: space-evenly;
 }
 
-.details-balance,
-.details-members {
-  background-color: rgba(0, 0, 0, 0.26);
-  width: 80%;
-  height: 25%;
-}
-
-.requests-request {
-  background-color: rgba(0, 0, 0, 0.26);
-  width: 80%;
-  height: 20%;
-}
-
-@media only screen and (max-width: 1064px) {
+@media only screen and (max-width: 1184px) {
   .container {
     width: 70vw;
     height: 55vh;

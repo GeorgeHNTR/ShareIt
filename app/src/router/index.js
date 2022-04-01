@@ -13,11 +13,19 @@ const router = createRouter({
     },
     {
       path: '/wallets',
-      component: () => import('../views/Wallets.vue')
+      component: () => import('../views/Wallets/Wallets.vue')
+    },
+    {
+      path: '/wallets/create',
+      component: () => import('../views/Wallets/WalletsCreate.vue')
     },
     {
       path: '/wallets/:id',
-      component: () => import('../views/WalletDetails.vue')
+      component: () => import('../views/Wallets/WalletDetails.vue')
+    },
+    {
+      path: '/wallets/:id/requests/:id',
+      component: () => import('../views/Wallets/WalletDetails.vue')
     }
   ]
 });

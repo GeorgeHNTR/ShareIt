@@ -68,6 +68,7 @@
   cursor: pointer;
   transition: max-width 1s ease-in-out, min-width 1s ease-in-out,
     max-height 1s ease-in-out, min-height 1s ease-in-out;
+  background-color: rgba(230, 15, 15, 0.185);
 }
 .card:hover {
   min-width: 102%;
@@ -78,16 +79,18 @@
 }
 
 .container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+
+  min-width: 55vw;
+  max-width: 55vw;
+  height: 65vh;
+
   display: grid;
   grid-template-areas: "mission aside";
   gap: 5vw;
-  position: absolute;
-  left: 50%;
-  min-width: 55vw;
-  max-width: 55vw;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  height: 65vh;
 }
 
 aside {
@@ -104,12 +107,10 @@ aside {
 
 .mission {
   grid-area: mission;
-  background: rgba(230, 15, 15, 0.185);
 }
 
 .use {
   grid-area: use;
-  background: rgba(230, 15, 15, 0.185);
 }
 
 .use p {
@@ -119,7 +120,6 @@ aside {
 
 .guide {
   grid-area: guide;
-  background: rgba(230, 15, 15, 0.185);
 }
 
 .guide article {
@@ -161,7 +161,11 @@ a {
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
   height: 62vh;
-  background: linear-gradient(rgb(140, 5, 250), rgb(49, 1, 45), rgb(140, 5, 250));
+  background: linear-gradient(
+    rgb(140, 5, 250),
+    rgb(49, 1, 45),
+    rgb(140, 5, 250)
+  );
 }
 
 @media only screen and (max-width: 1510px) {

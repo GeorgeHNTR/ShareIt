@@ -1,4 +1,5 @@
 <template>
+  <div id="background"></div>
   <the-header />
   <router-view />
   <the-footer />
@@ -117,8 +118,23 @@ q {
 
 html {
   font-family: Monospace, sans-serif;
+  cursor: default;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(to left, rgb(80, 3, 143), rgb(6, 17, 97));
+  background-color: black;
+}
+
+#background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  background-image: url("./assets/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.2;
 }
 </style>

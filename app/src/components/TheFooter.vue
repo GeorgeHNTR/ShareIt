@@ -15,9 +15,9 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #010125;
+  background-color: #110000;
   border-radius: 0;
-  box-shadow: 0 0 25px 10px #000013;
+  box-shadow: 0 -20px 15px #110000;
 }
 
 .content {

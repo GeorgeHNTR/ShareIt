@@ -65,8 +65,8 @@ nav {
   box-shadow: 5px 5px 36px 20px rgba(0, 0, 0, 0.5);
   background: linear-gradient(
     to right,
-    rgb(124, 20, 110) 0,
-    rgb(36, 11, 54) 100%
+    rgb(59, 0, 66) 0,
+    rgb(68, 0, 0) 90%
   );
 }
 
