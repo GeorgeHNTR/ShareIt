@@ -54,7 +54,7 @@ img {
   top: 50%;
   left: 15%;
   transform: translateY(-50%);
-  animation: move 1.4s infinite ease-in-out alternate;
+  animation: move 3s infinite ease-in-out alternate;
   cursor: pointer;
 }
 
@@ -62,7 +62,7 @@ img {
   text-shadow: 2px 2px #000000;
   position: absolute;
   left: 50%;
-  height: 3rem;
+  height: 4rem;
   width: 16rem;
   font-size: 2rem;
   top: calc(45% + (50vh / 2) + 5rem);
@@ -74,6 +74,8 @@ img {
   transform: translateX(-50%) translateY(-70%);
   padding: 0.75rem 1rem;
   font-size: 2.1rem;
+  height: 4.5rem;
+  width: 18rem;
 }
 
 @media only screen and (max-width: 1380px) {
@@ -94,9 +96,9 @@ img {
   .heading:hover {
     font-size: 5.1rem;
   }
-  
+
   img {
-    left: 10%;
+    left: 15%;
   }
 }
 

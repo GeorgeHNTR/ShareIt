@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <a href="https://resume.io/r/jhjr6MZi5" target="_blank" class="content">© 2022 All Rights Reserved</a>
+    <a href="https://github.com/GeorgiGeorgiev7/ShareIt" target="_blank" class="content">© 2022 All Rights Reserved</a>
   </div>
 </template>
 

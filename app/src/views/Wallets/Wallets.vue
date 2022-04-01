@@ -2,11 +2,7 @@
   <base-card class="empty" v-if="!isConnected">
     <div>No wallets available</div>
   </base-card>
-  <base-card
-    @click="seeWallet(currentWallet.id)"
-    v-if="isConnected"
-    class="wallet main"
-  >
+  <base-card @click="seeWallet()" v-if="isConnected" class="wallet main">
     {{ currentWallet.title }} Wallet
   </base-card>
   <base-card
@@ -22,8 +18,6 @@
 </template>
 
 <script>
-import router from "../../router"
-
 export default {
   data() {
     return {
@@ -52,7 +46,7 @@ export default {
   },
   methods: {
     seeWallet(id) {
-      router.push(`/wallets/${id}`)
+      this.$router.push(`/wallets/${this.wallets[this.walletIdx].id}`)
     },
   },
 }

@@ -25,6 +25,7 @@
         <wallet-request class="requests-request"></wallet-request>
         <wallet-request class="requests-request"></wallet-request>
       </div>
+      <base-button class="requests-create" link to="/create/request">+</base-button>
     </base-card>
   </div>
 </template>
@@ -72,6 +73,8 @@ export default {
 }
 
 .requests {
+  overflow: visible;
+  position: relative;
   grid-area: requests;
   min-width: calc((55vw - 5vw) / 3 * 1);
   max-width: calc((55vw - 5vw) / 3 * 1);
@@ -99,6 +102,30 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+}
+
+.requests-create {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) translateY(50%);
+
+  width: 50%;
+  height: 10%;
+
+  font-size: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: rgba(230, 15, 15, 0.185);
+}
+
+.requests-create:hover {
+  transform: translateX(-50%) translateY(50%);
+  font-size: 2.5rem;
+  width: 45%;
+  height: 9%;
 }
 
 @media only screen and (max-width: 1628px) {
