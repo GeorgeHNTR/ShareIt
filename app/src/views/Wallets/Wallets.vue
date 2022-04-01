@@ -1,17 +1,21 @@
 <template>
-  <base-card v-if="!isConnected">
+  <base-card class="empty" v-if="!isConnected">
     <div>No wallets available</div>
   </base-card>
-  <base-card @click="seeWallet(currentWallet.id)" v-else class="wallet main">
+  <base-card
+    @click="seeWallet(currentWallet.id)"
+    v-if="isConnected"
+    class="wallet main"
+  >
     {{ currentWallet.title }} Wallet
   </base-card>
   <base-card
-    v-if="walletIdx !== 0"
+    v-if="isConnected && walletIdx !== 0"
     @click="--walletIdx"
     class="wallet side left"
   ></base-card>
   <base-card
-    v-if="wallets.length !== walletIdx + 1"
+    v-if="isConnected && wallets.length !== walletIdx + 1"
     @click="++walletIdx"
     class="wallet side right"
   ></base-card>
@@ -96,33 +100,37 @@ body {
 }
 
 .side {
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(63, 0, 0, 0.25);
   height: 24vh;
-  width: 5vw;
+  width: 3vw;
 }
 
 .side:hover {
-  height: 22vh;
-  width: 6.5vw;
+  height: 23vh;
+  width: 4.5vw;
 }
 
 .left {
   border-radius: 0 75px 75px 0;
-  left: 15%;
+  left: 20%;
 }
 
 .right {
   border-radius: 75px 0 0 75px;
-  left: 85%;
+  left: 80%;
 }
 
-@media only screen and (max-width: 1144px) {
+@media only screen and (max-width: 1381px) {
   .wallet {
     font-size: 3.2rem;
   }
 
   .wallet:hover {
     font-size: 4rem;
+  }
+
+  .empty {
+    font-size: 3.2rem;
   }
 }
 </style>

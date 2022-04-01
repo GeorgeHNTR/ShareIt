@@ -27,8 +27,8 @@ export default {
 .common {
   background-image: linear-gradient(
     to right,
-    rgb(168, 2, 2) 0,
-    rgb(113, 9, 145) 100%
+    rgb(90, 0, 60) 0,
+    rgb(33, 0, 43) 75%
   );
   color: rgb(255, 255, 255);
   border-radius: 50px;

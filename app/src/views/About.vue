@@ -162,9 +162,9 @@ a {
   transform: translateX(-50%) translateY(-50%);
   height: 62vh;
   background: linear-gradient(
-    rgb(140, 5, 250),
-    rgb(49, 1, 45),
-    rgb(140, 5, 250)
+    rgba(230, 15, 15, 0.185),
+    rgba(12, 0, 0, 0.5),
+    rgba(230, 15, 15, 0.185)
   );
 }
 

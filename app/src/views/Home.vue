@@ -3,9 +3,9 @@
     <div class="content">
       <h1 class="heading">The Ultimate Shared Wallet Platform</h1>
     </div>
-    <img src="../assets/eth_wallet.png" />
+    <img src="../assets/eth.svg" />
   </div>
-  <base-button link to="/about">Learn More</base-button>
+  <base-button class="learn-more" link to="/about">Learn More</base-button>
 </template>
 
 <style scoped>
@@ -38,21 +38,27 @@
   max-height: 100%;
   padding-left: 2rem;
   text-shadow: 5px 5px #000000;
+  transition: all 0.2s ease-in-out;
+}
+
+.heading:hover {
+  font-size: 7.1rem;
+  transform: translateX(0.5%);
 }
 
 img {
   grid-area: image;
   position: absolute;
-  max-height: 100%;
+  max-height: 90%;
   max-width: 80%;
   top: 50%;
-  left: 10%;
+  left: 15%;
   transform: translateY(-50%);
   animation: move 1.4s infinite ease-in-out alternate;
   cursor: pointer;
 }
 
-a {
+.learn-more {
   text-shadow: 2px 2px #000000;
   position: absolute;
   left: 50%;
@@ -64,8 +70,8 @@ a {
   transition: all 300ms ease-in-out;
 }
 
-a:hover {
-  transform: translateX(-50%) translateY(-50%);
+.learn-more:hover {
+  transform: translateX(-50%) translateY(-70%);
   padding: 0.75rem 1rem;
   font-size: 2.1rem;
 }
@@ -74,6 +80,10 @@ a:hover {
   .heading {
     font-size: 6rem;
   }
+
+  .heading:hover {
+    font-size: 6.1rem;
+  }
 }
 
 @media only screen and (max-width: 1202px) {
@@ -81,8 +91,12 @@ a:hover {
     font-size: 5rem;
   }
 
+  .heading:hover {
+    font-size: 5.1rem;
+  }
+  
   img {
-    left: 0;
+    left: 10%;
   }
 }
 

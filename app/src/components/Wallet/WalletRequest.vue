@@ -26,9 +26,10 @@ export default {
   display: grid;
   position: relative;
   grid-template-areas: "address address eye";
-  background-color: rgba(230, 15, 15, 0.205);
+  background-color: rgba(230, 15, 15, 0.185);
   width: 80%;
   height: 20%;
+  /* box-shadow: 0 0 50px 5px rgba(0, 0, 0, 0.7); */
   transition: all 0.15s ease-in-out;
   cursor: pointer;
 

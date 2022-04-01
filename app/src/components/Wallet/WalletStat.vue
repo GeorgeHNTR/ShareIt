@@ -26,10 +26,10 @@ export default {
   display: grid;
   position: relative;
   grid-template-areas: "title title value";
-  background-color: rgba(78, 0, 0, 0.5);
+  background-color: rgba(230, 15, 15, 0.185);
   width: 80%;
   height: 25%;
-  box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.7);
+  /* box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.7); */
   transition: all 0.2s ease-in-out;
 }
 

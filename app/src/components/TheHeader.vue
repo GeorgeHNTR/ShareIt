@@ -66,7 +66,7 @@ nav {
   background: linear-gradient(
     to right,
     rgb(59, 0, 66) 0,
-    rgb(68, 0, 0) 90%
+    rgb(48, 0, 0) 90%
   );
 }
 
