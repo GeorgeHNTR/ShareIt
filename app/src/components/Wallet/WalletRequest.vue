@@ -1,5 +1,5 @@
 <template>
-  <base-card class="request">
+  <base-card @click="see" class="request">
     <h3 class="request-address">{{ address }}..</h3>
     <div class="request-eye">👁</div>
   </base-card>
@@ -18,6 +18,12 @@ export default {
       return this.addr && this.addr.slice(0, 10)
     },
   },
+  methods: {
+    see() {
+      this.$router.push(`/requests/${this.addr}`)
+      console.log("here")
+    },
+  },
 }
 </script>
 
@@ -32,7 +38,6 @@ export default {
   /* box-shadow: 0 0 50px 5px rgba(0, 0, 0, 0.7); */
   transition: all 0.15s ease-in-out;
   cursor: pointer;
-
 }
 
 .request:hover {
@@ -78,7 +83,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   background: linear-gradient(
     to right,
     rgba(0, 0, 0, 0) 0,

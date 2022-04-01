@@ -1,8 +1,9 @@
 <template>
   <div id="background"></div>
-  <the-header />
-  <router-view />
-  <the-footer />
+  <the-header class="header" />
+  <router-view class="view" />
+  <the-footer class="footer" />
+  <div id="mobile-msg">Mobile not supported</div>
 </template>
 
 <script>
@@ -136,5 +137,34 @@ html {
   background-size: cover;
   background-repeat: no-repeat;
   opacity: 0.2;
+}
+
+#mobile-msg {
+  display: none;
+}
+
+@media only screen and (max-width: 835px) {
+  .header,
+  .view,
+  .footer {
+    display: none;
+  }
+
+  #mobile-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 100%;
+    transform: translateX(-50%) translateY(-50%);
+    word-break: break-word;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.2rem;
+    color: white;
+    text-shadow: 2px 2px black;
+  }
 }
 </style>

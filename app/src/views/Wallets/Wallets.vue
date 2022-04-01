@@ -1,20 +1,22 @@
 <template>
-  <base-card class="empty" v-if="!isConnected">
-    <div>No wallets available</div>
-  </base-card>
-  <base-card @click="seeWallet()" v-if="isConnected" class="wallet main">
-    {{ currentWallet.title }} Wallet
-  </base-card>
-  <base-card
-    v-if="isConnected && walletIdx !== 0"
-    @click="--walletIdx"
-    class="wallet side left"
-  ></base-card>
-  <base-card
-    v-if="isConnected && wallets.length !== walletIdx + 1"
-    @click="++walletIdx"
-    class="wallet side right"
-  ></base-card>
+  <div>
+    <base-card class="empty" v-if="!isConnected">
+      <div>No wallets available</div>
+    </base-card>
+    <base-card @click="seeWallet()" v-if="isConnected" class="wallet main">
+      {{ currentWallet.title }} Wallet
+    </base-card>
+    <base-card
+      v-if="isConnected && walletIdx !== 0"
+      @click="--walletIdx"
+      class="wallet side left"
+    ></base-card>
+    <base-card
+      v-if="isConnected && wallets.length !== walletIdx + 1"
+      @click="++walletIdx"
+      class="wallet side right"
+    ></base-card>
+  </div>
 </template>
 
 <script>

@@ -1,64 +1,66 @@
 <template>
-  <section class="container">
-    <base-card class="mission">
-      <article>
-        <h2>Mission</h2>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
-          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
-          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
-          ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
-          culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
-          Quidem, dolorem ducimus?
-        </p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
-          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
-          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
-          ducimus?
-        </p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
-          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
-          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
-          ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
-          culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
-          Quidem, dolorem ducimus?
-        </p>
-      </article>
-    </base-card>
-    <div id="separator"></div>
-    <aside>
-      <base-card class="use">
+  <div>
+    <section class="container">
+      <base-card class="mission">
         <article>
-          <h2>How to use</h2>
+          <h2>Mission</h2>
           <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
-            porro, quibusdam consequuntur perferendis sequi, eaque reprehenderit
-            laborum maxime nobis dolor hic maiores, nisi facere doloremque
-            dolores quas itaque eius voluptates.
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores
+            odit ullam doloremque cupiditate labore aliquid corrupti cum culpa
+            optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
+            dolorem ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing
+            elit. Maiores odit ullam doloremque cupiditate labore aliquid
+            corrupti cum culpa optio molestiae alias facere ipsa non ex, eaque
+            assumenda. Quidem, dolorem ducimus?
           </p>
           <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
-            porro, quibusdam consequuntur perferendis sequi, eaque reprehenderit
-            laborum maxime nobis dolor hic maiores, nisi facere doloremque
-            dolores quas itaque eius voluptates.
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores
+            odit ullam doloremque cupiditate labore aliquid corrupti cum culpa
+            optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
+            dolorem ducimus?
+          </p>
+          <p>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores
+            odit ullam doloremque cupiditate labore aliquid corrupti cum culpa
+            optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
+            dolorem ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing
+            elit. Maiores odit ullam doloremque cupiditate labore aliquid
+            corrupti cum culpa optio molestiae alias facere ipsa non ex, eaque
+            assumenda. Quidem, dolorem ducimus?
           </p>
         </article>
       </base-card>
-      <base-card class="guide">
-        <article>
-          <h2>Metamask</h2>
-          <a href="https://metamask.io/" target="_blank"
-            >https://metamask.io/</a
-          >
-        </article>
-      </base-card>
-    </aside>
-  </section>
-  <base-card> </base-card>
+      <div id="separator"></div>
+      <aside>
+        <base-card class="use">
+          <article>
+            <h2>How to use</h2>
+            <p>
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
+              porro, quibusdam consequuntur perferendis sequi, eaque
+              reprehenderit laborum maxime nobis dolor hic maiores, nisi facere
+              doloremque dolores quas itaque eius voluptates.
+            </p>
+            <p>
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
+              porro, quibusdam consequuntur perferendis sequi, eaque
+              reprehenderit laborum maxime nobis dolor hic maiores, nisi facere
+              doloremque dolores quas itaque eius voluptates.
+            </p>
+          </article>
+        </base-card>
+        <base-card class="guide">
+          <article>
+            <h2>Metamask</h2>
+            <a href="https://metamask.io/" target="_blank"
+              >https://metamask.io/</a
+            >
+          </article>
+        </base-card>
+      </aside>
+    </section>
+    <base-card> </base-card>
+  </div>
 </template>
 
 <style scoped>

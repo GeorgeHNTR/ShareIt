@@ -1,11 +1,13 @@
 <template>
-  <div class="container">
-    <div class="content">
-      <h1 class="heading">The Ultimate Shared Wallet Platform</h1>
+  <div>
+    <div class="container">
+      <div class="content">
+        <h1 class="heading">The Ultimate Shared Wallet Platform</h1>
+      </div>
+      <img src="../assets/eth.svg" />
     </div>
-    <img src="../assets/eth.svg" />
+    <base-button class="learn-more" link to="/about">Learn More</base-button>
   </div>
-  <base-button class="learn-more" link to="/about">Learn More</base-button>
 </template>
 
 <style scoped>
