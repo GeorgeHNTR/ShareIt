@@ -48,11 +48,6 @@ export default {
   padding: 0;
 }
 
-.details,
-.requests {
-  background-color: rgba(230, 15, 15, 0.085);
-}
-
 .container {
   display: grid;
   grid-template-areas: "details details requests";
@@ -63,6 +58,11 @@ export default {
   width: 55vw;
   height: 55vh;
   gap: 5vw;
+}
+
+.details,
+.requests {
+  background-color: rgba(230, 15, 15, 0.085);
 }
 
 .details {
@@ -101,6 +101,24 @@ export default {
   justify-content: space-evenly;
 }
 
+@media only screen and (max-width: 1628px) {
+  .requests-heading {
+    font-size: 3rem;
+  }
+  .requests-heading:hover {
+    font-size: 3.1rem;
+  }
+}
+
+@media only screen and (max-width: 1408px) {
+  .requests-heading {
+    font-size: 2.5rem;
+  }
+  .requests-heading:hover {
+    font-size: 2.6rem;
+  }
+}
+
 @media only screen and (max-width: 1184px) {
   .container {
     width: 70vw;
@@ -115,6 +133,13 @@ export default {
   .requests {
     min-width: calc((70vw - 5vw) / 3 * 1);
     max-width: calc((70vw - 5vw) / 3 * 1);
+  }
+
+  .requests-heading {
+    font-size: 2.3rem;
+  }
+  .requests-heading:hover {
+    font-size: 2.4rem;
   }
 }
 </style>
