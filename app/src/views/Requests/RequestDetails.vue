@@ -26,7 +26,7 @@ export default {
 
 h2 {
   text-align: center;
-  font-size: 5rem;
+  font-size: 4rem;
 }
 
 .stats {

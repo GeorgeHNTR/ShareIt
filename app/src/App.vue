@@ -3,8 +3,12 @@
   <the-header class="header" />
   <router-view class="view" />
   <the-footer class="footer" />
-  <div ref="metamask" id="metamask">Initializing Metamask ...</div>
-  <div id="mobile-msg">Mobile not supported</div>
+  <div ref="metamask" id="metamask">
+    <div id="bigger">Initializing Metamask ...</div>
+    <div id="smaller">This might take a few seconds</div>
+  </div>
+  <div ref="browser" class="browser msg">Only Chrome browser supported</div>
+  <div class="mobile msg">Mobile not supported</div>
 </template>
 
 <script>
@@ -16,14 +20,52 @@ export default {
   components: { TheHeader, TheFooter },
   async mounted() {
     if (!window.ethereum) return
+    if (this.currentBrowser() != "chrome") {
+      console.log(this.currentBrowser())
+      this.$refs["browser"].style.display = "flex"
+      return
+    }
     if (!window.ethereum._state.initialized) {
       this.$refs["metamask"].style.display = "flex"
       setTimeout(() => {
         window.location = window.location
-      }, 5000)
+      }, 1000)
       return
     }
     this.$store.commit("web3", new Web3(Web3.givenProvider))
+  },
+  methods: {
+    currentBrowser() {
+      if (
+        (!!window.opr && !!opr.addons) ||
+        !!window.opera ||
+        navigator.userAgent.indexOf(" OPR/") >= 0
+      )
+        return "opera"
+
+      if (typeof InstallTrigger !== "undefined") return "firefox"
+
+      if (
+        /constructor/i.test(window.HTMLElement) ||
+        (function (p) {
+          return p.toString() === "[object SafariRemoteNotification]"
+        })(
+          !window["safari"] ||
+            (typeof safari !== "undefined" && safari.pushNotification)
+        )
+      )
+        return "safari"
+
+      if (false || !!document.documentMode) {
+        return "internet explorer"
+      }
+
+      if (!!window.StyleMedia) return "edge"
+
+      if (!!window.chrome) return "chrome"
+
+      return "unrecognized"
+    },
   },
 }
 </script>
@@ -152,44 +194,54 @@ html {
   opacity: 0.2;
 }
 
-#mobile-msg {
+.browser.msg,
+.mobile.msg {
   display: none;
 }
 
+.msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-50%) translateY(-50%);
+  word-break: break-word;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  color: white;
+  text-shadow: 2px 2px black;
+  background-color: rgba(0, 0, 0, 0.96);
+}
+
 #metamask {
+  text-align: center;
   position: absolute;
   color: white;
   display: none;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.96);
+}
+
+#metamask #bigger {
   font-size: 4rem;
+  padding: 1rem;
+}
+
+#metamask #smaller {
+  font-size: 1.5rem;
 }
 
 @media only screen and (max-width: 835px) {
-  .header,
-  .view,
-  .footer {
-    display: none;
-  }
-
-  #mobile-msg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80%;
-    height: 100%;
-    transform: translateX(-50%) translateY(-50%);
-    word-break: break-word;
-    text-align: center;
+  .mobile.msg {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3.2rem;
-    color: white;
-    text-shadow: 2px 2px black;
   }
 }
 </style>
