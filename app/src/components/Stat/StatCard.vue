@@ -3,7 +3,7 @@
     <div class="stat-title">
       <h3>{{ text }}</h3>
     </div>
-    <div class="stat-value" @click="navigate">
+    <div :class="`stat-value ${link ? 'pointer' : ''}`" @click="navigate">
       <h3>{{ value }}</h3>
     </div>
   </base-card>
@@ -48,7 +48,7 @@ export default {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-around;
-  align-items: center;
+  align-items: stretch;
 }
 
 .stat-title {
@@ -85,6 +85,7 @@ export default {
 }
 
 .stat-value h3 {
+  font-size: 1.5rem;
   min-width: 90%;
   max-width: 90%;
   min-height: 100%;
@@ -92,11 +93,20 @@ export default {
   padding-right: 10%;
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
   transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
 .stat-value h3:hover {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+}
+
+.pointer {
+  cursor: pointer;
 }
 </style>

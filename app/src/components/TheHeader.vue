@@ -2,7 +2,7 @@
   <header>
     <nav>
       <ul>
-        <div id="left-aside">
+        <div class="left-aside">
           <li>
             <router-link
               @click="current = 0"
@@ -20,7 +20,7 @@
             >
           </li>
         </div>
-        <div id="right-aside">
+        <div class="right-aside" v-if="hasMetamask && userAddress">
           <li>
             <router-link
               @click="current = 2"
@@ -29,16 +29,16 @@
               >Wallets</router-link
             >
           </li>
-          <li v-if="!hasMetamask && !userAddress">
+          <li id="userAddress">{{ userAddress.slice(0, 8) }}..</li>
+        </div>
+        <div class="right-aside" v-else-if="!userAddress">
+          <li v-if="!hasMetamask">
             <base-button link to="https://metamask.io/"
               >+ Install Metamask</base-button
             >
           </li>
-          <li v-else-if="hasMetamask && !userAddress" @click="connect">
+          <li v-else @click="connect">
             <base-button>+ Connect with Metamask</base-button>
-          </li>
-          <li v-else-if="hasMetamask && userAddress" id="userAddress">
-            {{ userAddress.slice(0, 8) }}..
           </li>
         </div>
       </ul>
@@ -125,23 +125,22 @@ a:hover {
 }
 
 #userAddress {
-  padding: 0.6rem 0.8rem;
+  padding: 0.8rem 0.8rem;
   border-radius: 50px;
-  box-shadow: 0 0 16px 5px rgba(109, 0, 0, 0.5);
-  background: linear-gradient(to right, rgb(48, 0, 0) 0, rgb(59, 0, 66) 90%);
   font-size: 1.25rem;
   color: rgb(204, 204, 204);
   text-shadow: 2px 2px black;
   text-transform: lowercase;
+  animation: color_change 1s infinite alternate;
+  transition: all 0.3s ease-in-out;
 }
 
 #userAddress:hover {
   color: white;
-  background: linear-gradient(to right, rgb(59, 0, 66) 0, rgb(48, 0, 0) 90%);
 }
 
-#left-aside,
-#right-aside {
+.left-aside,
+.right-aside {
   display: flex;
   align-items: center;
 }
@@ -149,6 +148,17 @@ a:hover {
 @media only screen and (max-width: 835px) {
   header {
     display: none;
+  }
+}
+
+@keyframes color_change {
+  from {
+    background-color: rgba(61, 0, 77, 0.8);
+    box-shadow: 0 0 8px 2px rgba(61, 0, 77, 0.8);
+  }
+  to {
+    background-color: rgba(80, 0, 69, 0.8);
+    box-shadow: 0 0 8px 2px rgba(80, 0, 69, 0.8);
   }
 }
 </style>

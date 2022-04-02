@@ -36,6 +36,10 @@ h2 {
 }
 
 .stats-card {
+  font-size: 2rem;
+  padding: 0;
   max-height: 5%;
+  transition: all 0.2s ease-in-out;
 }
+
 </style>

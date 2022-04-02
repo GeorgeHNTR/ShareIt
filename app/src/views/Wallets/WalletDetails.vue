@@ -73,7 +73,7 @@ export default {
 
 .details,
 .requests {
-  background-color: rgba(230, 15, 15, 0.085);
+  background-color: rgba(255, 0, 0, 0.185);
 }
 
 .details {
