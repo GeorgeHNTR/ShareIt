@@ -63,6 +63,7 @@ export default {
   flex-wrap: wrap;
   align-content: flex-start;
   overflow: hidden;
+  background: linear-gradient(to right, rgba(59, 0, 66, 0.22) 35%, rgba(48, 0, 0, 0.9) 90%);
 }
 
 .stat-value {

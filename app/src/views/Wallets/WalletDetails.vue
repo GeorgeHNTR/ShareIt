@@ -78,7 +78,7 @@ export default {
 
 .details,
 .requests {
-  background-color: rgba(255, 0, 0, 0.185);
+  background: linear-gradient(to right, rgba(59, 0, 66, 0.1) 0, rgba(48, 0, 0, 0.7) 90%);
 }
 
 .details {
@@ -149,7 +149,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: rgba(230, 15, 15, 0.185);
 }
 
 .requests-create:hover {

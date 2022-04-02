@@ -69,7 +69,7 @@ body {
   text-align: center;
   font-size: 4rem;
   font-weight: 400;
-  background-color: rgba(230, 15, 15, 0.185);
+  background: linear-gradient(to right, rgba(59, 0, 66, 0.1) 0, rgba(48, 0, 0, 0.7) 90%);
 }
 
 .wallet {
@@ -96,7 +96,7 @@ body {
 }
 
 .side {
-  background-color: rgba(63, 0, 0, 0.25);
+  background: linear-gradient(to right, rgba(59, 0, 66, 0.35) 0, rgba(48, 0, 0, 0.7) 90%);
   height: 24vh;
   width: 3vw;
 }

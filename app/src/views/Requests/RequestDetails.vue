@@ -19,9 +19,14 @@ export default {
 
 
 <style scoped>
+.container {
+  background-color: rgba(255, 0, 0, 0.055);
+  width: 35%;
+}
+
 h2 {
   text-align: center;
-  font-size: 3.15rem;
+  font-size: 5rem;
 }
 
 .stats {
@@ -41,5 +46,4 @@ h2 {
   max-height: 5%;
   transition: all 0.2s ease-in-out;
 }
-
 </style>
