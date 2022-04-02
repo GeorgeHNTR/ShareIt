@@ -9,29 +9,31 @@
   </div>
   <div ref="browser" class="browser msg">Only Chrome browser supported</div>
   <div class="mobile msg">Mobile not supported</div>
+  <warning-button
+    @click="toggleWarning"
+    ref="warning-btn"
+    class="warning-btn"
+  />
+  <warning-message ref="warningMsg" class="warning-msg" />
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader.vue"
 import TheFooter from "./components/TheFooter.vue"
+import WarningButton from "./components/Warning/WarningButton.vue"
+import WarningMessage from "./components/Warning/WarningMessage.vue"
 import Web3 from "web3"
 
 export default {
-  components: { TheHeader, TheFooter },
+  components: { TheHeader, TheFooter, WarningButton, WarningMessage },
   async mounted() {
-    if (!window.ethereum) return
     if (this.currentBrowser() != "chrome") {
       console.log(this.currentBrowser())
       this.$refs["browser"].style.display = "flex"
       return
     }
-    if (!window.ethereum._state.initialized) {
-      this.$refs["metamask"].style.display = "flex"
-      setTimeout(() => {
-        window.location = window.location
-      }, 1000)
-      return
-    }
+    if (!window.ethereum) return
+
     this.$store.commit("web3", new Web3(Web3.givenProvider))
   },
   methods: {
@@ -65,6 +67,19 @@ export default {
       if (!!window.chrome) return "chrome"
 
       return "unrecognized"
+    },
+    toggleWarning() {
+      if (this.$refs["warningMsg"].$el.style.width == "") {
+        this.$refs["warningMsg"].$el.style.width = "22%"
+        this.$refs["warningMsg"].$el.style.height = "auto"
+        this.$refs["warningMsg"].$el.style.padding = "2rem"
+        this.$refs["warningMsg"].$el.style.display = "block"
+      } else {
+        this.$refs["warningMsg"].$el.style.width = ""
+        this.$refs["warningMsg"].$el.style.height = "0"
+        this.$refs["warningMsg"].$el.style.padding = "0"
+        this.$refs["warningMsg"].$el.style.display = "none"
+      }
     },
   },
 }
@@ -237,6 +252,18 @@ html {
 
 #metamask #smaller {
   font-size: 1.5rem;
+}
+
+.warning-btn {
+  position: absolute;
+  bottom: 6%;
+  right: 6%;
+}
+
+.warning-msg {
+  position: absolute;
+  bottom: 12%;
+  right: 12%;
 }
 
 @media only screen and (max-width: 835px) {

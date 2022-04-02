@@ -38,7 +38,7 @@
             >
           </li>
           <li v-else @click="connect">
-            <base-button>+ Connect with Metamask</base-button>
+            <base-button>+ Connect to Metamask</base-button>
           </li>
         </div>
       </ul>
