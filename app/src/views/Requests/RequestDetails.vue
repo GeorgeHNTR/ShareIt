@@ -2,21 +2,9 @@
   <base-modal class="container">
     <h2>Request Details</h2>
     <div class="stats">
-      <stat-card
-        text="Type"
-        value="Add Member"
-        class="details-balance"
-      ></stat-card>
-      <stat-card
-        text="Members"
-        value="7"
-        class="details-members"
-      ></stat-card>
-      <stat-card
-        text="Members"
-        value="7"
-        class="details-members"
-      ></stat-card>
+      <stat-card text="By:" value="0xA153.." class="stats-card"></stat-card>
+      <stat-card text="Type:" value="Withdraw" class="stats-card"></stat-card>
+      <stat-card text="Data:" value="0.12" class="stats-card"></stat-card>
     </div>
   </base-modal>
 </template>
@@ -37,6 +25,7 @@ h2 {
 }
 
 .stats {
+  position: relative;
   padding: 2rem 0;
   height: 80%;
   width: 100%;
@@ -44,5 +33,9 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+}
+
+.stats-card {
+  max-height: 5%;
 }
 </style>

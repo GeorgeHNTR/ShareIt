@@ -1,6 +1,6 @@
 <template>
   <div id="background"></div>
-  <the-header class="header" />
+  <the-header :hasMetamask="hasMetamask" class="header" />
   <router-view class="view" />
   <the-footer class="footer" />
   <div id="mobile-msg">Mobile not supported</div>
@@ -9,9 +9,20 @@
 <script>
 import TheHeader from "./components/TheHeader.vue"
 import TheFooter from "./components/TheFooter.vue"
+import createWeb3 from "./web3"
 
 export default {
   components: { TheHeader, TheFooter },
+  data() {
+    return {
+      hasMetamask: false,
+    }
+  },
+  async mounted() {
+    if (await createWeb3()) {
+      this.hasMetamask = true
+    }
+  },
 }
 </script>
 

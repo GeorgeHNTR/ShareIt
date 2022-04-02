@@ -3,8 +3,8 @@
     <base-card class="details">
       <h2 class="details-title">{{ title }}</h2>
       <div class="stats">
-        <stat-card text="Balance:" value="0.2 ETH"></stat-card>
-        <stat-card text="Members:" value="7"></stat-card>
+        <stat-card text="Balance:" value="0.2 ETH" class="w-stat"></stat-card>
+        <stat-card text="Members:" value="7" class="w-stat"></stat-card>
       </div>
     </base-card>
     <base-card class="requests">
@@ -104,6 +104,12 @@ export default {
 .details-title:hover,
 .requests-heading:hover {
   font-size: 3.6rem;
+}
+
+.w-stat {
+  min-height: 30%;
+  max-height: 30%;
+  font-size: 2.2rem;
 }
 
 .stats {

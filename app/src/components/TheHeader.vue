@@ -21,7 +21,7 @@
           </li>
         </div>
         <div id="right-aside">
-          <li id="connected">
+          <li>
             <router-link
               @click="current = 2"
               :class="current == 2 ? 'active' : ''"
@@ -29,8 +29,16 @@
               >Wallets</router-link
             >
           </li>
-          <li id="notConnected">
-            <base-button>+ Connect</base-button>
+          <li v-if="!hasMetamask && !userAddress">
+            <base-button link to="https://metamask.io/"
+              >+ Install Metamask</base-button
+            >
+          </li>
+          <li v-else-if="hasMetamask && !userAddress" @click="connect">
+            <base-button>+ Connect with Metamask</base-button>
+          </li>
+          <li v-else-if="hasMetamask && userAddress" id="userAddress">
+            {{ userAddress.slice(0, 8) }}..
           </li>
         </div>
       </ul>
@@ -43,10 +51,31 @@ import BaseButton from "./UI/BaseButton.vue"
 
 export default {
   components: { BaseButton },
+  props: {
+    hasMetamask: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       current: 0,
     }
+  },
+  computed: {
+    userAddress() {
+      return this.$store.getters.userAddress
+    },
+  },
+  methods: {
+    async connect() {
+      try {
+        const userAddress = (
+          await this.$store.getters.web3.eth.requestAccounts()
+        )[0]
+        this.$store.commit("userAddress", userAddress)
+      } catch (err) {}
+    },
   },
 }
 </script>
@@ -61,13 +90,9 @@ header {
 
 nav {
   margin: 1rem 15%;
-  border-radius: 50px 50px 50px 50px;
+  border-radius: 50px;
   box-shadow: 5px 5px 36px 20px rgba(0, 0, 0, 0.5);
-  background: linear-gradient(
-    to right,
-    rgb(59, 0, 66) 0,
-    rgb(48, 0, 0) 90%
-  );
+  background: linear-gradient(to right, rgb(59, 0, 66) 0, rgb(48, 0, 0) 90%);
 }
 
 ul {
@@ -97,6 +122,22 @@ a:hover {
 .active {
   color: rgb(255, 255, 255);
   text-shadow: 3px 2px #000000;
+}
+
+#userAddress {
+  padding: 0.6rem 0.8rem;
+  border-radius: 50px;
+  box-shadow: 0 0 16px 5px rgba(109, 0, 0, 0.5);
+  background: linear-gradient(to right, rgb(48, 0, 0) 0, rgb(59, 0, 66) 90%);
+  font-size: 1.25rem;
+  color: rgb(204, 204, 204);
+  text-shadow: 2px 2px black;
+  text-transform: lowercase;
+}
+
+#userAddress:hover {
+  color: white;
+  background: linear-gradient(to right, rgb(59, 0, 66) 0, rgb(48, 0, 0) 90%);
 }
 
 #left-aside,

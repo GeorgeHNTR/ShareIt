@@ -1,7 +1,11 @@
 <template>
   <base-card class="stat">
-    <h3 class="stat-title">{{ text }}</h3>
-    <div class="stat-value" @click="navigate">{{ value }}</div>
+    <div class="stat-title">
+      <h3>{{ text }}</h3>
+    </div>
+    <div class="stat-value" @click="navigate">
+      <h3>{{ value }}</h3>
+    </div>
   </base-card>
 </template>
 
@@ -36,63 +40,63 @@ export default {
 
 <style scoped>
 .stat {
-  display: grid;
-  position: relative;
-  grid-template-areas: "title title value";
-  background-color: rgba(230, 15, 15, 0.185);
   min-width: 80%;
   max-width: 80%;
-  height: 25%;
-  /* box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.7); */
-  transition: all 0.2s ease-in-out;
-}
-
-.stat:hover {
-  transform: translateY(-2%);
+  display: flex;
+  min-height: 20%;
+  max-height: 20%;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .stat-title {
   grid-area: title;
-  position: absolute;
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
-
+  min-width: 66.66%;
+  max-width: 66.66%;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: left;
-  padding-left: 20%;
-  font-size: 1.6rem;
-
-  text-shadow: 3px 3px rgb(0, 0, 0);
-
-  border-radius: 0 20px 20px 0;
+  justify-content: space-evenly;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow: hidden;
 }
 
 .stat-value {
-  text-align: center;
-  cursor: pointer;
   grid-area: value;
-  position: absolute;
-  min-width: 100%;
-  max-width: 100%;
+  min-width: 33.33%;
+  max-width: 33.33%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.stat-title h3 {
+  min-width: 80%;
+  max-width: 80%;
+  padding-left: 20%;
+  text-align: center;
+}
+
+.stat-value h3 {
+  min-width: 90%;
+  max-width: 90%;
   min-height: 100%;
   max-height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 1.6rem;
-  font-weight: 600;
-  text-shadow: 3px 3px rgb(0, 0, 0);
-  background-color: rgba(28, 0, 0, 0.8);
-
+  padding-right: 10%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
 
-.stat-value:hover {
+.stat-value h3:hover {
   font-size: 1.8rem;
 }
 </style>
