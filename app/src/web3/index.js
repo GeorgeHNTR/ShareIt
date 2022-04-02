@@ -1,4 +1,5 @@
 import store from '../store';
+import Web3 from 'web3';
 
 export default async function createWeb3() {
     if (!window.ethereum) return false;
