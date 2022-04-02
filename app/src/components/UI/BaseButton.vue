@@ -19,7 +19,11 @@ export default {
   },
   methods: {
     go() {
-      if (this.link) this.$router.push(this.to)
+      if (this.to && this.to.startsWith("https://")) {
+        window.location.href = this.to
+      } else if (this.to) {
+        this.$router.push(this.to)
+      }
     },
   },
 }

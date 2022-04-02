@@ -3,8 +3,13 @@
     <base-card class="details">
       <h2 class="details-title">{{ title }}</h2>
       <div class="stats">
-        <stat-card text="Balance:" value="0.2 ETH" class="w-stat"></stat-card>
-        <stat-card text="Members:" value="7" class="w-stat"></stat-card>
+        <stat-card
+          text="Balance:"
+          link
+          value="0.2 ETH"
+          class="w-stat"
+        ></stat-card>
+        <stat-card text="Members:" link value="7" class="w-stat"></stat-card>
       </div>
     </base-card>
     <base-card class="requests">
@@ -90,20 +95,30 @@ export default {
   max-width: calc((55vw - 5vw) / 3 * 1);
 }
 
+.details-title {
+  font-size: 4rem;
+}
+
+.details-title:hover {
+  font-size: 4.2rem;
+}
+
+.requests-heading {
+  font-size: 3.5rem;
+}
+
+.requests-heading:hover {
+  font-size: 3.6rem;
+}
+
 .details-title,
 .requests-heading {
   text-decoration: underline;
   word-wrap: break-word;
   text-align: center;
   padding: 3rem 0.5rem 1rem 0.5rem;
-  font-size: 3.5rem;
   text-shadow: 5px 5px 1px #000000;
   transition: all 0.2s ease-in-out;
-}
-
-.details-title:hover,
-.requests-heading:hover {
-  font-size: 3.6rem;
 }
 
 .w-stat {

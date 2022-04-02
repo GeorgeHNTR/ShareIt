@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     navigate() {
-      if (this.link) this.$router.push(this.to)
+      if (this.to) this.$router.push(this.to)
     },
   },
 }
@@ -103,7 +103,7 @@ export default {
 }
 
 .stat-value h3:hover {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
 }
 
 .pointer {

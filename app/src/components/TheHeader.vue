@@ -51,12 +51,6 @@ import BaseButton from "./UI/BaseButton.vue"
 
 export default {
   components: { BaseButton },
-  props: {
-    hasMetamask: {
-      type: Boolean,
-      required: true,
-    },
-  },
   data() {
     return {
       current: 0,
@@ -65,6 +59,9 @@ export default {
   computed: {
     userAddress() {
       return this.$store.getters.userAddress
+    },
+    hasMetamask() {
+      return !!this.$store.getters.web3
     },
   },
   methods: {
@@ -157,8 +154,8 @@ a:hover {
     box-shadow: 0 0 8px 2px rgba(61, 0, 77, 0.8);
   }
   to {
-    background-color: rgba(80, 0, 69, 0.8);
-    box-shadow: 0 0 8px 2px rgba(80, 0, 69, 0.8);
+    background-color: rgba(75, 0, 0, 0.8);
+    box-shadow: 0 0 8px 2px rgba(75, 0, 0, 0.8);
   }
 }
 </style>

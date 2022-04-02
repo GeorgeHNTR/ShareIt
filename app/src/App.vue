@@ -1,27 +1,29 @@
 <template>
   <div id="background"></div>
-  <the-header :hasMetamask="hasMetamask" class="header" />
+  <the-header class="header" />
   <router-view class="view" />
   <the-footer class="footer" />
+  <div ref="metamask" id="metamask">Initializing Metamask ...</div>
   <div id="mobile-msg">Mobile not supported</div>
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader.vue"
 import TheFooter from "./components/TheFooter.vue"
-import createWeb3 from "./web3"
+import Web3 from "web3"
 
 export default {
   components: { TheHeader, TheFooter },
-  data() {
-    return {
-      hasMetamask: false,
-    }
-  },
   async mounted() {
-    if (await createWeb3()) {
-      this.hasMetamask = true
+    if (!window.ethereum) return
+    if (!window.ethereum._state.initialized) {
+      this.$refs["metamask"].style.display = "flex"
+      setTimeout(() => {
+        window.location = window.location
+      }, 5000)
+      return
     }
+    this.$store.commit("web3", new Web3(Web3.givenProvider))
   },
 }
 </script>
@@ -152,6 +154,18 @@ html {
 
 #mobile-msg {
   display: none;
+}
+
+#metamask {
+  position: absolute;
+  color: white;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.96);
+  font-size: 4rem;
 }
 
 @media only screen and (max-width: 835px) {
