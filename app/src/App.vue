@@ -3,18 +3,14 @@
   <the-header class="header" />
   <router-view class="view" />
   <the-footer class="footer" />
-  <div ref="metamask" id="metamask">
-    <div id="bigger">Initializing Metamask ...</div>
-    <div id="smaller">This might take a few seconds</div>
-  </div>
-  <div ref="browser" class="browser msg">Only Chrome browser supported</div>
+  <!-- <div ref="browser" class="browser msg">Only Chrome browser supported</div> -->
   <div class="mobile msg">Mobile not supported</div>
   <warning-button
     @click="toggleWarning"
     ref="warning-btn"
-    class="warning-btn"
+    class="warning warning-btn"
   />
-  <warning-message ref="warningMsg" class="warning-msg" />
+  <warning-message ref="warningMsg" class="warning warning-msg" />
 </template>
 
 <script>
@@ -27,11 +23,11 @@ import Web3 from "web3"
 export default {
   components: { TheHeader, TheFooter, WarningButton, WarningMessage },
   async mounted() {
-    if (this.currentBrowser() != "chrome") {
-      console.log(this.currentBrowser())
-      this.$refs["browser"].style.display = "flex"
-      return
-    }
+    // if (this.currentBrowser() != "chrome") {
+    //   console.log(this.currentBrowser())
+    //   this.$refs["browser"].style.display = "flex"
+    //   return
+    // }
     if (!window.ethereum) return
 
     this.$store.commit("web3", new Web3(Web3.givenProvider))
@@ -232,28 +228,6 @@ html {
   background-color: rgba(0, 0, 0, 0.96);
 }
 
-#metamask {
-  text-align: center;
-  position: absolute;
-  color: white;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.96);
-}
-
-#metamask #bigger {
-  font-size: 4rem;
-  padding: 1rem;
-}
-
-#metamask #smaller {
-  font-size: 1.5rem;
-}
-
 .warning-btn {
   position: absolute;
   bottom: 6%;
@@ -269,6 +243,10 @@ html {
 @media only screen and (max-width: 835px) {
   .mobile.msg {
     display: flex;
+  }
+
+  .warning-btn {
+    z-index: -1;
   }
 }
 </style>

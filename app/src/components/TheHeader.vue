@@ -142,12 +142,6 @@ a:hover {
   align-items: center;
 }
 
-@media only screen and (max-width: 835px) {
-  header {
-    display: none;
-  }
-}
-
 @keyframes color_change {
   from {
     background-color: rgba(61, 0, 77, 0.8);
