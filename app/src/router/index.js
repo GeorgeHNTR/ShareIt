@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store';
 
 const chainGuard = (to, from, next) => {
-  if (store.getters.chainId == '0x3') {
+  if (store.getters.chainId == 3 || store.getters.chainId == undefined) {
     next();
   } else {
     next({ path: '404' });

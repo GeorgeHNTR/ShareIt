@@ -1,16 +1,31 @@
 <template>
-  <li ref="userAddress" :mouseover="showWarning" id="userAddress">
+  <li
+    @mouseover="toggleWarning"
+    @mouseleave="toggleWarning"
+    ref="userAddress"
+    :class="userAddress == '!' ? 'warning address' : 'address'"
+  >
     {{ userAddress }}
   </li>
+  <warning-message
+    message="Invalid chain id! Switch to Ropsten Test Network"
+    ref="warningMsg"
+  />
 </template>
 
 <script>
+import WarningMessage from "./Warning/WarningMessage.vue"
+
 export default {
+  components: { WarningMessage },
   computed: {
     userAddress() {
       return this.$store.getters.chainId == "0x3"
         ? this.$store.getters.userAddress
         : "!"
+    },
+    chainIdIsValid() {
+      return this.$store.getters.chainId == "0x3"
     },
   },
   methods: {
@@ -22,9 +37,13 @@ export default {
         this.$store.commit("userAddress", userAddress)
       } catch (err) {}
     },
-    showWarning() {
-      if (this.userAddress == "!") {
-        this.$refs["userAddress"].style.cursor = "not-allowed"
+    toggleWarning() {
+      if (this.chainIdIsValid) return
+      const el = this.$refs["warningMsg"].$el
+      if (el.style.display == "none" || el.style.display == "") {
+        el.style.display = "block"
+      } else {
+        el.style.display = "none"
       }
     },
   },
@@ -32,7 +51,7 @@ export default {
 </script>
 
 <style scoped>
-#userAddress {
+.address {
   max-width: 15%;
   padding: 0.55rem 1rem;
   border-radius: 50px;
@@ -46,8 +65,13 @@ export default {
   text-overflow: ellipsis;
 }
 
-#userAddress:hover {
+.address:hover {
   color: white;
+}
+
+.warning {
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes color_change {

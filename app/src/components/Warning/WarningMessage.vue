@@ -24,7 +24,7 @@ export default {
   height: auto;
   display: none;
   transition: all 0.5s ease-in-out;
-  position: absolute;
+  position: fixed;
   bottom: 13%;
   right: 4%;
   border: 1px solid white;

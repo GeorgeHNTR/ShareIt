@@ -6,10 +6,17 @@
         <stat-card
           text="Balance:"
           link
+          to="/convert"
           value="0.2 ETH"
           class="w-stat"
         ></stat-card>
-        <stat-card text="Members:" link value="7" class="w-stat"></stat-card>
+        <stat-card
+          text="Members:"
+          link
+          :to="$route.path + '/members'"
+          value="7"
+          class="w-stat"
+        ></stat-card>
       </div>
     </base-card>
     <base-card class="requests">

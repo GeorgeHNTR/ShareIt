@@ -30,10 +30,7 @@
                 >Wallets</router-link
               >
             </li>
-            <user-address
-              @mouseover="toggleWarning"
-              @mouseleave="toggleWarning"
-            ></user-address>
+            <user-address></user-address>
           </div>
           <div class="right-aside non-meta" v-else-if="!userAddress">
             <li v-if="!hasMetamask">
@@ -48,24 +45,18 @@
         </ul>
       </nav>
     </header>
-    <warning-message
-      message="Invalid chain id! Switch to Ropsten Test Network"
-      ref="warningMsg"
-    />
   </div>
 </template>
 
 <script>
 import BaseButton from "../UI/BaseButton.vue"
 import UserAddress from "../UserAddress.vue"
-import WarningMessage from "../Warning/WarningMessage.vue"
 
 export default {
-  components: { BaseButton, UserAddress, WarningMessage },
+  components: { BaseButton, UserAddress },
   data() {
     return {
       current: 0,
-      path: "",
     }
   },
   computed: {
@@ -78,24 +69,13 @@ export default {
     chainIdIsValid() {
       return this.$store.getters.chainId == "0x3"
     },
-  },
-  watch: {
-    $route(to) {
-      this.path = to.fullPath
+    path() {
+      return this.$route.path
     },
   },
   methods: {
     connect() {
       this.$store.getters.web3.eth.requestAccounts()
-    },
-    toggleWarning() {
-      if (this.chainIdIsValid) return
-      const el = this.$refs["warningMsg"].$el
-      if (el.style.display == "none" || el.style.display == "") {
-        el.style.display = "block"
-      } else {
-        el.style.display = "none"
-      }
     },
   },
 }

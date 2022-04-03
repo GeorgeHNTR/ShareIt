@@ -17,33 +17,25 @@
 import TheHeader from "./components/Layout/TheHeader.vue"
 import TheFooter from "./components/Layout/TheFooter.vue"
 import WarningPair from "./components/Warning/WarningPair.vue"
-import Web3 from "web3"
+import setupWeb3 from "./web3"
 
 export default {
   components: { TheHeader, TheFooter, WarningPair },
   async mounted() {
-    if (!window.ethereum) return
-
-    this.$store.commit("web3", new Web3(Web3.givenProvider))
-    this.$store.commit(
-      "chainId",
-      await this.$store.getters.web3.eth.net.getId()
-    )
-
-    if ((await this.$store.getters.web3.eth.getAccounts()).length > 0) {
-      const userAddress = (
-        await this.$store.getters.web3.eth.requestAccounts()
-      )[0]
-      this.$store.commit("userAddress", userAddress)
-    }
-
-    window.ethereum.on("accountsChanged", (accounts) => {
-      this.$store.commit("userAddress", accounts[0])
-    })
-
-    window.ethereum.on("chainChanged", (chainId) => {
-      this.$store.commit("chainId", chainId)
-    })
+    await setupWeb3()
+  },
+  computed: {
+    chainId() {
+      return this.$store.getters.chainId
+    },
+  },
+  watch: {
+    chainId() {
+      if (this.chainId != 3) {
+        console.log("pushed")
+        this.$router.push("/404")
+      }
+    },
   },
 }
 </script>
@@ -159,13 +151,13 @@ html {
 }
 
 #background {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
+  min-width: 100vw;
+  max-width: 100vw;
+  min-height: 100vh;
+  max-height: 100vh;
   background-image: url("./assets/background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
