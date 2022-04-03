@@ -6,6 +6,7 @@
       <stat-card text="Type:" value="Withdraw" class="stats-card"></stat-card>
       <stat-card text="Data:" value="0.12" class="stats-card"></stat-card>
     </div>
+    <base-button id="approve">Approve</base-button>
   </base-modal>
 </template>
 
@@ -22,6 +23,8 @@ export default {
 .container {
   background-color: rgba(255, 0, 0, 0.055);
   width: 35%;
+  overflow: visible;
+  padding: 4rem 2rem 3rem 2rem;
 }
 
 h2 {
@@ -46,5 +49,29 @@ h2 {
   padding: 0;
   max-height: 5%;
   transition: all 0.2s ease-in-out;
+}
+
+#approve {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) translateY(50%);
+  height: 4rem;
+  width: 28%;
+  font-size: 1.2rem;
+}
+
+#approve:hover {
+  height: 3.5rem;
+  width: 25%;
+  font-size: 1.35rem;
+}
+
+@media only screen and (max-width: 1510px) {
+  h2 {
+    text-align: center;
+    font-size: 2.8rem;
+    text-shadow: 5px 5px black;
+  }
 }
 </style>

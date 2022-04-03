@@ -1,76 +1,58 @@
 <template>
-  <div>
-    <section class="container">
-      <base-card class="mission">
+  <section class="container">
+    <base-card class="mission">
+      <article>
+        <h2>Mission</h2>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
+        ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
+        molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
+        ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+        Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
+        culpa optio molestiae alias facere ipsa non ex, eaque assumenda. Quidem,
+        dolorem ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing
+        elit. Maiores odit ullam doloremque cupiditate labore aliquid corrupti
+        cum culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
+        Quidem, dolorem ducimus? Lorem ipsum dolor sit, amet consectetur
+        adipisicing elit. Maiores odit ullam doloremque cupiditate labore
+        aliquid corrupti cum culpa optio molestiae alias facere ipsa non ex,
+        eaque assumenda. Quidem, dolorem ducimus? Lorem ipsum dolor sit, amet
+        consectetur adipisicing elit. Maiores odit ullam doloremque cupiditate
+        labore aliquid corrupti cum culpa optio molestiae alias facere ipsa non
+        ex, eaque assumenda. Quidem, dolorem ducimus?
+      </article>
+    </base-card>
+    <div id="separator"></div>
+    <aside>
+      <base-card class="use">
         <article>
-          <h2>Mission</h2>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores odit
-          ullam doloremque cupiditate labore aliquid corrupti cum culpa optio
-          molestiae alias facere ipsa non ex, eaque assumenda. Quidem, dolorem
-          ducimus? Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Maiores odit ullam doloremque cupiditate labore aliquid corrupti cum
-          culpa optio molestiae alias facere ipsa non ex, eaque assumenda.
-          Quidem, dolorem ducimus? Lorem ipsum dolor sit, amet consectetur
-          adipisicing elit. Maiores odit ullam doloremque cupiditate labore
-          aliquid corrupti cum culpa optio molestiae alias facere ipsa non ex,
-          eaque assumenda. Quidem, dolorem ducimus? Lorem ipsum dolor sit, amet
-          consectetur adipisicing elit. Maiores odit ullam doloremque cupiditate
-          labore aliquid corrupti cum culpa optio molestiae alias facere ipsa
-          non ex, eaque assumenda. Quidem, dolorem ducimus? Lorem ipsum dolor
-          sit, amet consectetur adipisicing elit. Maiores odit ullam doloremque
-          cupiditate labore aliquid corrupti cum culpa optio molestiae alias
-          facere ipsa non ex, eaque assumenda. Quidem, dolorem ducimus?
+          <h2>How to use</h2>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
+            porro, quibusdam consequuntur perferendis sequi, eaque reprehenderit
+            laborum maxime nobis dolor hic maiores, nisi facere doloremque
+            dolores quas itaque eius voluptates.
+          </p>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
+            porro, quibusdam consequuntur perferendis sequi, eaque reprehenderit
+            laborum maxime nobis dolor hic maiores, nisi facere doloremque
+            dolores quas itaque eius voluptates.
+          </p>
         </article>
       </base-card>
-      <div id="separator"></div>
-      <aside>
-        <base-card class="use">
-          <article>
-            <h2>How to use</h2>
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
-              porro, quibusdam consequuntur perferendis sequi, eaque
-              reprehenderit laborum maxime nobis dolor hic maiores, nisi facere
-              doloremque dolores quas itaque eius voluptates.
-            </p>
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
-              porro, quibusdam consequuntur perferendis sequi, eaque
-              reprehenderit laborum maxime nobis dolor hic maiores, nisi facere
-              doloremque dolores quas itaque eius voluptates.
-            </p>
-          </article>
-        </base-card>
-        <base-card class="guide">
-          <article>
-            <h2>Metamask</h2>
-            <a href="https://metamask.io/" target="_blank"
-              >https://metamask.io/</a
-            >
-          </article>
-        </base-card>
-      </aside>
-    </section>
-  </div>
+      <base-card class="guide">
+        <article>
+          <h2>Metamask</h2>
+          <a href="https://metamask.io/" target="_blank"
+            >https://metamask.io/</a
+          >
+        </article>
+      </base-card>
+    </aside>
+  </section>
 </template>
 
 <style scoped>
-.card {
-  padding: 0;
-  word-break: break-word;
-  cursor: pointer;
-  transition: max-width 1s ease-in-out, min-width 1s ease-in-out,
-    max-height 1s ease-in-out, min-height 1s ease-in-out;
-  background: linear-gradient(to right, rgba(59, 0, 66, 0.1) 0, rgba(48, 0, 0, 0.7) 90%);
-}
-.card:hover {
-  min-width: 102%;
-  max-width: 102%;
-  min-height: 102%;
-  max-height: 102%;
-  transform: translateX(-1%) translateY(-1%);
-}
-
 .container {
   position: absolute;
   left: 50%;
@@ -84,6 +66,24 @@
   display: grid;
   grid-template-areas: "mission aside";
   gap: 5vw;
+}
+
+.card {
+  padding: 0;
+  word-break: break-word;
+  color: rgb(150, 150, 150);
+  transition: max-width 1s ease-in-out, min-width 1s ease-in-out,
+    max-height 1s ease-in-out, min-height 1s ease-in-out;
+  background: linear-gradient(
+    to right,
+    rgba(59, 0, 66, 0.1) 0,
+    rgba(48, 0, 0, 0.7) 90%
+  );
+  transition: all 0.25s ease-in-out;
+}
+
+.card:hover {
+  color: rgb(255, 255, 255);
 }
 
 aside {
@@ -106,11 +106,6 @@ aside {
   grid-area: use;
 }
 
-.use p {
-  max-width: calc((55vw - 5vw) / 2);
-  max-height: 100%;
-}
-
 .guide {
   grid-area: guide;
 }
@@ -127,12 +122,6 @@ article {
   text-overflow: ellipsis;
 }
 
-p {
-  overflow: hidden;
-  display: inline-block;
-  text-overflow: ellipsis;
-}
-
 h2 {
   text-shadow: 4px 4px #000000;
   font-size: 4rem;
@@ -141,10 +130,15 @@ h2 {
 }
 
 a {
-  color: white;
+  color: rgb(150, 150, 150);
   min-width: 100%;
   max-width: 100%;
   text-align: center;
+  transition: all 0.25s ease-in-out;
+}
+
+a:hover {
+  color: white;
 }
 
 #separator {
@@ -165,14 +159,10 @@ a {
 
 @media only screen and (max-width: 1510px) {
   h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
   article {
     padding: 2rem 1.5rem;
   }
-}
-
-@media only screen and (max-width: 1088px) {
-  /* mobile view */
 }
 </style>

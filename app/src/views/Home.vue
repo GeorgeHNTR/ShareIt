@@ -57,7 +57,6 @@ img {
   left: 15%;
   transform: translateY(-50%);
   animation: move 3s infinite ease-in-out alternate;
-  cursor: pointer;
 }
 
 .learn-more {
@@ -80,7 +79,7 @@ img {
   width: 18rem;
 }
 
-@media only screen and (max-width: 1380px) {
+@media only screen and (max-width: 1606px) {
   .heading {
     font-size: 6rem;
   }
@@ -104,8 +103,10 @@ img {
   }
 }
 
-@media only screen and (max-width: 835px) {
-  /* mobile view */
+@media only screen and (max-height: 835px) {
+  .heading {
+    font-size: 5rem;
+  }
 }
 
 @keyframes move {

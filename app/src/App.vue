@@ -6,7 +6,8 @@
   <!-- <div ref="browser" class="browser msg">Only Chrome browser supported</div> -->
   <div class="mobile msg">Mobile not supported</div>
   <warning-button
-    @click="toggleWarning"
+    @mouseover="toggleWarning"
+    @mouseleave="toggleWarning"
     ref="warning-btn"
     class="warning warning-btn"
   />
@@ -14,8 +15,8 @@
 </template>
 
 <script>
-import TheHeader from "./components/TheHeader.vue"
-import TheFooter from "./components/TheFooter.vue"
+import TheHeader from "./components/Layout/TheHeader.vue"
+import TheFooter from "./components/Layout/TheFooter.vue"
 import WarningButton from "./components/Warning/WarningButton.vue"
 import WarningMessage from "./components/Warning/WarningMessage.vue"
 import Web3 from "web3"
@@ -31,6 +32,28 @@ export default {
     if (!window.ethereum) return
 
     this.$store.commit("web3", new Web3(Web3.givenProvider))
+    this.$store.commit(
+      "chainId",
+      await this.$store.getters.web3.eth.net.getId()
+    )
+
+    if ((await this.$store.getters.web3.eth.getAccounts()).length > 0) {
+      const userAddress = (
+        await this.$store.getters.web3.eth.requestAccounts()
+      )[0]
+      this.$store.commit("userAddress", userAddress)
+    }
+
+    window.ethereum.on("accountsChanged", (accounts) => {
+      this.$store.commit("userAddress", accounts[0])
+    })
+
+    window.ethereum.on("chainChanged", (chainId) => {
+      this.$store.commit("chainId", chainId)
+      setTimeout(() => {
+        this.$router.push(this.$router.go())
+      }, 3000)
+    })
   },
   methods: {
     currentBrowser() {
@@ -65,16 +88,11 @@ export default {
       return "unrecognized"
     },
     toggleWarning() {
-      if (this.$refs["warningMsg"].$el.style.width == "") {
-        this.$refs["warningMsg"].$el.style.width = "22%"
-        this.$refs["warningMsg"].$el.style.height = "auto"
-        this.$refs["warningMsg"].$el.style.padding = "2rem"
-        this.$refs["warningMsg"].$el.style.display = "block"
+      const el = this.$refs["warningMsg"].$el
+      if (el.style.display == "none" || el.style.display == "") {
+        el.style.display = "block"
       } else {
-        this.$refs["warningMsg"].$el.style.width = ""
-        this.$refs["warningMsg"].$el.style.height = "0"
-        this.$refs["warningMsg"].$el.style.padding = "0"
-        this.$refs["warningMsg"].$el.style.display = "none"
+        el.style.display = "none"
       }
     },
   },
@@ -230,14 +248,14 @@ html {
 
 .warning-btn {
   position: absolute;
-  bottom: 6%;
+  top: 4%;
   right: 6%;
 }
 
 .warning-msg {
   position: absolute;
-  bottom: 12%;
-  right: 12%;
+  top: 13%;
+  right: 10%;
 }
 
 @media only screen and (max-width: 835px) {

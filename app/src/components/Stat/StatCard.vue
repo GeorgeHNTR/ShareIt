@@ -83,14 +83,18 @@ export default {
 }
 
 .stat-title h3 {
-  min-width: 80%;
-  max-width: 80%;
+  min-width: 70%;
+  max-width: 70%;
   padding-left: 20%;
   text-align: center;
 
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
+  transition: all 0.25s ease-in-out;
+}
+.stat-title:hover h3 {
+  text-shadow: 3px 3px rgb(0, 0, 0);
 }
 
 .stat-value h3 {

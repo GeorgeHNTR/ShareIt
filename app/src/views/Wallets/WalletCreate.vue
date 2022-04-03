@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-bottom: 4rem;
+  padding: 1rem 2rem 6rem 1rem;
 }
 
 h2 {
