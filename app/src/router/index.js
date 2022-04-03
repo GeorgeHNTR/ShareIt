@@ -1,13 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import setupWeb3 from '../web3';
 import store from '../store';
-
-const chainGuard = (to, from, next) => {
-  if (store.getters.chainId == 3 || store.getters.chainId == undefined) {
-    next();
-  } else {
-    next({ path: '404' });
-  }
-};
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -26,31 +19,26 @@ const router = createRouter({
       name: 'WalletCatalog',
       path: '/wallets',
       component: () => import('../views/Wallets/WalletCatalog.vue'),
-      beforeEnter: [chainGuard]
     },
     {
       name: 'WalletCreate',
       path: '/wallets/new',
       component: () => import('../views/Wallets/WalletCreate.vue'),
-      beforeEnter: [chainGuard]
     },
     {
       name: 'WalletDetails',
       path: '/wallets/:id',
       component: () => import('../views/Wallets/WalletDetails.vue'),
-      beforeEnter: [chainGuard]
     },
     {
       name: 'RequestCreate',
       path: '/requests/new',
       component: () => import('../views/Requests/RequestCreate.vue'),
-      beforeEnter: [chainGuard]
     },
     {
       name: 'RequestDetails',
       path: '/requests/:id',
       component: () => import('../views/Requests/RequestDetails.vue'),
-      beforeEnter: [chainGuard]
     },
     {
       name: 'NotFound',
@@ -58,6 +46,19 @@ const router = createRouter({
       component: () => import('../views/NotFound/NotFound.vue')
     }
   ]
+});
+
+const unrestrictedRoutes = ['Home', 'About', 'NotFound'];
+router.beforeEach(async (to, from, next) => {
+  await setupWeb3();
+  if (unrestrictedRoutes.includes(to.name)) next();
+  else {
+    if (store.getters.chainId == 3 && store.getters.userAddress !== undefined) {
+      next();
+    } else {
+      next({ path: '404' });
+    }
+  };
 });
 
 export default router;

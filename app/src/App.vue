@@ -17,25 +17,9 @@
 import TheHeader from "./components/Layout/TheHeader.vue"
 import TheFooter from "./components/Layout/TheFooter.vue"
 import WarningPair from "./components/Warning/WarningPair.vue"
-import setupWeb3 from "./web3"
 
 export default {
-  components: { TheHeader, TheFooter, WarningPair },
-  async mounted() {
-    await setupWeb3()
-  },
-  computed: {
-    chainId() {
-      return this.$store.getters.chainId
-    },
-  },
-  watch: {
-    chainId() {
-      if (!(this.chainId == 3 || this.chainId == undefined)) {
-        this.$router.push("/404")
-      }
-    },
-  },
+  components: { TheHeader, TheFooter, WarningPair }
 }
 </script>
 

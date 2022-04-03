@@ -1,15 +1,24 @@
 import Web3 from "web3";
 import store from '../store';
+import router from '../router';
 
 export default async () => {
     if (!window.ethereum) return;
+    if (store.getters.web3) return;
 
     store.commit("web3", new Web3(Web3.givenProvider));
-    store.commit(
-        "chainId",
-        await store.getters.web3.eth.net.getId()
-    );
 
+    // chain
+    const chainId = await store.getters.web3.eth.net.getId();
+    store.commit("chainId", chainId);
+    window.ethereum.on("chainChanged", (_chainId) => {
+        if (_chainId != 3) {
+            router.push('/');
+        }
+        store.commit("chainId", _chainId);
+    });
+
+    // user address
     if ((await store.getters.web3.eth.getAccounts()).length > 0) {
         const userAddress = (
             await store.getters.web3.eth.requestAccounts()
@@ -18,10 +27,9 @@ export default async () => {
     }
 
     window.ethereum.on("accountsChanged", (accounts) => {
+        if (!accounts[0]) {
+            router.push('/');
+        }
         store.commit("userAddress", accounts[0]);
-    });
-
-    window.ethereum.on("chainChanged", (chainId) => {
-        store.commit("chainId", chainId);
     });
 };
