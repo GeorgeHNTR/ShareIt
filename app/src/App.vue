@@ -31,8 +31,7 @@ export default {
   },
   watch: {
     chainId() {
-      if (this.chainId != 3) {
-        console.log("pushed")
+      if (!(this.chainId == 3 || this.chainId == undefined)) {
         this.$router.push("/404")
       }
     },
