@@ -1,14 +1,16 @@
 <template>
-  <div id="background"></div>
-  <the-header class="header" />
-  <router-view class="view" />
-  <the-footer class="footer" />
-  <div class="mobile msg">Mobile not supported</div>
-  <warning-pair
-    class="warning-pair"
-    message="If you are experiencing any problems connecting to Metamask try refreshing
+  <div id="background" />
+  <div class="content">
+    <the-header class="header" />
+    <router-view class="view" />
+    <the-footer class="footer" />
+    <warning-pair
+      class="warning-pair"
+      message="If you are experiencing any problems connecting to Metamask try refreshing
       the site several times"
-  />
+    />
+  </div>
+  <div class="mobile msg">Mobile not supported</div>
 </template>
 
 <script>
@@ -41,9 +43,6 @@ export default {
 
     window.ethereum.on("chainChanged", (chainId) => {
       this.$store.commit("chainId", chainId)
-      setTimeout(() => {
-        this.$router.push(this.$router.go())
-      }, 3000)
     })
   },
 }
@@ -179,11 +178,11 @@ html {
 }
 
 .msg {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   transform: translateX(-50%) translateY(-50%);
   word-break: break-word;
   text-align: center;
@@ -192,13 +191,15 @@ html {
   justify-content: center;
   font-size: 3.2rem;
   color: white;
-  text-shadow: 2px 2px black;
-  background-color: rgba(0, 0, 0, 0.96);
 }
 
 @media only screen and (max-width: 835px) {
   .mobile.msg {
     display: flex;
+  }
+
+  .content {
+    display: none;
   }
 
   .warning-pair {
