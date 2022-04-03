@@ -76,11 +76,6 @@ export default {
   gap: 5vw;
 }
 
-.details,
-.requests {
-  background: linear-gradient(to right, rgba(59, 0, 66, 0.1) 0, rgba(48, 0, 0, 0.7) 90%);
-}
-
 .details {
   grid-area: details;
   min-width: calc((55vw - 5vw) / 3 * 2);

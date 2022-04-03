@@ -1,5 +1,7 @@
 <template>
-  <li id="userAddress">{{ userAddress }}</li>
+  <li ref="userAddress" :mouseover="showWarning" id="userAddress">
+    {{ userAddress }}
+  </li>
 </template>
 
 <script>
@@ -19,6 +21,11 @@ export default {
         )[0]
         this.$store.commit("userAddress", userAddress)
       } catch (err) {}
+    },
+    showWarning() {
+      if (this.userAddress == "!") {
+        this.$refs["userAddress"].style.cursor = "not-allowed"
+      }
     },
   },
 }

@@ -74,11 +74,6 @@
   color: rgb(150, 150, 150);
   transition: max-width 1s ease-in-out, min-width 1s ease-in-out,
     max-height 1s ease-in-out, min-height 1s ease-in-out;
-  background: linear-gradient(
-    to right,
-    rgba(59, 0, 66, 0.1) 0,
-    rgba(48, 0, 0, 0.7) 90%
-  );
   transition: all 0.25s ease-in-out;
 }
 

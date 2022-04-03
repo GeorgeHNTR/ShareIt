@@ -1,19 +1,38 @@
 <template>
   <base-card class="b-card">
     <p>
-      If you are experiencing any problems connecting to Metamask try refreshing
-      the site several times
+      {{ message }}
     </p>
   </base-card>
 </template>
 
+<script>
+export default {
+  props: {
+    message: {
+      type: String,
+      required: true,
+    },
+  },
+}
+</script>
+
+
 <style scoped>
 .b-card {
-  width: 16%;
+  width: 18%;
   height: auto;
   display: none;
-  background-color: rgba(24, 0, 0, 0.98);
   transition: all 0.5s ease-in-out;
+  position: absolute;
+  bottom: 13%;
+  right: 4%;
+  border: 1px solid white;
+  background: linear-gradient(
+    to right,
+    rgba(59, 0, 66, 0.9) 0,
+    rgba(48, 0, 0, 0.7) 90%
+  );
 }
 
 p {

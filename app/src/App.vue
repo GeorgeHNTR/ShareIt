@@ -3,32 +3,23 @@
   <the-header class="header" />
   <router-view class="view" />
   <the-footer class="footer" />
-  <!-- <div ref="browser" class="browser msg">Only Chrome browser supported</div> -->
   <div class="mobile msg">Mobile not supported</div>
-  <warning-button
-    @mouseover="toggleWarning"
-    @mouseleave="toggleWarning"
-    ref="warning-btn"
-    class="warning warning-btn"
+  <warning-pair
+    class="warning-pair"
+    message="If you are experiencing any problems connecting to Metamask try refreshing
+      the site several times"
   />
-  <warning-message ref="warningMsg" class="warning warning-msg" />
 </template>
 
 <script>
 import TheHeader from "./components/Layout/TheHeader.vue"
 import TheFooter from "./components/Layout/TheFooter.vue"
-import WarningButton from "./components/Warning/WarningButton.vue"
-import WarningMessage from "./components/Warning/WarningMessage.vue"
+import WarningPair from "./components/Warning/WarningPair.vue"
 import Web3 from "web3"
 
 export default {
-  components: { TheHeader, TheFooter, WarningButton, WarningMessage },
+  components: { TheHeader, TheFooter, WarningPair },
   async mounted() {
-    // if (this.currentBrowser() != "chrome") {
-    //   console.log(this.currentBrowser())
-    //   this.$refs["browser"].style.display = "flex"
-    //   return
-    // }
     if (!window.ethereum) return
 
     this.$store.commit("web3", new Web3(Web3.givenProvider))
@@ -54,47 +45,6 @@ export default {
         this.$router.push(this.$router.go())
       }, 3000)
     })
-  },
-  methods: {
-    currentBrowser() {
-      if (
-        (!!window.opr && !!opr.addons) ||
-        !!window.opera ||
-        navigator.userAgent.indexOf(" OPR/") >= 0
-      )
-        return "opera"
-
-      if (typeof InstallTrigger !== "undefined") return "firefox"
-
-      if (
-        /constructor/i.test(window.HTMLElement) ||
-        (function (p) {
-          return p.toString() === "[object SafariRemoteNotification]"
-        })(
-          !window["safari"] ||
-            (typeof safari !== "undefined" && safari.pushNotification)
-        )
-      )
-        return "safari"
-
-      if (false || !!document.documentMode) {
-        return "internet explorer"
-      }
-
-      if (!!window.StyleMedia) return "edge"
-
-      if (!!window.chrome) return "chrome"
-
-      return "unrecognized"
-    },
-    toggleWarning() {
-      const el = this.$refs["warningMsg"].$el
-      if (el.style.display == "none" || el.style.display == "") {
-        el.style.display = "block"
-      } else {
-        el.style.display = "none"
-      }
-    },
   },
 }
 </script>
@@ -246,25 +196,14 @@ html {
   background-color: rgba(0, 0, 0, 0.96);
 }
 
-.warning-btn {
-  position: absolute;
-  top: 4%;
-  right: 6%;
-}
-
-.warning-msg {
-  position: absolute;
-  top: 13%;
-  right: 10%;
-}
-
 @media only screen and (max-width: 835px) {
   .mobile.msg {
     display: flex;
   }
 
-  .warning-btn {
-    z-index: -1;
+  .warning-pair {
+    position: absolute;
+    z-index: -10;
   }
 }
 </style>

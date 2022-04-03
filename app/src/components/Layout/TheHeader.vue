@@ -1,57 +1,67 @@
 <template>
-  <header>
-    <nav>
-      <ul>
-        <div class="left-aside">
-          <li>
-            <router-link :class="path == '/' ? 'active' : ''" to="/"
-              >ShareIt</router-link
-            >
-          </li>
-          <li>
-            <router-link :class="path == '/about' ? 'active' : ''" to="/about"
-              >About</router-link
-            >
-          </li>
-        </div>
-        <div class="right-aside" v-if="hasMetamask && userAddress">
-          <li v-if="chainIdIsValid">
-            <router-link
-              :class="path == '/wallets/new' ? 'active' : ''"
-              to="/wallets/new"
-              >Create</router-link
-            >
-          </li>
-          <li v-if="chainIdIsValid">
-            <router-link
-              :class="path == '/wallets' ? 'active' : ''"
-              to="/wallets"
-              >Wallets</router-link
-            >
-          </li>
-          <user-address></user-address>
-        </div>
-        <div class="right-aside non-meta" v-else-if="!userAddress">
-          <li v-if="!hasMetamask">
-            <base-button link to="https://metamask.io/"
-              >+ Install Metamask</base-button
-            >
-          </li>
-          <li v-else @click="connect">
-            <base-button>+ Connect to Metamask</base-button>
-          </li>
-        </div>
-      </ul>
-    </nav>
-  </header>
+  <div>
+    <header>
+      <nav>
+        <ul>
+          <div class="left-aside">
+            <li>
+              <router-link :class="path == '/' ? 'active' : ''" to="/"
+                >ShareIt</router-link
+              >
+            </li>
+            <li>
+              <router-link :class="path == '/about' ? 'active' : ''" to="/about"
+                >About</router-link
+              >
+            </li>
+          </div>
+          <div class="right-aside" v-if="hasMetamask && userAddress">
+            <li v-if="chainIdIsValid">
+              <router-link
+                :class="path == '/wallets/new' ? 'active' : ''"
+                to="/wallets/new"
+                >Create</router-link
+              >
+            </li>
+            <li v-if="chainIdIsValid">
+              <router-link
+                :class="path == '/wallets' ? 'active' : ''"
+                to="/wallets"
+                >Wallets</router-link
+              >
+            </li>
+            <user-address
+              @mouseover="toggleWarning"
+              @mouseleave="toggleWarning"
+            ></user-address>
+          </div>
+          <div class="right-aside non-meta" v-else-if="!userAddress">
+            <li v-if="!hasMetamask">
+              <base-button link to="https://metamask.io/"
+                >+ Install Metamask</base-button
+              >
+            </li>
+            <li v-else @click="connect">
+              <base-button>+ Connect to Metamask</base-button>
+            </li>
+          </div>
+        </ul>
+      </nav>
+    </header>
+    <warning-message
+      message="Invalid chain id! Switch to Ropsten Test Network"
+      ref="warningMsg"
+    />
+  </div>
 </template>
 
 <script>
 import BaseButton from "../UI/BaseButton.vue"
 import UserAddress from "../UserAddress.vue"
+import WarningMessage from "../Warning/WarningMessage.vue"
 
 export default {
-  components: { BaseButton, UserAddress },
+  components: { BaseButton, UserAddress, WarningMessage },
   data() {
     return {
       current: 0,
@@ -77,6 +87,15 @@ export default {
   methods: {
     connect() {
       this.$store.getters.web3.eth.requestAccounts()
+    },
+    toggleWarning() {
+      if (this.chainIdIsValid) return
+      const el = this.$refs["warningMsg"].$el
+      if (el.style.display == "none" || el.style.display == "") {
+        el.style.display = "block"
+      } else {
+        el.style.display = "none"
+      }
     },
   },
 }

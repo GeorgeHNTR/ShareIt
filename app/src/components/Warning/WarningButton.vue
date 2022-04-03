@@ -9,6 +9,9 @@
   height: 3rem;
   font-size: 1.8rem;
   transition: all 0.2s ease-in-out;
+  position: absolute;
+  top: 4%;
+  right: 6%;
 }
 
 .btn:hover {
