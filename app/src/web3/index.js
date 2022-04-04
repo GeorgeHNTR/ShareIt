@@ -4,6 +4,8 @@ import router from '../router';
 
 export default async () => {
     if (!window.ethereum) return;
+    if (window.ethereum._state.initialized === false)
+        throw new Error('Ethereum provider error occurred: Try reloading the page');
     if (store.getters.web3) return;
 
     store.commit("web3", new Web3(Web3.givenProvider));

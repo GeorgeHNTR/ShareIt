@@ -9,9 +9,9 @@
     </router-view>
     <the-footer class="footer" />
     <warning-pair
+      v-if="errorMessage"
       class="warning-pair"
-      message="If you are experiencing any problems connecting to Metamask try refreshing
-      the site several times"
+      :message="errorMessage"
     />
   </div>
   <div class="mobile msg">Mobile not supported</div>
@@ -25,8 +25,17 @@ import setupWeb3 from "./web3"
 
 export default {
   components: { TheHeader, TheFooter, WarningPair },
-  mounted() {
-    setupWeb3()
+  data() {
+    return {
+      errorMessage: "",
+    }
+  },
+  async created() {
+    try {
+      await setupWeb3()
+    } catch (err) {
+      this.errorMessage = err.message
+    }
   },
 }
 </script>
