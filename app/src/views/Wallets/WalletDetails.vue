@@ -6,7 +6,7 @@
         <stat-card
           text="Balance:"
           link
-          to="/convert"
+          to="/converter"
           value="0.2 ETH"
           class="w-stat"
         ></stat-card>

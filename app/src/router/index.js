@@ -41,6 +41,11 @@ const router = createRouter({
       component: () => import('../views/Requests/RequestDetails.vue'),
     },
     {
+      name: 'Converter',
+      path: '/converter',
+      component: () => import('../views/Converter.vue'),
+    },
+    {
       name: 'NotFound',
       path: '/:notFound',
       component: () => import('../views/NotFound/NotFound.vue')
@@ -48,13 +53,13 @@ const router = createRouter({
   ]
 });
 
-const unrestrictedRoutes = ['Home', 'About', 'NotFound'];
+const unrestrictedRoutes = ['Home', 'About', 'Converter', 'NotFound'];
 router.beforeEach(async (to, from, next) => {
   if (unrestrictedRoutes.includes(to.name)) next();
   else {
     await new Promise((resolve, reject) => {
       setTimeout(() => { resolve(); }, 200);
-    }); 
+    });
     if (store.getters.chainId == 3 &&
       store.getters.userAddress !== undefined) {
       next();

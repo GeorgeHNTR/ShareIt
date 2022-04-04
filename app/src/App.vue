@@ -9,9 +9,8 @@
     </router-view>
     <the-footer class="footer" />
     <warning-pair
-      v-if="errorMessage"
       class="warning-pair"
-      :message="errorMessage"
+      message="If you are experiencing any problems connecting with metamask try reloading the page or switch to Chrome browser if not already."
     />
   </div>
   <div class="mobile msg">Mobile not supported</div>
@@ -25,17 +24,8 @@ import setupWeb3 from "./web3"
 
 export default {
   components: { TheHeader, TheFooter, WarningPair },
-  data() {
-    return {
-      errorMessage: "",
-    }
-  },
-  async created() {
-    try {
-      await setupWeb3()
-    } catch (err) {
-      this.errorMessage = err.message
-    }
+  created() {
+    setupWeb3()
   },
 }
 </script>

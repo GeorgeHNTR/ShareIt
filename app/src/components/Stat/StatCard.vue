@@ -74,12 +74,6 @@ export default {
   grid-area: value;
   min-width: 33.33%;
   max-width: 33.33%;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
 }
 
 .stat-title h3 {

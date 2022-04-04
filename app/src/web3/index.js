@@ -4,8 +4,6 @@ import router from '../router';
 
 export default async () => {
     if (!window.ethereum) return;
-    if (window.ethereum._state.initialized === false)
-        throw new Error('Ethereum provider error occurred: Try reloading the page');
     if (store.getters.web3) return;
 
     store.commit("web3", new Web3(Web3.givenProvider));
@@ -14,10 +12,10 @@ export default async () => {
     const chainId = await store.getters.web3.eth.net.getId();
     store.commit("chainId", chainId);
     window.ethereum.on("chainChanged", (_chainId) => {
+        store.commit("chainId", _chainId);
         if (_chainId != 3) {
             router.push('/');
         }
-        store.commit("chainId", _chainId);
     });
 
     // user address
@@ -29,9 +27,9 @@ export default async () => {
     }
 
     window.ethereum.on("accountsChanged", (accounts) => {
+        store.commit("userAddress", accounts[0]);
         if (!accounts[0]) {
             router.push('/');
         }
-        store.commit("userAddress", accounts[0]);
     });
 };

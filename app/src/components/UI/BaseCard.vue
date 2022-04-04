@@ -6,7 +6,6 @@
 
 <style scoped>
 .card {
-  padding: 1.5rem 3rem;
   background: linear-gradient(
     to right,
     rgba(59, 0, 66, 0.25) 0,

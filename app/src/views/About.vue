@@ -113,7 +113,6 @@ aside {
 
 article {
   padding: 2rem 3rem;
-  max-height: 50%;
   text-overflow: ellipsis;
 }
 
