@@ -105,8 +105,8 @@ h2 {
 
 .stat-title {
   grid-area: title;
-  min-width: 56.66%;
-  max-width: 56.66%;
+  min-width: 36.66%;
+  max-width: 36.66%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -132,8 +132,8 @@ h2 {
 
 .stat-value {
   grid-area: value;
-  min-width: 43.33%;
-  max-width: 43.33%;
+  min-width: 63.33%;
+  max-width: 63.33%;
   display: flex;
   justify-content: center;
   align-items: center;

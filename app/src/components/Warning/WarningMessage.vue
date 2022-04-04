@@ -21,8 +21,7 @@ export default {
 <style scoped>
 .b-card {
   padding: 2rem 1rem;
-  width: 18%;
-  height: auto;
+  width: 20rem;
   display: none;
   transition: all 0.5s ease-in-out;
   position: fixed;
