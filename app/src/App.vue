@@ -2,7 +2,11 @@
   <div id="background" />
   <div class="content">
     <the-header class="header" />
-    <router-view class="view" />
+    <router-view class="view" v-slot="{ Component }">
+      <transition name="route" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
     <the-footer class="footer" />
     <warning-pair
       class="warning-pair"
@@ -167,6 +171,27 @@ html {
   justify-content: center;
   font-size: 3.2rem;
   color: white;
+}
+
+.route-enter-from {
+  opacity: 0;
+}
+
+.route-leave-to {
+  opacity: 0;
+}
+
+.route-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.route-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.route-enter-to,
+.route-leave-from {
+  opacity: 1;
 }
 
 @media only screen and (max-width: 835px) {
