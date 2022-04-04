@@ -32,7 +32,7 @@ export default {
     to right,
     rgba(59, 0, 66, 0.9) 0,
     rgba(48, 0, 0, 0.7) 90%
-  );
+  ) !important;
 }
 
 p {

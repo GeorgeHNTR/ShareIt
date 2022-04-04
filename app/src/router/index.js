@@ -50,7 +50,9 @@ const router = createRouter({
 
 const unrestrictedRoutes = ['Home', 'About', 'NotFound'];
 router.beforeEach(async (to, from, next) => {
-  await setupWeb3();
+  try {
+    await setupWeb3();
+  } catch (err) { }
   if (unrestrictedRoutes.includes(to.name)) next();
   else {
     if (store.getters.chainId == 3 && store.getters.userAddress !== undefined) {

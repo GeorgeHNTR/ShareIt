@@ -6,7 +6,10 @@ export default async () => {
     if (!window.ethereum) return;
     if (store.getters.web3) return;
 
-    store.commit("web3", new Web3(Web3.givenProvider));
+    const provider = Web3.givenProvider.chainId !== null
+        ? Web3.givenProvider
+        : 'https://ropsten.infura.io/v3/0dc62080d95a458fbcd7bd0e28a1a95d';
+    store.commit("web3", new Web3(provider));
 
     // chain
     const chainId = await store.getters.web3.eth.net.getId();

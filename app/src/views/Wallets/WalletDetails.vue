@@ -124,8 +124,8 @@ export default {
 }
 
 .w-stat {
-  min-height: 30%;
-  max-height: 30%;
+  min-height: 30% !important;
+  max-height: 30% !important;
   font-size: 2.2rem;
 }
 
