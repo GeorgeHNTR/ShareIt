@@ -31,7 +31,7 @@ export default {
 
 <style scoped>
 button {
-  background-image: linear-gradient(
+  background: linear-gradient(
     to right,
     rgb(33, 0, 43) 0,
     rgb(60, 0, 60) 75%

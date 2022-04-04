@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import setupWeb3 from '../web3';
 import store from '../store';
 
 const router = createRouter({
@@ -31,6 +30,11 @@ const router = createRouter({
       component: () => import('../views/Wallets/WalletDetails.vue'),
     },
     {
+      name: 'WalletMembers',
+      path: '/wallets/:id/members',
+      component: () => import('../views/Wallets/WalletMembers.vue'),
+    },
+    {
       name: 'RequestCreate',
       path: '/requests/new',
       component: () => import('../views/Requests/RequestCreate.vue'),
@@ -47,7 +51,7 @@ const router = createRouter({
     },
     {
       name: 'NotFound',
-      path: '/:notFound',
+      path: '/:pathMatch(.*)*',
       component: () => import('../views/NotFound/NotFound.vue')
     }
   ]
@@ -58,13 +62,15 @@ router.beforeEach(async (to, from, next) => {
   if (unrestrictedRoutes.includes(to.name)) next();
   else {
     await new Promise((resolve, reject) => {
-      setTimeout(() => { resolve(); }, 200);
+      // waiting the web3 to set up
+      // recommended: do not use less than 50ms
+      setTimeout(() => { resolve(); }, 100);
     });
     if (store.getters.chainId == 3 &&
       store.getters.userAddress !== undefined) {
       next();
     } else {
-      next({ path: '404' });
+      next({ name: 'NotFound' });
     }
   };
 });
