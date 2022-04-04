@@ -18,6 +18,7 @@
           class="w-stat"
         ></stat-card>
       </div>
+      <base-button class="details-leave">Leave</base-button>
     </base-card>
     <base-card class="requests">
       <h2 class="requests-heading">Requests</h2>
@@ -84,6 +85,8 @@ export default {
 }
 
 .details {
+  position: relative;
+  overflow: visible;
   grid-area: details;
   min-width: calc((55vw - 5vw) / 3 * 2);
   max-width: calc((55vw - 5vw) / 3 * 2);
@@ -137,13 +140,14 @@ export default {
   justify-content: space-evenly;
 }
 
-.requests-create {
+.requests-create,
+.details-leave {
   position: absolute;
   left: 50%;
   bottom: 0;
   transform: translateX(-50%) translateY(50%);
 
-  width: 50%;
+  width: 35%;
   height: 10%;
 
   font-size: 2rem;
@@ -153,11 +157,20 @@ export default {
   justify-content: center;
 }
 
-.requests-create:hover {
+.details-leave {
+  font-size: 1.5rem;
+}
+
+.requests-create:hover,
+.details-leave:hover {
   transform: translateX(-50%) translateY(50%);
   font-size: 2.5rem;
-  width: 45%;
+  width: 32%;
   height: 9%;
+}
+
+.details-leave:hover {
+  font-size: 1.6rem;
 }
 
 @media only screen and (max-width: 1628px) {
