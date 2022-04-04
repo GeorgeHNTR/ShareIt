@@ -50,12 +50,13 @@ const router = createRouter({
 
 const unrestrictedRoutes = ['Home', 'About', 'NotFound'];
 router.beforeEach(async (to, from, next) => {
-  try {
-    await setupWeb3();
-  } catch (err) { }
   if (unrestrictedRoutes.includes(to.name)) next();
   else {
-    if (store.getters.chainId == 3 && store.getters.userAddress !== undefined) {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => { resolve(); }, 200);
+    }); 
+    if (store.getters.chainId == 3 &&
+      store.getters.userAddress !== undefined) {
       next();
     } else {
       next({ path: '404' });

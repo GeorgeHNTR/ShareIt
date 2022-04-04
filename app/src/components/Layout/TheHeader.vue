@@ -67,7 +67,7 @@ export default {
       return !!this.$store.getters.web3
     },
     chainIdIsValid() {
-      return this.$store.getters.chainId == "0x3"
+      return this.$store.getters.chainId == 3
     },
     path() {
       return this.$route.path
