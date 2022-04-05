@@ -6,19 +6,28 @@
         <stat-card
           text="Balance:"
           link
-          to="/converter"
-          value="0.2 ETH"
+          :to="`/converter?value=${balance}&den=wei`"
+          :value="`${
+            balance == 0
+              ? '0.00'
+              : $store.getters.web3.utils.fromWei(balance, 'ether').slice(0, 4)
+          } ETH`"
           class="w-stat"
         ></stat-card>
         <stat-card
           text="Members:"
           link
           :to="$route.path + '/members'"
-          value="7"
+          :value="String(members.length)"
           class="w-stat"
         ></stat-card>
       </div>
-      <base-button class="details-leave">Leave</base-button>
+      <base-button @click="$router.push(`${$route.path}/deposit`)" class="details-button deposit"
+        >Deposit</base-button
+      >
+      <base-button @click="leave" class="details-button leave"
+        >Leave</base-button
+      >
     </base-card>
     <base-card class="requests">
       <h2 class="requests-heading">Requests</h2>
@@ -51,17 +60,54 @@
 
 <script>
 import StatCard from "../../components/Stat/StatCard.vue"
+import SharedWalletAt from "../../web3/contracts/SharedWallet"
 
 export default {
   components: { StatCard },
   data() {
     return {
       title: "Family",
+      wallet: undefined,
+      balance: 0,
+      members: [],
+    }
+  },
+  async created() {
+    try {
+      await this.setWallet()
+      const isAuth = this.wallet.methods
+        .isMember(this.$store.getters["user/userAddress"])
+        .call()
+      if (!isAuth) this.$router.push({ name: "NotFound" })
+      else {
+        this.setBalance()
+        this.setMembers()
+      }
+    } catch (err) {
+      // theres no shared wallet contract at this address
+      this.$router.push({ name: "NotFound" })
     }
   },
   methods: {
     seeRequest(_requests) {
       this.$router.push(`/requests/${_requests}`)
+    },
+    async setWallet() {
+      this.wallet = await SharedWalletAt(this.$route.params.id)
+    },
+    async setBalance() {
+      this.balance = await this.$store.getters.web3.eth.getBalance(
+        this.wallet._address
+      )
+    },
+    async setMembers() {
+      this.members = await this.wallet.methods.members().call()
+    },
+    async leave() {
+      await this.wallet.methods
+        .leave()
+        .send({ from: this.$store.getters["user/userAddress"] })
+      this.$router.push("/wallets")
     },
   },
 }
@@ -141,7 +187,7 @@ export default {
 }
 
 .requests-create,
-.details-leave {
+.details-button {
   position: absolute;
   left: 50%;
   bottom: 0;
@@ -157,19 +203,27 @@ export default {
   justify-content: center;
 }
 
-.details-leave {
+.details-button {
   font-size: 1.5rem;
 }
 
+.deposit {
+  left: 30%;
+}
+
+.leave {
+  left: 70%;
+}
+
 .requests-create:hover,
-.details-leave:hover {
+.details-button:hover {
   transform: translateX(-50%) translateY(50%);
   font-size: 2.5rem;
   width: 32%;
   height: 9%;
 }
 
-.details-leave:hover {
+.details-button:hover {
   font-size: 1.6rem;
 }
 

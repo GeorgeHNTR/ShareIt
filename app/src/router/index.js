@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store';
-import {setupWeb3} from "../web3";
+import { setupWeb3 } from "../web3";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -36,6 +36,11 @@ const router = createRouter({
       component: () => import('../views/Wallets/WalletMembers.vue'),
     },
     {
+      name: 'WalletDeposit',
+      path: '/wallets/:id/deposit',
+      component: () => import('../views/Wallets/WalletDeposit.vue'),
+    },
+    {
       name: 'RequestCreate',
       path: '/requests/new',
       component: () => import('../views/Requests/RequestCreate.vue'),
@@ -60,10 +65,10 @@ const router = createRouter({
 
 const unrestrictedRoutes = ['Home', 'About', 'Converter', 'NotFound'];
 router.beforeEach(async (to, from, next) => {
+  // DO NOT CHANGE 
+  if (unrestrictedRoutes.includes(to.name)) next();
   await setupWeb3();
-  if (unrestrictedRoutes.includes(to.name))
-    next();
-  else {
+  if (!unrestrictedRoutes.includes(to.name)) {
     if (store.getters['user/chainId'] == 3 &&
       store.getters['user/userAddress'] !== undefined) {
       next();

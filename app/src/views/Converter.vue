@@ -46,6 +46,10 @@ export default {
       },
     }
   },
+  created() {
+    this[this.$route.query.den] = this.$route.query.value
+    this.convertFrom(this.$route.query.den)
+  },
   methods: {
     convertFrom(_changed) {
       if (!this[_changed]) {
@@ -89,9 +93,6 @@ h2 {
   justify-content: space-evenly;
 }
 
-.input {
-  font-size: 1.8rem;
-}
 
 /* input */
 
@@ -158,7 +159,4 @@ h2 {
   font-size: 1.4rem;
 }
 
-.pointer {
-  cursor: pointer;
-}
 </style>

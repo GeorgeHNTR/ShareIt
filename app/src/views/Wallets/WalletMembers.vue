@@ -7,20 +7,36 @@
 </template>
 
 <script>
+import SharedWalletAt from "../../web3/contracts/SharedWallet"
+
 export default {
   data() {
     return {
-      members: [
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-        this.$store.getters.web3.utils.randomHex(20),
-      ],
+      members: [],
     }
+  },
+  async created() {
+    try {
+      await this.setWallet()
+      const isAuth = this.wallet.methods
+        .isMember(this.$store.getters["user/userAddress"])
+        .call()
+      if (!isAuth) this.$router.push({ name: "NotFound" })
+      else {
+        this.setMembers()
+      }
+    } catch (err) {
+      // theres not shared wallet contract at this address
+      this.$router.push({ name: "NotFound" })
+    }
+  },
+  methods: {
+    async setWallet() {
+      this.wallet = await SharedWalletAt(this.$route.params.id)
+    },
+    async setMembers() {
+      this.members = await this.wallet.methods.members().call()
+    },
   },
 }
 </script>
@@ -30,11 +46,14 @@ export default {
   width: 35vw;
   padding: 3rem 2rem;
   overflow: auto;
+  height: auto;
+  max-height: 55vh;
 }
 
 .member {
   border-radius: 100px;
   font-size: 1.2rem;
+  min-height: 5rem;
   height: 20%;
   display: flex;
   align-items: center;
@@ -66,11 +85,7 @@ export default {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    to right,
-    rgb(33, 0, 43) 0,
-    rgb(60, 0, 60) 75%
-  );
+  background: linear-gradient(to right, rgb(33, 0, 43) 0, rgb(60, 0, 60) 75%);
   border-radius: 10px;
 }
 
@@ -93,5 +108,4 @@ export default {
     width: 55vw;
   }
 }
-
 </style>

@@ -43,7 +43,7 @@ button {
   text-transform: capitalize;
   transition: all 200ms ease-in-out;
   font-weight: bold;
-  border: 2px solid white;
+  border: 1px solid white;
   display: flex;
   align-items: center;
   justify-content: center;
