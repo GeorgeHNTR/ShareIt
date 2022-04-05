@@ -17,16 +17,12 @@
 </template>
 
 <script>
-import setupWeb3 from "./web3/index.js"
 import TheHeader from "./components/Layout/TheHeader.vue"
 import TheFooter from "./components/Layout/TheFooter.vue"
 import WarningPair from "./components/Warning/WarningPair.vue"
 
 export default {
   components: { TheHeader, TheFooter, WarningPair },
-  beforeCreate() {
-    setupWeb3()
-  },
 }
 </script>
 

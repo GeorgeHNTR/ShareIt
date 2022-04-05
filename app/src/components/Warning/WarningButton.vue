@@ -12,6 +12,7 @@
   position: absolute;
   top: 4%;
   right: 6%;
+  z-index: 100;
 }
 
 .btn:hover {

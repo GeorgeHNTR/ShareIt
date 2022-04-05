@@ -1,22 +1,76 @@
 <template>
-  <base-modal class="form">
-    <h2>
-      Create a <br />
-      New Shared Wallet
-    </h2>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta fuga
-      sequi molestiae possimus. Tenetur officiis aspernatur magni quibusdam quae
-      vero repellendus vel repudiandae quas perspiciatis! Commodi sunt beatae
-      mollitia! Quod! Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-    </p>
-    <div class="input-container">
-      <label for="name">Enter wallet name:</label>
-      <input id="name" type="text" placeholder="Example: My Family Wallet" />
-    </div>
-    <base-button id="submit">Create now</base-button>
-  </base-modal>
+  <div>
+    <base-modal class="form">
+      <h2>
+        Create a <br />
+        New Shared Wallet
+      </h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta fuga
+        sequi molestiae possimus. Tenetur officiis aspernatur magni quibusdam
+        quae vero repellendus vel repudiandae quas perspiciatis! Commodi sunt
+        beatae mollitia! Quod! Lorem ipsum dolor sit amet, consectetur
+        adipisicing elit.
+      </p>
+      <div class="input-container">
+        <label for="name">Enter wallet name:</label>
+        <input
+          v-model="name"
+          ref="input-name"
+          @focus="restartInput"
+          @blur="validateInput"
+          id="name"
+          type="text"
+          placeholder="Example: My Family Wallet"
+        />
+      </div>
+      <base-button @click="submitHandler" id="submit">Create now</base-button>
+    </base-modal>
+    <base-loader v-if="loading" />
+  </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      name: "",
+      loading: false,
+    }
+  },
+  methods: {
+    validateInput() {
+      if (this.name === "") {
+        this.$refs["input-name"].style["border-color"] = "red"
+        this.$refs["input-name"]["placeholder"] = "Wallet name cannot be empty"
+        return false
+      }
+      return true
+    },
+    restartInput() {
+      this.$refs["input-name"]["placeholder"] = "Example: My Family Wallet"
+      this.$refs["input-name"].style["border-color"] = "gray"
+    },
+    submitHandler() {
+      if (this.validateInput()) this.createNewSharedWallet()
+    },
+    async createNewSharedWallet() {
+      this.loading = true
+      try {
+        await this.$store.getters["contracts/factory"].methods
+          .createNewSharedWallet(this.name)
+          .send({
+            from: this.$store.getters.web3.currentProvider.selectedAddress,
+          })
+      } catch (err) {
+      } finally {
+        this.loading = false
+        this.name = ""
+      }
+    },
+  },
+}
+</script>
 
 <style scoped>
 .form {
@@ -139,5 +193,4 @@ input {
     transform: translateX(10px);
   }
 }
-
 </style>

@@ -18,6 +18,7 @@
   background-color: #110000;
   border-radius: 0;
   box-shadow: 0 -20px 10px 1px #110000;
+  z-index: 100;
 }
 
 .content {

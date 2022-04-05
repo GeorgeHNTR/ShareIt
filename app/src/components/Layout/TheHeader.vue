@@ -102,10 +102,11 @@ export default {
 
 <style scoped>
 header {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
+  z-index: 100;
 }
 
 nav {

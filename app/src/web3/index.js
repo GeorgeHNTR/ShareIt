@@ -1,8 +1,8 @@
 import Web3 from "web3";
 import router from '../router';
 import store from '../store';
-import SharedWalletFactory from './SharedWalletFactory';
-import SharedWalletStorageAt from './SharedWalletStorage';
+import SharedWalletFactory from './contracts/SharedWalletFactory';
+import SharedWalletStorageAt from './contracts/SharedWalletStorage';
 
 export default async () => {
     if (!window.ethereum) return;
