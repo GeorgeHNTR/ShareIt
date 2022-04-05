@@ -39,7 +39,7 @@ export default {
       return this.wallets[this.walletIdx]
     },
     currentAddress() {
-      return this.$store.getters.web3.eth.currentProvider.selectedAddress
+      return this.$store.getters["user/userAddress"]
     },
     hasWallets() {
       return this.wallets.length !== 0
@@ -48,29 +48,32 @@ export default {
   created() {
     this.fetchWallets()
   },
+  watch: {
+    async currentAddress() {
+      console.log(this.wallets)
+      await this.fetchWallets()
+      console.log(this.wallets)
+    },
+  },
   methods: {
     seeWallet() {
       this.$router.push(`/wallets/${this.wallets[this.walletIdx].id}`)
     },
     async fetchWallets() {
       this.loading = true
-      try {
-        const _wallets = await this.$store.getters["contracts/storage"].methods
-          .userWallets()
-          .call({
-            from: this.currentAddress,
-          })
+      const _wallets = await this.$store.dispatch("contracts/fetchUserWallets")
 
-        for (let i = 0; i < _wallets.length; i++) {
-          const currentWalletAddress = _wallets[i]
-          this.wallets.push({
-            id: currentWalletAddress,
-            name: await SharedWalletAt(currentWalletAddress).methods.name().call(),
-          })
-        }
-      } catch (err) {
-        console.error(err.message)
+      const _tempWallets = []
+      for (let i = 0; i < _wallets.length; i++) {
+        const currentWalletAddress = _wallets[i]
+        _tempWallets.push({
+          id: currentWalletAddress,
+          name: await SharedWalletAt(currentWalletAddress)
+            .methods.name()
+            .call(),
+        })
       }
+      this.wallets = _tempWallets
       this.loading = false
     },
   },

@@ -60,7 +60,7 @@ export default {
         await this.$store.getters["contracts/factory"].methods
           .createNewSharedWallet(this.name)
           .send({
-            from: this.$store.getters.web3.currentProvider.selectedAddress,
+            from: this.$store.getters["user/userAddress"],
           })
       } catch (err) {
       } finally {

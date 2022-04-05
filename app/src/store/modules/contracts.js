@@ -15,5 +15,16 @@ export default {
     getters: {
         factory: (state) => state.factory,
         storage: (state) => state.storage
+    },
+    actions: {
+        async fetchUserWallets({ getters, rootGetters }) {
+            console.log(rootGetters["user/userAddress"]);
+            return getters.storage.methods
+                .userWallets()
+                .call({
+                    from: rootGetters["user/userAddress"],
+                });
+
+        }
     }
 };
