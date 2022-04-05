@@ -20,12 +20,12 @@ export default {
   components: { WarningMessage },
   computed: {
     userAddress() {
-      return this.$store.getters.chainId == "0x3"
-        ? this.$store.getters.userAddress
+      return this.$store.getters['user/chainId'] == "0x3"
+        ? this.$store.getters['user/userAddress']
         : "!"
     },
     chainIdIsValid() {
-      return this.$store.getters.chainId == "0x3"
+      return this.$store.getters['user/chainId'] == "0x3"
     },
   },
   methods: {
@@ -34,7 +34,7 @@ export default {
         const userAddress = (
           await this.$store.getters.web3.eth.requestAccounts()
         )[0]
-        this.$store.commit("userAddress", userAddress)
+        this.$store.commit("user/userAddress", userAddress)
       } catch (err) {}
     },
     toggleWarning() {

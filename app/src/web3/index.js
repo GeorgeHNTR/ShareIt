@@ -13,17 +13,17 @@ export default async () => {
     store.commit("web3", new Web3(Web3.givenProvider));
 
     // setup the factory
-    store.commit('factory', SharedWalletFactory());
+    store.commit('contracts/factory', SharedWalletFactory());
 
     // setup the storage
-    const SharedWalletStorageAddress = await store.getters.factory.methods.walletsStorage().call();
-    store.commit('storage', SharedWalletStorageAt(SharedWalletStorageAddress));
+    const SharedWalletStorageAddress = await store.getters['contracts/factory'].methods.walletsStorage().call();
+    store.commit('contracts/storage', SharedWalletStorageAt(SharedWalletStorageAddress));
 
     // chain
     const chainId = await store.getters.web3.eth.net.getId();
-    store.commit("chainId", chainId);
+    store.commit("user/chainId", chainId);
     window.ethereum.on("chainChanged", (_chainId) => {
-        store.commit("chainId", _chainId);
+        store.commit("user/chainId", _chainId);
         if (_chainId != 3)
             router.push('/');
     });
@@ -33,11 +33,11 @@ export default async () => {
         const userAddress = (
             await store.getters.web3.eth.requestAccounts()
         )[0];
-        store.commit("userAddress", userAddress);
+        store.commit("user/userAddress", userAddress);
     }
 
     window.ethereum.on("accountsChanged", (accounts) => {
-        store.commit("userAddress", accounts[0]);
+        store.commit("user/userAddress", accounts[0]);
         if (!accounts[0]) router.push('/');
     });
 };

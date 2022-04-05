@@ -66,8 +66,8 @@ router.beforeEach(async (to, from, next) => {
       // recommended: do not use less than 50ms
       setTimeout(() => { resolve(); }, 100);
     });
-    if (store.getters.chainId == 3 &&
-      store.getters.userAddress !== undefined) {
+    if (store.getters['user/chainId'] == 3 &&
+      store.getters['user/userAddress'] !== undefined) {
       next();
     } else {
       next({ name: 'NotFound' });

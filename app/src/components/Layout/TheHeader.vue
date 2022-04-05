@@ -80,13 +80,13 @@ export default {
   },
   computed: {
     userAddress() {
-      return this.$store.getters.userAddress
+      return this.$store.getters['user/userAddress']
     },
     hasMetamask() {
       return !!this.$store.getters.web3
     },
     chainIdIsValid() {
-      return this.$store.getters.chainId == 3
+      return this.$store.getters['user/chainId'] == 3
     },
     path() {
       return this.$route.path
