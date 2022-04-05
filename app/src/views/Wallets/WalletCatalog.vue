@@ -1,24 +1,29 @@
 <template>
   <div>
-    <base-card class="empty" v-if="!hasWallets">
-      <div>
-        No wallets available <br />
-        Maybe create one?
-      </div>
-    </base-card>
-    <base-card @click="seeWallet" v-else class="wallet main">
-      {{ currentWallet.name }}
-    </base-card>
-    <base-card
-      v-if="hasWallets && walletIdx !== 0"
-      @click="--walletIdx"
-      class="wallet side left"
-    ></base-card>
-    <base-card
-      v-if="hasWallets && wallets.length !== walletIdx + 1"
-      @click="++walletIdx"
-      class="wallet side right"
-    ></base-card>
+    <div v-if="!hasWallets && !loading">
+      <base-card class="empty">
+        <div>
+          No wallets available <br />
+          Maybe create one?
+        </div>
+      </base-card>
+    </div>
+    <div v-else-if="hasWallets && !loading">
+      <base-card @click="seeWallet" class="wallet main">
+        {{ currentWallet.name }}
+      </base-card>
+      <base-card
+        v-if="hasWallets && walletIdx !== 0"
+        @click="--walletIdx"
+        class="wallet side left"
+      ></base-card>
+      <base-card
+        v-if="hasWallets && wallets.length !== walletIdx + 1"
+        @click="++walletIdx"
+        class="wallet side right"
+      ></base-card>
+    </div>
+
     <base-loader v-if="loading" />
   </div>
 </template>
@@ -50,9 +55,7 @@ export default {
   },
   watch: {
     async currentAddress() {
-      console.log(this.wallets)
       await this.fetchWallets()
-      console.log(this.wallets)
     },
   },
   methods: {

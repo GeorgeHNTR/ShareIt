@@ -21,12 +21,10 @@
               >
             </li>
           </div>
-          <div
-            class="right-aside"
-            v-if="hasMetamask && userAddress && chainIdIsValid"
-          >
+          <div class="right-aside" v-if="hasMetamask && userAddress">
             <li>
               <router-link
+                v-if="chainIdIsValid"
                 class="r-link"
                 :class="path == '/invitations' ? 'active' : ''"
                 to="/invitations"
@@ -35,6 +33,7 @@
             </li>
             <li>
               <router-link
+                v-if="chainIdIsValid"
                 class="r-link"
                 :class="path == '/wallets/new' ? 'active' : ''"
                 to="/wallets/new"
@@ -43,13 +42,14 @@
             </li>
             <li>
               <router-link
+                v-if="chainIdIsValid"
                 class="r-link"
                 :class="path == '/wallets' ? 'active' : ''"
                 to="/wallets"
                 >Wallets</router-link
               >
             </li>
-            <user-address></user-address>
+            <user-address />
           </div>
           <div class="right-aside non-meta" v-else-if="!userAddress">
             <li v-if="!hasMetamask">
@@ -80,13 +80,13 @@ export default {
   },
   computed: {
     userAddress() {
-      return this.$store.getters['user/userAddress']
+      return this.$store.getters["user/userAddress"]
     },
     hasMetamask() {
       return !!this.$store.getters.web3
     },
     chainIdIsValid() {
-      return this.$store.getters['user/chainId'] == 3
+      return this.$store.getters["user/chainId"] == 3
     },
     path() {
       return this.$route.path

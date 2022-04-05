@@ -18,7 +18,6 @@ export default {
     },
     actions: {
         async fetchUserWallets({ getters, rootGetters }) {
-            console.log(rootGetters["user/userAddress"]);
             return getters.storage.methods
                 .userWallets()
                 .call({

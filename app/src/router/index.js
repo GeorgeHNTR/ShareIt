@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store';
-import setupWeb3 from "../web3";
-
-let initialLoad = true;
+import {setupWeb3} from "../web3";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -62,11 +60,9 @@ const router = createRouter({
 
 const unrestrictedRoutes = ['Home', 'About', 'Converter', 'NotFound'];
 router.beforeEach(async (to, from, next) => {
-  if (initialLoad) {
-    await setupWeb3();
-    initialLoad = false;
-  }
-  if (unrestrictedRoutes.includes(to.name)) next();
+  await setupWeb3();
+  if (unrestrictedRoutes.includes(to.name))
+    next();
   else {
     if (store.getters['user/chainId'] == 3 &&
       store.getters['user/userAddress'] !== undefined) {
@@ -74,7 +70,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       next({ name: 'NotFound' });
     }
-  };
+  }
 });
 
 export default router;
