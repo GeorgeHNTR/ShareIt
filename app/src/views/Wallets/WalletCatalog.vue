@@ -1,54 +1,77 @@
 <template>
   <div>
-    <base-card class="empty" v-if="!isConnected">
-      <div>No wallets available</div>
+    <base-card class="empty" v-if="!hasWallets">
+      <div>
+        No wallets available <br />
+        Maybe create one?
+      </div>
     </base-card>
-    <base-card @click="seeWallet()" v-if="isConnected" class="wallet main">
-      {{ currentWallet.title }} Wallet
+    <base-card @click="seeWallet" v-else class="wallet main">
+      {{ currentWallet.name }}
     </base-card>
     <base-card
-      v-if="isConnected && walletIdx !== 0"
+      v-if="hasWallets && walletIdx !== 0"
       @click="--walletIdx"
       class="wallet side left"
     ></base-card>
     <base-card
-      v-if="isConnected && wallets.length !== walletIdx + 1"
+      v-if="hasWallets && wallets.length !== walletIdx + 1"
       @click="++walletIdx"
       class="wallet side right"
     ></base-card>
+    <base-loader v-if="loading" />
   </div>
 </template>
 
 <script>
+import SharedWalletAt from "../../web3/contracts/SharedWallet"
+
 export default {
   data() {
     return {
-      isConnected: true,
       walletIdx: 0,
-      wallets: [
-        {
-          title: "Family",
-          id: "0x1",
-        },
-        {
-          title: "School",
-          id: "0x2",
-        },
-        {
-          title: "Personal",
-          id: "0x3",
-        },
-      ],
+      loading: false,
+      wallets: [],
     }
   },
   computed: {
     currentWallet() {
       return this.wallets[this.walletIdx]
     },
+    currentAddress() {
+      return this.$store.getters.web3.eth.currentProvider.selectedAddress
+    },
+    hasWallets() {
+      return this.wallets.length !== 0
+    },
+  },
+  created() {
+    this.fetchWallets()
   },
   methods: {
-    seeWallet(id) {
+    seeWallet() {
       this.$router.push(`/wallets/${this.wallets[this.walletIdx].id}`)
+    },
+    async fetchWallets() {
+      this.loading = true
+      try {
+        const _wallets = await this.$store.getters["contracts/storage"].methods
+          .userWallets()
+          .call({
+            from: this.currentAddress,
+          })
+
+        for (let i = 0; i < _wallets.length; i++) {
+          const currentWalletAddress = _wallets[i]
+          this.wallets.push({
+            id: currentWalletAddress,
+            name: await SharedWalletAt(currentWalletAddress).methods.name().call(),
+          })
+        }
+      } catch (err) {
+        console.error(err.message)
+      }
+      this.loading = false
     },
   },
 }
@@ -95,7 +118,11 @@ body {
 }
 
 .side {
-  background: linear-gradient(to right, rgba(59, 0, 66, 0.35) 0, rgba(48, 0, 0, 0.7) 90%);
+  background: linear-gradient(
+    to right,
+    rgba(59, 0, 66, 0.35) 0,
+    rgba(48, 0, 0, 0.7) 90%
+  );
   height: 24vh;
   width: 3vw;
 }
