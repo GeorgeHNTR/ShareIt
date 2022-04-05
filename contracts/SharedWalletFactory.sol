@@ -2,16 +2,16 @@
 pragma solidity ^0.8.0;
 
 import "./SharedWallet.sol";
-import "./SharedWalletsStorage.sol";
+import "./SharedWalletStorage.sol";
 
 contract SharedWalletFactory {
-    SharedWalletsStorage private _walletsStorage;
+    SharedWalletStorage private _walletsStorage;
     address private _lastWalletCreated;
 
     event newSharedWalletCreated(address newSharedWalletAddress);
 
     constructor() {
-        _walletsStorage = new SharedWalletsStorage();
+        _walletsStorage = new SharedWalletStorage();
     }
 
     function lastWalletCreated() public view returns (address) {

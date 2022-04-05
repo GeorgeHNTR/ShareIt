@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "./Voting.sol";
-import "./SharedWalletsStorage.sol";
+import "./SharedWalletStorage.sol";
 
 contract SharedWallet is Voting {
-    SharedWalletsStorage private _walletsStorage;
+    SharedWalletStorage private _walletsStorage;
     mapping(address => bool) private _isMember;
     address[] private _members;
     string private _name;
@@ -20,7 +20,7 @@ contract SharedWallet is Voting {
         address _walletsStorageAddress,
         string memory name_
     ) {
-        _walletsStorage = SharedWalletsStorage(_walletsStorageAddress);
+        _walletsStorage = SharedWalletStorage(_walletsStorageAddress);
 
         _members.push(_creator);
         _isMember[_creator] = true;
@@ -35,7 +35,7 @@ contract SharedWallet is Voting {
         return _name;
     }
 
-    function walletsStorage() public view returns (SharedWalletsStorage) {
+    function walletsStorage() public view returns (SharedWalletStorage) {
         return _walletsStorage;
     }
 

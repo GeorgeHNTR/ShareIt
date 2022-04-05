@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const SharedWallet = artifacts.require('SharedWallet');
 const SharedWalletFactory = artifacts.require('SharedWalletFactory');
-const SharedWalletsStorage = artifacts.require('SharedWalletsStorage');
+const SharedWalletStorage = artifacts.require('SharedWalletStorage');
 
 contract('SharedWalletFactory', async function (accounts) {
     const [creator] = accounts;
@@ -22,7 +22,7 @@ contract('SharedWalletFactory', async function (accounts) {
         it('should save be saved and a getter should be provided', async function () {
             const factory = await SharedWalletFactory.new();
             const storageAddr = await factory.walletsStorage();
-            const storage = await SharedWalletsStorage.at(storageAddr);
+            const storage = await SharedWalletStorage.at(storageAddr);
 
             expect((await storage.maxWalletsPerUser()).words[0]).to.equal(8);
         });

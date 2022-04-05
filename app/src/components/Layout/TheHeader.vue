@@ -5,26 +5,45 @@
         <ul>
           <div class="left-aside">
             <li>
-              <router-link :class="path == '/' ? 'active' : ''" to="/"
+              <router-link
+                class="r-link"
+                :class="path == '/' ? 'active' : ''"
+                to="/"
                 >ShareIt</router-link
               >
             </li>
             <li>
-              <router-link :class="path == '/about' ? 'active' : ''" to="/about"
+              <router-link
+                class="r-link"
+                :class="path == '/about' ? 'active' : ''"
+                to="/about"
                 >About</router-link
               >
             </li>
           </div>
-          <div class="right-aside" v-if="hasMetamask && userAddress">
-            <li v-if="chainIdIsValid">
+          <div
+            class="right-aside"
+            v-if="hasMetamask && userAddress && chainIdIsValid"
+          >
+            <li>
               <router-link
+                class="r-link"
+                :class="path == '/invitations' ? 'active' : ''"
+                to="/invitations"
+                >♦</router-link
+              >
+            </li>
+            <li>
+              <router-link
+                class="r-link"
                 :class="path == '/wallets/new' ? 'active' : ''"
                 to="/wallets/new"
                 >Create</router-link
               >
             </li>
-            <li v-if="chainIdIsValid">
+            <li>
               <router-link
+                class="r-link"
                 :class="path == '/wallets' ? 'active' : ''"
                 to="/wallets"
                 >Wallets</router-link
@@ -108,14 +127,14 @@ li {
   font-size: 1.5rem;
 }
 
-a {
+.r-link {
   text-decoration: none;
   color: rgb(192, 192, 192);
   transition: all 200ms ease-in-out;
   text-shadow: 3px 2px 10px #000000;
 }
 
-a:hover {
+.r-link:hover {
   color: rgb(255, 255, 255);
   text-shadow: 3px 2px #000000;
 }

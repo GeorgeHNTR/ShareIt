@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const SharedWallet = artifacts.require('SharedWallet');
 const SharedWalletFactory = artifacts.require('SharedWalletFactory');
-const SharedWalletsStorage = artifacts.require('SharedWalletsStorage');
+const SharedWalletStorage = artifacts.require('SharedWalletStorage');
 
 contract('SharedWallet', function (accounts) {
     const [creator, testAddr, testAddr2, nonMember] = accounts;
@@ -13,7 +13,7 @@ contract('SharedWallet', function (accounts) {
         this.factory = await SharedWalletFactory.new();
 
         this.storageAddr = await this.factory.walletsStorage();
-        this.storage = await SharedWalletsStorage.at(this.storageAddr);
+        this.storage = await SharedWalletStorage.at(this.storageAddr);
 
         await this.factory.createNewSharedWallet(name, { from: creator });
         this.walletAddr = await this.factory.lastWalletCreated();
