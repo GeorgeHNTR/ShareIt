@@ -9,13 +9,20 @@ abstract contract Voting {
         Destroy
     }
 
+    enum InvitationState {
+        None,
+        Pending,
+        Accepted,
+        Rejected
+    }
+
     struct Request {
         address author;
         RequestTypes requestType;
         address addr;
         uint256 value;
+        InvitationState invitationAccepted;
         bool approved;
-        bool accepted;
         uint256 proVotersCount;
         mapping(address => bool) voters;
     }
@@ -47,10 +54,11 @@ abstract contract Voting {
     function checkRequestIsAcceptedById(uint256 _id)
         public
         view
-        returns (bool)
+        returns (uint8)
     {
-        return _requests[_id].accepted;
+        return uint8(_requests[_id].invitationAccepted);
     }
+
     function checkMemberHasVotedById(uint256 _id) public view returns (bool) {
         return _requests[_id].voters[msg.sender];
     }
@@ -106,8 +114,13 @@ abstract contract Voting {
         request.addr = _addr;
         request.value = _value;
         request.proVotersCount = 1;
-        request.approved = false;
         request.voters[msg.sender] = true;
+
+        if (request.requestType == RequestTypes.AddMember) {
+            request.invitationAccepted = InvitationState.Pending;
+        } else {
+            request.invitationAccepted = InvitationState.None;
+        }
 
         uint256 requestID = _requestsCounter;
         _requestsCounter++;
@@ -133,17 +146,30 @@ abstract contract Voting {
     }
 
     function acceptInvitation(uint256 _requestID) external {
-        require(_requests[_requestID].addr == msg.sender);
-        require(
-            _requests[_requestID].accepted == false,
-            "Invitation already accepted!"
-        );
         require(
             _requests[_requestID].requestType == RequestTypes.AddMember,
             "Wrong request id!"
         );
-        _requests[_requestID].accepted = true;
+        require(_requests[_requestID].addr == msg.sender);
+        require(
+            _requests[_requestID].invitationAccepted == InvitationState.Pending,
+            "Invitation already accepted!"
+        );
+        _requests[_requestID].invitationAccepted = InvitationState.Accepted;
         _tryApproveRequest(_requestID);
+    }
+
+    function rejectInvitation(uint256 _requestID) external {
+        require(
+            _requests[_requestID].requestType == RequestTypes.AddMember,
+            "Wrong request id!"
+        );
+        require(_requests[_requestID].addr == msg.sender);
+        require(
+            _requests[_requestID].invitationAccepted == InvitationState.Pending,
+            "Invitation already accepted!"
+        );
+        _requests[_requestID].approved = true; // setting approved to true so members cannot vote anymore but the request leaves not accepted and not executed
     }
 
     function _tryApproveRequest(uint256 _requestID) internal virtual {

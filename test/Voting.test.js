@@ -4,7 +4,7 @@ const SharedWallet = artifacts.require('SharedWallet');
 const SharedWalletFactory = artifacts.require('SharedWalletFactory');
 
 contract('Voting', async function (accounts) {
-  const [creator, notMember, testAddr, randomAddr] = accounts;
+  const [creator, notMember, testAddr, testAddr2, randomAddr] = accounts;
   const nullAddress = "0x0000000000000000000000000000000000000000";
   const name = "test";
 
@@ -106,7 +106,7 @@ contract('Voting', async function (accounts) {
       });
     });
 
-    describe('Functionality:', async function () {
+    describe.only('Functionality:', async function () {
       beforeEach(async function () {
         // add new member so requests doesn't pass immediately
         await this.wallet.createRequest(0, 0, testAddr, { from: creator });
@@ -115,27 +115,29 @@ contract('Voting', async function (accounts) {
       });
 
       it('should save request with correct properties - add member request type', async function () {
-        await this.wallet.createRequest(0, 0, testAddr, { from: creator });
+        await this.wallet.createRequest(0, 0, testAddr2, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
 
-        const requestAuthor = await this.wallet.getRequestAuthorById(requestId);
-        const requestType = await this.wallet.getRequestTypeById(requestId);
-        const requestAddr = await this.wallet.getRequestAddrById(requestId);
-        const requestValue = await this.wallet.getRequestValueById(requestId);
-        const requestProVotersCount = await this.wallet.getRequestProVotersCountById(requestId);
-        const isApproved = await this.wallet.checkRequestIsApprovedById(requestId);
-        const hasVoted = await this.wallet.checkMemberHasVotedById(requestId);
-        const isAccepted = await this.wallet.checkRequestIsAcceptedById(requestId);
+        const [requestAuthor, requestType, requestAddr, requestValue, requestProVotersCount, isApproved, hasVoted, isAccepted] = await Promise.all([
+          this.wallet.getRequestAuthorById(requestId),
+          this.wallet.getRequestTypeById(requestId),
+          this.wallet.getRequestAddrById(requestId),
+          this.wallet.getRequestValueById(requestId),
+          this.wallet.getRequestProVotersCountById(requestId),
+          this.wallet.checkRequestIsApprovedById(requestId),
+          this.wallet.checkMemberHasVotedById(requestId),
+          this.wallet.checkRequestIsAcceptedById(requestId)
+        ]);
 
         expect(requestAuthor).to.equal(creator);
         expect(requestType.words[0]).to.equal(0);
-        expect(requestAddr).to.equal(testAddr);
+        expect(requestAddr).to.equal(testAddr2);
         expect(requestValue.words[0]).to.equal(0);
         expect(requestProVotersCount.words[0]).to.equal(1);
 
         expect(isApproved).to.be.false;
         expect(hasVoted).to.be.true;
-        expect(isAccepted).to.be.false;
+        expect(isAccepted.words[0]).to.equal(1);
 
 
       });
@@ -161,7 +163,7 @@ contract('Voting', async function (accounts) {
 
         expect(isApproved).to.be.false;
         expect(hasVoted).to.be.true;
-        expect(isAccepted).to.be.false;
+        expect(isAccepted.words[0]).to.equal(0);
 
       });
 
@@ -187,7 +189,7 @@ contract('Voting', async function (accounts) {
 
         expect(isApproved).to.be.false;
         expect(hasVoted).to.be.true;
-        expect(isAccepted).to.be.false;
+        expect(isAccepted.words[0]).to.equal(0);
 
       });
 
@@ -212,14 +214,14 @@ contract('Voting', async function (accounts) {
 
         expect(isApproved).to.be.false;
         expect(hasVoted).to.be.true;
-        expect(isAccepted).to.be.false;
+        expect(isAccepted.words[0]).to.equal(0);
 
       });
     });
 
   });
 
-  describe('Accepting a request', function () {
+  describe.only('Accepting a request', function () {
     describe('Add member request type:', async function () {
       beforeEach(async function () {
         await this.wallet.createRequest(0, 0, testAddr, { from: creator }); // automatically accepted by creator
@@ -314,7 +316,7 @@ contract('Voting', async function (accounts) {
     });
   });
 
-  describe('Accepting invitation', function () {
+  describe.only('Accepting invitation', function () {
     beforeEach(async function () {
       await this.wallet.createRequest(0, 0, testAddr, { from: creator });
       this.requestId = (await this.wallet.requestsCounter()) - 1;
@@ -354,7 +356,7 @@ contract('Voting', async function (accounts) {
         await this.wallet.acceptInvitation(this.requestId, { from: testAddr });
         const isAccepted = await this.wallet.checkRequestIsAcceptedById(this.requestId);
 
-        expect(isAccepted).to.be.true;
+        expect(isAccepted.words[0]).to.equal(2);
       });
 
       it('should not set request approved property to true if not +51% have already accepted it', async function () {

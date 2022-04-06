@@ -30,6 +30,13 @@ contract('SharedWallet', function (accounts) {
             expect(await this.wallet.name()).to.equal(name);
             expect(await this.wallet.walletsStorage()).to.equal(this.storageAddr);
         });
+
+        it('should revert if empty string is passed as a name', async function () {
+            try {
+                await this.factory.createNewSharedWallet('', { from: creator });
+                expect.fail();
+            } catch (err) { }
+        });
     });
 
     describe('Encapsulation', function () {

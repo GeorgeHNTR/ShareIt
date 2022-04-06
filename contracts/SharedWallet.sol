@@ -20,6 +20,7 @@ contract SharedWallet is Voting {
         address _walletsStorageAddress,
         string memory name_
     ) {
+        require(bytes(name_).length != 0);
         _walletsStorage = SharedWalletStorage(_walletsStorageAddress);
 
         _members.push(_creator);
@@ -94,10 +95,7 @@ contract SharedWallet is Voting {
                 _members[i] = _members[_members.length - 1];
                 _members.pop();
                 delete _isMember[msg.sender];
-                _walletsStorage.removeWalletForUser(
-                    address(this),
-                    msg.sender
-                );
+                _walletsStorage.removeWalletForUser(address(this), msg.sender);
                 return;
             }
     }
@@ -111,7 +109,7 @@ contract SharedWallet is Voting {
         else if (
             _requests[_requestId].proVotersCount == goal &&
             _requests[_requestId].requestType == RequestTypes.AddMember &&
-            _requests[_requestId].accepted
+            uint8(_requests[_requestId].invitationAccepted) == 2
         ) _requests[_requestId].approved = true;
 
         if (_requests[_requestId].approved) _executeRequest(_requestId);
