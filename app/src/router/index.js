@@ -51,6 +51,11 @@ const router = createRouter({
       component: () => import('../views/Requests/RequestDetails.vue'),
     },
     {
+      name: 'Invitations',
+      path: '/invitations',
+      component: () => import('../views/Invitations.vue'),
+    },
+    {
       name: 'Converter',
       path: '/converter',
       component: () => import('../views/Converter.vue'),

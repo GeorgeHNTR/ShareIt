@@ -1,24 +1,33 @@
 <template>
-  <base-modal class="container">
-    <base-card class="deposit-card">
-      <div class="deposit-title">
-        <h3>Deposit amount in ETH:</h3>
-      </div>
-      <div :class="`deposit-value`">
-        <input ref="amount" type="number" />
-      </div>
-    </base-card>
-    <base-button class="deposit" @click="deposit">+</base-button>
-  </base-modal>
+  <div>
+    <base-modal class="container">
+      <base-card class="deposit-card">
+        <div class="deposit-title">
+          <h3>Deposit amount in ETH:</h3>
+        </div>
+        <div :class="`deposit-value`">
+          <input ref="amount" type="number" />
+        </div>
+      </base-card>
+      <base-button class="deposit" @click="deposit">+</base-button>
+    </base-modal>
+    <base-loader v-if="loading" />
+  </div>
 </template>
 
 <script>
 import SharedWalletAt from "../../web3/contracts/SharedWallet"
 
 export default {
+  data() {
+    return {
+      loading: false,
+    }
+  },
   methods: {
     async deposit() {
       try {
+        this.loading = true
         await SharedWalletAt(this.$route.params.id)
           .methods.deposit()
           .send({
@@ -28,9 +37,9 @@ export default {
             ),
             from: this.$store.getters["user/userAddress"],
           })
+        this.loading = false
         this.$router.push(`/wallets/${this.$route.params.id}`)
       } catch (err) {
-        console.log(err.message)
         // theres no shared wallet contract at this address
       }
     },

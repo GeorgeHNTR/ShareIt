@@ -1,60 +1,67 @@
 <template>
-  <div class="container">
-    <base-card class="details">
-      <h2 class="details-title">{{ title }}</h2>
-      <div class="stats">
-        <stat-card
-          text="Balance:"
-          link
-          :to="`/converter?value=${balance}&den=wei`"
-          :value="`${
-            balance == 0
-              ? '0.00'
-              : $store.getters.web3.utils.fromWei(balance, 'ether').slice(0, 4)
-          } ETH`"
-          class="w-stat"
-        ></stat-card>
-        <stat-card
-          text="Members:"
-          link
-          :to="$route.path + '/members'"
-          :value="String(members.length)"
-          class="w-stat"
-        ></stat-card>
-      </div>
-      <base-button @click="$router.push(`${$route.path}/deposit`)" class="details-button deposit"
-        >Deposit</base-button
-      >
-      <base-button @click="leave" class="details-button leave"
-        >Leave</base-button
-      >
-    </base-card>
-    <base-card class="requests">
-      <h2 class="requests-heading">Requests</h2>
-      <div class="stats">
-        <stat-card
-          text="0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
-          value="👁"
-          link
-          to="/requests/0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
-        ></stat-card>
-        <stat-card
-          text="0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
-          value="👁"
-          link
-          to="/requests/0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
-        ></stat-card>
-        <stat-card
-          text="0xA153E837fE6cd51D72658C1746b952279199D434"
-          value="👁"
-          link
-          to="/requests/0xA153E837fE6cd51D72658C1746b952279199D434"
-        ></stat-card>
-      </div>
-      <base-button class="requests-create" link to="/requests/new"
-        >+</base-button
-      >
-    </base-card>
+  <div>
+    <div class="container">
+      <base-card class="details">
+        <h2 class="details-title">{{ title }}</h2>
+        <div class="stats">
+          <stat-card
+            text="Balance:"
+            link
+            :to="`/converter?value=${balance}&den=wei`"
+            :value="`${
+              balance == 0
+                ? '0.00'
+                : $store.getters.web3.utils
+                    .fromWei(balance, 'ether')
+                    .slice(0, 4)
+            } ETH`"
+            class="w-stat"
+          ></stat-card>
+          <stat-card
+            text="Members:"
+            link
+            :to="$route.path + '/members'"
+            :value="String(members.length)"
+            class="w-stat"
+          ></stat-card>
+        </div>
+        <base-button
+          @click="$router.push(`${$route.path}/deposit`)"
+          class="details-button deposit"
+          >Deposit</base-button
+        >
+        <base-button @click="leave" class="details-button leave"
+          >Leave</base-button
+        >
+      </base-card>
+      <base-card class="requests">
+        <h2 class="requests-heading">Requests</h2>
+        <div class="stats">
+          <stat-card
+            text="0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
+            value="👁"
+            link
+            to="/requests/0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
+          ></stat-card>
+          <stat-card
+            text="0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
+            value="👁"
+            link
+            to="/requests/0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
+          ></stat-card>
+          <stat-card
+            text="0xA153E837fE6cd51D72658C1746b952279199D434"
+            value="👁"
+            link
+            to="/requests/0xA153E837fE6cd51D72658C1746b952279199D434"
+          ></stat-card>
+        </div>
+        <base-button class="requests-create" link to="/requests/new"
+          >+</base-button
+        >
+      </base-card>
+    </div>
+    <base-loader v-if="loading" />
   </div>
 </template>
 
@@ -70,6 +77,7 @@ export default {
       wallet: undefined,
       balance: 0,
       members: [],
+      loading: false,
     }
   },
   async created() {
@@ -104,10 +112,12 @@ export default {
       this.members = await this.wallet.methods.members().call()
     },
     async leave() {
+      this.loading = true
       await this.wallet.methods
         .leave()
         .send({ from: this.$store.getters["user/userAddress"] })
       this.$router.push("/wallets")
+      this.loading = false
     },
   },
 }
