@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     async getInvitations() {
-      console.log(this.userAddress)
       const [wallets, requestsIDs] = await Promise.all([
         this.$store.getters["contracts/storage"].methods
           .getInvitationsWallets()
@@ -50,9 +49,6 @@ export default {
             from: this.userAddress,
           }),
       ])
-
-      console.log(wallets)
-      console.log(requestsIDs)
 
       for (let i = 0; i < wallets.length; i++)
         this.invitations.push({
@@ -105,16 +101,14 @@ export default {
   font-size: 1.2rem;
   min-height: 5rem;
   height: 20%;
-  max-width: 100%;
+  padding-left: 1.5rem;
+  margin-bottom: 2rem;
   display: flex;
   align-items: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
   justify-content: center;
-  text-align: center;
-  transition: all 0.3s ease-in;
-  margin-bottom: 2rem;
+  overflow: hidden;
   cursor: pointer;
+  transition: all 0.3s ease-in;
 }
 
 .invitation:hover {
@@ -145,26 +139,21 @@ export default {
   align-items: center;
 }
 
-/* scrollbar */
-::-webkit-scrollbar {
-  width: 15px;
+@media only screen and (max-width: 1580px) {
+  .invitation {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
 }
 
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgb(0, 0, 0);
-  border-radius: 10px;
-}
+@media only screen and (max-width: 1180px) {
+  .title {
+    font-size: 2.5rem;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, rgb(33, 0, 43) 0, rgb(60, 0, 60) 75%);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to right,
-    rgba(33, 0, 43, 0.75) 0,
-    rgba(60, 0, 60, 0.75) 75%
-  );
+  .title:hover {
+    font-size: 2.6rem;
+  }
 }
 </style>

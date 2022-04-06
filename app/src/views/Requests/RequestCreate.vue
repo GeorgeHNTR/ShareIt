@@ -141,9 +141,7 @@ export default {
       return true
     },
     async post() {
-      console.log(1)
       if (await this.validateInput()) {
-        console.log(2)
         this.loading = true
         try {
           await this.wallet.methods
@@ -155,7 +153,6 @@ export default {
             )
             .send({ from: this.$store.getters["user/userAddress"] })
         } catch (err) {
-          console.log(err)
         } finally {
           this.loading = false
           this.requestData = false

@@ -66,6 +66,7 @@ export default {
       } finally {
         this.loading = false
         this.name = ""
+        this.$router.push("/wallets")
       }
     },
   },

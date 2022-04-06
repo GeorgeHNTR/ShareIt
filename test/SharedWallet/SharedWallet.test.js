@@ -40,34 +40,28 @@ contract('SharedWallet', function (accounts) {
     });
 
     describe('Encapsulation', function () {
-        it('should not provide direct access to add members option', async function () {
+        it('should not provide direct access to private options', async function () {
             try {
                 await this.wallet._addMember(0);
                 expect.fail();
             } catch (err) {
                 expect(err.message).to.equal('this.wallet._addMember is not a function');
             }
-        });
 
-        it('should not provide direct access to remove members option', async function () {
             try {
                 await this.wallet._removeMember(0);
                 expect.fail();
             } catch (err) {
                 expect(err.message).to.equal('this.wallet._removeMember is not a function');
             }
-        });
 
-        it('should not provide direct access to withdraw option', async function () {
             try {
                 await this.wallet._withdraw(0);
                 expect.fail();
             } catch (err) {
                 expect(err.message).to.equal('this.wallet._withdraw is not a function');
             }
-        });
 
-        it('should not provide direct access to destroy option', async function () {
             try {
                 await this.wallet._destroy(0);
                 expect.fail();

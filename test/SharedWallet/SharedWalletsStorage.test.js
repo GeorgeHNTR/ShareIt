@@ -7,7 +7,6 @@ const SharedWalletStorage = artifacts.require('SharedWalletStorage');
 
 contract('SharedWalletStorage', function (accounts) {
     const [creator, newMember, nonMember] = accounts;
-    const nullAddress = "0x0000000000000000000000000000000000000000";
     const name = "test";
 
     beforeEach(async function () {
@@ -72,5 +71,23 @@ contract('SharedWalletStorage', function (accounts) {
 
             expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
         });
+    });
+
+    describe('Invitations', function () {
+        // ToDo:
+        it('should provide getter for all wallet addresses a user has been invited to join', async function () { });
+
+        it('should provide getter for all the requests ids', async function () { });
+
+        it('should add wallet addresses to user\'s invitations list', async function () { });
+
+        it('should add requests id\'s to user\'s invitations list', async function () { });
+
+        it('should remove wallet addresses to user\'s invitations list', async function () { });
+
+        it('should remove requests id\'s to user\'s invitations list', async function () { });
+
+        it('should not give access to add invitation to a user if the user is already a member', async function () { });
+
     });
 });
