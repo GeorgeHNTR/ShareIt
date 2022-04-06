@@ -82,13 +82,13 @@ contract('SharedWallet', function (accounts) {
         describe('Adding members', function () {
             it('should not add member who already exists', async function () {
                 try {
-                    await this.wallet.createRequest(0, 0, creator, { from: creator });
+                    await this.wallet.createRequest(0, creator, { from: creator });
                     expect.fail();
                 } catch (err) { }
             });
 
             it('should register new member as a wallet member', async function () {
-                await this.wallet.createRequest(0, 0, testAddr, { from: creator });
+                await this.wallet.createRequest(0, testAddr, { from: creator });
                 const requestId = (await this.wallet.requestsCounter()) - 1;
                 await this.wallet.acceptInvitation(requestId, { from: testAddr });
 
@@ -101,13 +101,13 @@ contract('SharedWallet', function (accounts) {
         describe('Removing members', function () {
             it('should not run if non-member address is passed', async function () {
                 try {
-                    await this.wallet.createRequest(1, 0, nonMember, { from: creator });
+                    await this.wallet.createRequest(1, nonMember, { from: creator });
                     expect.fail();
                 } catch (err) { }
             });
 
             it('should remove member from contract and storage', async function () {
-                await this.wallet.createRequest(1, 0, creator, { from: creator });
+                await this.wallet.createRequest(1, creator, { from: creator });
 
                 expect(await this.wallet.members()).to.have.lengthOf(0);
                 expect(await this.wallet.isMember(creator)).to.be.false;
@@ -118,7 +118,7 @@ contract('SharedWallet', function (accounts) {
         describe('Withdraw', function () {
             it('should not execute if asked for more money than balance', async function () {
                 try {
-                    await this.wallet.createRequest(2, 1, nullAddress, { from: creator });
+                    await this.wallet.createRequest(2, 1, { from: creator });
                     expect.fail();
                 } catch (err) { }
             });
@@ -131,11 +131,11 @@ contract('SharedWallet', function (accounts) {
                 await this.wallet.deposit({ from: creator, value: web3.utils.toWei('1', 'ether') });
 
                 // adding second member so he can withdraw what the creator has deposited
-                await this.wallet.createRequest(0, 0, testAddr, { from: creator });
+                await this.wallet.createRequest(0, testAddr, { from: creator });
                 let requestId = (await this.wallet.requestsCounter()) - 1;
                 await this.wallet.acceptInvitation(requestId, { from: testAddr });
 
-                await this.wallet.createRequest(2, web3.utils.toWei('1', 'ether'), nullAddress, { from: testAddr });
+                await this.wallet.createRequest(2, web3.utils.toWei('1', 'ether'), { from: testAddr });
                 requestId = (await this.wallet.requestsCounter()) - 1;
                 await this.wallet.acceptRequest(requestId, { from: creator });
 
@@ -147,7 +147,7 @@ contract('SharedWallet', function (accounts) {
 
         describe('Destroy', function () {
             it('should delete contract code', async function () {
-                await this.wallet.createRequest(3, 0, testAddr, { from: creator });
+                await this.wallet.createRequest(3, testAddr, { from: creator });
 
                 expect(await web3.eth.getCode(this.walletAddr)).to.equal('0x');
             });
@@ -155,7 +155,7 @@ contract('SharedWallet', function (accounts) {
             it('should send contract balance to request address', async function () {
                 const testAddrInitialBalance = Number(await web3.eth.getBalance(testAddr));
                 await this.wallet.deposit({ from: creator, value: web3.utils.toWei('1', 'ether') });
-                await this.wallet.createRequest(3, 0, testAddr, { from: creator });
+                await this.wallet.createRequest(3, testAddr, { from: creator });
 
                 expect(Number(await web3.eth.getBalance(testAddr))).to.be.greaterThan(testAddrInitialBalance);
             });
@@ -183,13 +183,13 @@ contract('SharedWallet', function (accounts) {
     describe('Validation', function () {
         beforeEach(async function () {
             // add second member so request doesn't pass immediately
-            await this.wallet.createRequest(0, 0, testAddr, { from: creator });
+            await this.wallet.createRequest(0, testAddr, { from: creator });
             this.requestId = (await this.wallet.requestsCounter()) - 1;
             await this.wallet.acceptInvitation(this.requestId, { from: testAddr });
         });
 
         it('should not add member if request is not approved', async function () {
-            await this.wallet.createRequest(0, 0, testAddr2, { from: creator });
+            await this.wallet.createRequest(0, testAddr2, { from: creator });
             this.requestId = (await this.wallet.requestsCounter()) - 1;
             await this.wallet.acceptInvitation(this.requestId, { from: testAddr2 });
             // not accepted by 51% of member (only 50%) so it is still not approved
@@ -199,7 +199,7 @@ contract('SharedWallet', function (accounts) {
         });
 
         it('should not remove member if request is not approved', async function () {
-            await this.wallet.createRequest(1, 0, testAddr, { from: creator });
+            await this.wallet.createRequest(1, testAddr, { from: creator });
             // not accepted by 51% of member (only 50%) so it is still not approved
 
             // testAddr should not be removed yet
@@ -210,14 +210,14 @@ contract('SharedWallet', function (accounts) {
 
         it('should not withdraw if request is not approved', async function () {
             await this.wallet.deposit({ from: creator, value: 1 });
-            await this.wallet.createRequest(2, 1, nullAddress, { from: creator });
+            await this.wallet.createRequest(2, 1, { from: creator });
             // not accepted by 51% of member (only 50%) so it is still not approved
 
             expect(await web3.eth.getBalance(this.walletAddr)).to.equal('1');
         });
 
         it('should not destroy if request is not approved', async function () {
-            await this.wallet.createRequest(3, 0, testAddr, { from: creator });
+            await this.wallet.createRequest(3, testAddr, { from: creator });
             // not accepted by 51% of member (only 50%) so it is still not approved
 
             expect(await web3.eth.getCode(this.walletAddr)).to.not.equal('0x');
@@ -226,7 +226,7 @@ contract('SharedWallet', function (accounts) {
 
     describe('Auto execution', function () {
         it('should auto execute add member option when voting of type 0 passes', async function () {
-            await this.wallet.createRequest(0, 0, testAddr, { from: creator });
+            await this.wallet.createRequest(0, testAddr, { from: creator });
             const requestId = (await this.wallet.requestsCounter()) - 1;
             await this.wallet.acceptInvitation(requestId, { from: testAddr }); // passes
 
@@ -234,7 +234,7 @@ contract('SharedWallet', function (accounts) {
         });
 
         it('should auto execute remove member option when voting of type 1 passes', async function () {
-            await this.wallet.createRequest(1, 0, creator, { from: creator });
+            await this.wallet.createRequest(1, creator, { from: creator });
 
             expect(await this.wallet.members()).to.have.lengthOf(0);
         });
@@ -242,14 +242,14 @@ contract('SharedWallet', function (accounts) {
         it('should auto execute withdraw option when voting of type 2 passes', async function () {
             await this.wallet.deposit({ from: creator, value: 1 });
             const balanceBeforeWithdrawal = Number(await web3.eth.getBalance(this.walletAddr));
-            await this.wallet.createRequest(2, 1, nullAddress, { from: creator });
+            await this.wallet.createRequest(2, 1, { from: creator });
             const balanceAfterWithdrawal = Number(await web3.eth.getBalance(this.walletAddr));
 
             expect(balanceAfterWithdrawal).to.be.lessThan(balanceBeforeWithdrawal);
         });
 
         it('should auto execute destroy option when voting of type 3 passes', async function () {
-            await this.wallet.createRequest(3, 0, testAddr, { from: creator });
+            await this.wallet.createRequest(3, testAddr, { from: creator });
             expect(await web3.eth.getCode(this.walletAddr)).to.equal('0x');
         });
     });

@@ -8,8 +8,6 @@ contract SharedWalletFactory {
     SharedWalletStorage private _walletsStorage;
     address private _lastWalletCreated;
 
-    event newSharedWalletCreated(address newSharedWalletAddress);
-
     constructor() {
         _walletsStorage = new SharedWalletStorage();
     }
@@ -28,7 +26,5 @@ contract SharedWalletFactory {
         );
         _walletsStorage.addWalletToUser(newSharedWalletAddress, msg.sender);
         _lastWalletCreated = newSharedWalletAddress;
-
-        emit newSharedWalletCreated(newSharedWalletAddress);
     }
 }

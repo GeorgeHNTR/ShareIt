@@ -29,21 +29,21 @@ contract('SharedWalletStorage', function (accounts) {
     });
 
     it('should add wallets to member\'s list', async function () {
-        await this.wallet.createRequest(0, 0, newMember, { from: creator });
+        await this.wallet.createRequest(0, newMember, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
         await this.wallet.acceptInvitation(requestId, { from: newMember });
         expect((await this.storage.userWallets({ from: newMember }))[0]).to.equal(this.walletAddr);
     });
 
     it('should remove wallets from member\'s list', async function () {
-        await this.wallet.createRequest(1, 0, creator, { from: creator });
+        await this.wallet.createRequest(1, creator, { from: creator });
         expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
     });
 
     describe('Only wallet members', function () {
         it('should be able to add wallet address in their own list', async function () {
             // they
-            await this.wallet.createRequest(0, 0, newMember, { from: creator });
+            await this.wallet.createRequest(0, newMember, { from: creator });
             const requestId = (await this.wallet.requestsCounter()) - 1;
             await this.wallet.acceptInvitation(requestId, { from: newMember });
 
@@ -68,7 +68,7 @@ contract('SharedWalletStorage', function (accounts) {
             }
 
             // they
-            await this.wallet.createRequest(1, 0, creator, { from: creator });
+            await this.wallet.createRequest(1, creator, { from: creator });
 
             expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
         });
