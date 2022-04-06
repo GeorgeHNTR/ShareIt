@@ -5,23 +5,32 @@ import "./SharedWallet.sol";
 
 contract SharedWalletStorage {
     mapping(address => address[]) private _usersWallets;
-    mapping(address => uint160[]) private _invitations;
+    mapping(address => address[]) private _invitations;
 
     function userWallets() public view returns (address[] memory) {
         return _usersWallets[msg.sender];
     }
 
-    function userInvitations() public view returns (uint160[] memory) {
+    function userInvitations() public view returns (address[] memory) {
         return _invitations[msg.sender];
     }
 
-    function sendUserInvitation(address _user, uint160 _requestId) external {
+    function sendUserInvitation(address _user) external {
         require(!SharedWallet(msg.sender).isMember(_user));
 
-        uint160[] memory invitationArgs;
-        invitationArgs[0] = uint160(msg.sender);
-        invitationArgs[1] = uint160(_requestId);
-        _invitations[_user] = invitationArgs;
+        _invitations[_user].push(msg.sender);
+    }
+
+    function removeUserInvitation(address _user) external {
+        require(!SharedWallet(msg.sender).isMember(_user));
+        for (uint256 i = 0; i < _invitations[_user].length; i++)
+            if (_invitations[_user][i] == msg.sender) {
+                _invitations[_user][i] = _invitations[_user][
+                    _invitations[_user].length - 1
+                ];
+                _invitations[_user].pop();
+                return;
+            }
     }
 
     function addWalletToUser(address _newWallet, address _user) external {

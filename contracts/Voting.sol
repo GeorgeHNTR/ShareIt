@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./SharedWalletStorage.sol";
+
 abstract contract Voting {
     enum RequestTypes {
         AddMember,
@@ -89,10 +91,10 @@ abstract contract Voting {
         return _requests[_id].proVotersCount;
     }
 
-    function createRequest(
-        uint256 _requestTypeIdx,
-        uint160 _data
-    ) external onlyMember {
+    function createRequest(uint256 _requestTypeIdx, uint160 _data)
+        external
+        onlyMember
+    {
         require(
             _requestTypeIdx <= uint256(type(RequestTypes).max),
             "Invalid request type!"
@@ -114,6 +116,7 @@ abstract contract Voting {
 
         if (request.requestType == RequestTypes.AddMember) {
             request.invitationAccepted = InvitationState.Pending;
+            _sendInvitation(address(_data));
         } else {
             request.invitationAccepted = InvitationState.None;
         }
@@ -149,6 +152,7 @@ abstract contract Voting {
             "Invitation already accepted!"
         );
         _requests[_requestID].invitationAccepted = InvitationState.Accepted;
+        _removeInvitation(msg.sender);
         _tryApproveRequest(_requestID);
     }
 
@@ -163,6 +167,7 @@ abstract contract Voting {
             "Invitation already accepted!"
         );
         _requests[_requestID].invitationAccepted = InvitationState.Rejected;
+        _removeInvitation(msg.sender);
         _requests[_requestID].approved = true; // setting approved to true so members cannot vote anymore but the request leaves not accepted and not executed
     }
 
@@ -185,4 +190,9 @@ abstract contract Voting {
     function _getMajority(uint256 _total) internal pure returns (uint256) {
         return _total / 2 + 1;
     }
+
+    function _sendInvitation(address _user) internal virtual {}
+
+    function _removeInvitation(address _user) internal virtual {}
+    
 }
