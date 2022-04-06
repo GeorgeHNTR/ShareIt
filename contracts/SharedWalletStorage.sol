@@ -4,25 +4,30 @@ pragma solidity ^0.8.0;
 import "./SharedWallet.sol";
 
 contract SharedWalletStorage {
-    uint8 private _maxWalletsPerUser = 8;
     mapping(address => address[]) private _usersWallets;
+    mapping(address => uint160[]) private _invitations;
 
     function userWallets() public view returns (address[] memory) {
         return _usersWallets[msg.sender];
     }
 
-    function maxWalletsPerUser() public view returns (uint8) {
-        return _maxWalletsPerUser;
+    function userInvitations() public view returns (uint160[] memory) {
+        return _invitations[msg.sender];
+    }
+
+    function sendUserInvitation(address _user, uint160 _requestId) external {
+        require(!SharedWallet(msg.sender).isMember(_user));
+
+        uint160[] memory invitationArgs;
+        invitationArgs[0] = uint160(msg.sender);
+        invitationArgs[1] = uint160(_requestId);
+        _invitations[_user] = invitationArgs;
     }
 
     function addWalletToUser(address _newWallet, address _user) external {
         require(
             SharedWallet(_newWallet).isMember(_user),
             "User is not a member of this wallet!"
-        );
-        require(
-            _usersWallets[_user].length <= _maxWalletsPerUser,
-            "Maximum amount of wallets per user exceeded!"
         );
         _usersWallets[_user].push(_newWallet);
     }
