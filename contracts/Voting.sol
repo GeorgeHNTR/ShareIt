@@ -19,8 +19,7 @@ abstract contract Voting {
     struct Request {
         address author;
         RequestTypes requestType;
-        address addr;
-        uint256 value;
+        uint160 data;
         InvitationState invitationAccepted;
         bool approved;
         uint256 proVotersCount;
@@ -30,9 +29,6 @@ abstract contract Voting {
     mapping(uint256 => Request) internal _requests;
 
     uint256 internal _requestsCounter;
-
-    event RequestCreated(uint256 requestId);
-    event InvitationSent(uint256 requestId, address indexed to);
 
     modifier onlyMember() virtual {
         require(false);
@@ -76,11 +72,13 @@ abstract contract Voting {
     }
 
     function getRequestAddrById(uint256 _id) public view returns (address) {
-        return _requests[_id].addr;
+        require(_requests[_id].requestType != RequestTypes.Withdraw);
+        return address(_requests[_id].data);
     }
 
-    function getRequestValueById(uint256 _id) public view returns (uint256) {
-        return _requests[_id].value;
+    function getRequestValueById(uint256 _id) public view returns (uint160) {
+        require(_requests[_id].requestType == RequestTypes.Withdraw);
+        return _requests[_id].data;
     }
 
     function getRequestProVotersCountById(uint256 _id)
@@ -93,8 +91,7 @@ abstract contract Voting {
 
     function createRequest(
         uint256 _requestTypeIdx,
-        uint256 _value,
-        address _addr
+        uint160 _data
     ) external onlyMember {
         require(
             _requestTypeIdx <= uint256(type(RequestTypes).max),
@@ -102,17 +99,16 @@ abstract contract Voting {
         );
 
         if (_requestTypeIdx == uint8(RequestTypes.Withdraw)) {
-            require(_value > 0 && _value <= address(this).balance);
+            require(_data > 0 && _data <= address(this).balance);
         } else {
-            require(_addr != address(0x0));
+            require(address(_data) != address(0x0));
         }
 
         Request storage request = _requests[_requestsCounter];
 
         request.author = msg.sender;
         request.requestType = RequestTypes(_requestTypeIdx);
-        request.addr = _addr;
-        request.value = _value;
+        request.data = _data;
         request.proVotersCount = 1;
         request.voters[msg.sender] = true;
 
@@ -125,9 +121,6 @@ abstract contract Voting {
         uint256 requestID = _requestsCounter;
         _requestsCounter++;
 
-        emit RequestCreated(requestID);
-        if (request.requestType == RequestTypes.AddMember)
-            emit InvitationSent(requestID, request.addr);
         _tryApproveRequest(requestID);
     }
 
@@ -150,7 +143,7 @@ abstract contract Voting {
             _requests[_requestID].requestType == RequestTypes.AddMember,
             "Wrong request id!"
         );
-        require(_requests[_requestID].addr == msg.sender);
+        require(address(_requests[_requestID].data) == msg.sender);
         require(
             _requests[_requestID].invitationAccepted == InvitationState.Pending,
             "Invitation already accepted!"
@@ -164,11 +157,12 @@ abstract contract Voting {
             _requests[_requestID].requestType == RequestTypes.AddMember,
             "Wrong request id!"
         );
-        require(_requests[_requestID].addr == msg.sender);
+        require(address(_requests[_requestID].data) == msg.sender);
         require(
             _requests[_requestID].invitationAccepted == InvitationState.Pending,
             "Invitation already accepted!"
         );
+        _requests[_requestID].invitationAccepted = InvitationState.Rejected;
         _requests[_requestID].approved = true; // setting approved to true so members cannot vote anymore but the request leaves not accepted and not executed
     }
 

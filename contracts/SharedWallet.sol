@@ -48,25 +48,29 @@ contract SharedWallet is Voting {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.AddMember);
 
-        require(!isMember(request.addr));
-        _members.push(request.addr);
-        _isMember[request.addr] = true;
-        _walletsStorage.addWalletToUser(address(this), request.addr);
+        address newMember = address(request.data);
+
+        require(!isMember(newMember));
+        _members.push(newMember);
+        _isMember[newMember] = true;
+        _walletsStorage.addWalletToUser(address(this), newMember);
     }
 
     function _removeMember(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.RemoveMember);
 
-        require(isMember(request.addr));
+        address memberToRemove = address(request.data);
+
+        require(isMember(memberToRemove));
         for (uint256 i = 0; i < _members.length; i++)
-            if (_members[i] == request.addr) {
+            if (_members[i] == memberToRemove) {
                 _members[i] = _members[_members.length - 1];
                 _members.pop();
-                delete _isMember[request.addr];
+                delete _isMember[memberToRemove];
                 _walletsStorage.removeWalletForUser(
                     address(this),
-                    request.addr
+                    memberToRemove
                 );
                 return;
             }
@@ -76,16 +80,16 @@ contract SharedWallet is Voting {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Withdraw);
 
-        require(request.value <= address(this).balance);
+        require(request.data <= address(this).balance);
 
-        payable(request.author).transfer(request.value);
+        payable(request.author).transfer(request.data);
     }
 
     function _destroy(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Destroy);
 
-        selfdestruct(payable(request.addr));
+        selfdestruct(payable(address(request.data)));
     }
 
     function leave() external {

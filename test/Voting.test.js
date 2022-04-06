@@ -106,39 +106,45 @@ contract('Voting', async function (accounts) {
       });
     });
 
-    describe.only('Functionality:', async function () {
+    describe('Functionality:', async function () {
       beforeEach(async function () {
         // add new member so requests doesn't pass immediately
         await this.wallet.createRequest(0, 0, testAddr, { from: creator });
         let requestId = (await this.wallet.requestsCounter()) - 1;
         await this.wallet.acceptInvitation(requestId, { from: testAddr });
+
+        this.setProps = async (_requestId) => Promise.all([
+          this.wallet.getRequestAuthorById(_requestId),
+          this.wallet.getRequestTypeById(_requestId),
+          this.wallet.getRequestAddrById(_requestId),
+          this.wallet.getRequestValueById(_requestId),
+          this.wallet.getRequestProVotersCountById(_requestId),
+          this.wallet.checkRequestIsApprovedById(_requestId),
+          this.wallet.checkMemberHasVotedById(_requestId),
+          this.wallet.checkRequestIsAcceptedById(_requestId)
+        ]);
       });
 
       it('should save request with correct properties - add member request type', async function () {
         await this.wallet.createRequest(0, 0, testAddr2, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
 
-        const [requestAuthor, requestType, requestAddr, requestValue, requestProVotersCount, isApproved, hasVoted, isAccepted] = await Promise.all([
-          this.wallet.getRequestAuthorById(requestId),
-          this.wallet.getRequestTypeById(requestId),
-          this.wallet.getRequestAddrById(requestId),
-          this.wallet.getRequestValueById(requestId),
-          this.wallet.getRequestProVotersCountById(requestId),
-          this.wallet.checkRequestIsApprovedById(requestId),
-          this.wallet.checkMemberHasVotedById(requestId),
-          this.wallet.checkRequestIsAcceptedById(requestId)
-        ]);
+        try {
+          const [requestAuthor, requestType, requestAddr, requestValue, requestProVotersCount, isApproved, hasVoted, isAccepted] = await this.setProps(requestId);
 
-        expect(requestAuthor).to.equal(creator);
-        expect(requestType.words[0]).to.equal(0);
-        expect(requestAddr).to.equal(testAddr2);
-        expect(requestValue.words[0]).to.equal(0);
-        expect(requestProVotersCount.words[0]).to.equal(1);
+          expect(requestAuthor).to.equal(creator);
+          expect(requestType.words[0]).to.equal(0);
+          expect(requestAddr).to.equal(testAddr2);
+          expect(requestValue.words[0]).to.equal(0);
+          expect(requestProVotersCount.words[0]).to.equal(1);
 
-        expect(isApproved).to.be.false;
-        expect(hasVoted).to.be.true;
-        expect(isAccepted.words[0]).to.equal(1);
-
+          expect(isApproved).to.be.false;
+          expect(hasVoted).to.be.true;
+          console.log(isAccepted.words[0]);
+          expect(isAccepted.words[0]).to.equal(1);
+        } catch (err) {
+          console.log(err.message);
+        }
 
       });
 
@@ -146,14 +152,7 @@ contract('Voting', async function (accounts) {
         await this.wallet.createRequest(1, 0, testAddr, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
 
-        const requestAuthor = await this.wallet.getRequestAuthorById(requestId);
-        const requestType = await this.wallet.getRequestTypeById(requestId);
-        const requestAddr = await this.wallet.getRequestAddrById(requestId);
-        const requestValue = await this.wallet.getRequestValueById(requestId);
-        const requestProVotersCount = await this.wallet.getRequestProVotersCountById(requestId);
-        const isApproved = await this.wallet.checkRequestIsApprovedById(requestId);
-        const hasVoted = await this.wallet.checkMemberHasVotedById(requestId);
-        const isAccepted = await this.wallet.checkRequestIsAcceptedById(requestId);
+        const [requestAuthor, requestType, requestAddr, requestValue, requestProVotersCount, isApproved, hasVoted, isAccepted] = await this.setProps(requestId);
 
         expect(requestAuthor).to.equal(creator);
         expect(requestType.words[0]).to.equal(1);
@@ -172,14 +171,7 @@ contract('Voting', async function (accounts) {
         await this.wallet.createRequest(2, 1, nullAddress, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
 
-        const requestAuthor = await this.wallet.getRequestAuthorById(requestId);
-        const requestType = await this.wallet.getRequestTypeById(requestId);
-        const requestAddr = await this.wallet.getRequestAddrById(requestId);
-        const requestValue = await this.wallet.getRequestValueById(requestId);
-        const requestProVotersCount = await this.wallet.getRequestProVotersCountById(requestId);
-        const isApproved = await this.wallet.checkRequestIsApprovedById(requestId);
-        const hasVoted = await this.wallet.checkMemberHasVotedById(requestId);
-        const isAccepted = await this.wallet.checkRequestIsAcceptedById(requestId);
+        const [requestAuthor, requestType, requestAddr, requestValue, requestProVotersCount, isApproved, hasVoted, isAccepted] = await this.setProps(requestId);
 
         expect(requestAuthor).to.equal(creator);
         expect(requestType.words[0]).to.equal(2);
@@ -197,14 +189,7 @@ contract('Voting', async function (accounts) {
         await this.wallet.createRequest(3, 0, testAddr, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
 
-        const requestAuthor = await this.wallet.getRequestAuthorById(requestId);
-        const requestType = await this.wallet.getRequestTypeById(requestId);
-        const requestAddr = await this.wallet.getRequestAddrById(requestId);
-        const requestValue = await this.wallet.getRequestValueById(requestId);
-        const requestProVotersCount = await this.wallet.getRequestProVotersCountById(requestId);
-        const isApproved = await this.wallet.checkRequestIsApprovedById(requestId);
-        const hasVoted = await this.wallet.checkMemberHasVotedById(requestId);
-        const isAccepted = await this.wallet.checkRequestIsAcceptedById(requestId);
+        const [requestAuthor, requestType, requestAddr, requestValue, requestProVotersCount, isApproved, hasVoted, isAccepted] = await this.setProps(requestId);
 
         expect(requestAuthor).to.equal(creator);
         expect(requestType.words[0]).to.equal(3);
@@ -221,7 +206,7 @@ contract('Voting', async function (accounts) {
 
   });
 
-  describe.only('Accepting a request', function () {
+  describe('Accepting a request', function () {
     describe('Add member request type:', async function () {
       beforeEach(async function () {
         await this.wallet.createRequest(0, 0, testAddr, { from: creator }); // automatically accepted by creator
@@ -316,7 +301,7 @@ contract('Voting', async function (accounts) {
     });
   });
 
-  describe.only('Accepting invitation', function () {
+  describe('Accepting an invitation', function () {
     beforeEach(async function () {
       await this.wallet.createRequest(0, 0, testAddr, { from: creator });
       this.requestId = (await this.wallet.requestsCounter()) - 1;
@@ -338,6 +323,14 @@ contract('Voting', async function (accounts) {
         } catch (err) { }
       });
 
+      it('should throw if invitation already rejected', async function () {
+        await this.wallet.rejectInvitation(this.requestId, { from: testAddr });
+        try {
+          await this.wallet.acceptInvitation(this.requestId, { from: testAddr });
+          expect.fail();
+        } catch (err) { }
+      });
+
       it('should throw if invalid request id is passed', async function () {
         try {
           await this.wallet.acceptInvitation(-1, { from: testAddr });
@@ -352,7 +345,7 @@ contract('Voting', async function (accounts) {
     });
 
     describe('Functionality:', function () {
-      it('should set request accepted property to true', async function () {
+      it('should set request accepted property to 2 (Accepted)', async function () {
         await this.wallet.acceptInvitation(this.requestId, { from: testAddr });
         const isAccepted = await this.wallet.checkRequestIsAcceptedById(this.requestId);
 
@@ -375,6 +368,70 @@ contract('Voting', async function (accounts) {
 
         expect(isApproved).to.be.true;
       });
+    });
+  });
+
+  describe('Rejecting an invitation', function () {
+    beforeEach(async function () {
+      await this.wallet.createRequest(0, 0, testAddr, { from: creator });
+      this.requestId = (await this.wallet.requestsCounter()) - 1;
+    });
+
+    describe('Validation:', function () {
+      it('should throw if invalid address', async function () {
+        try {
+          await this.wallet.acceptInvitation(this.requestId, { from: randomAddr });
+          expect.fail();
+        } catch (err) { }
+      });
+
+      it('should throw if invitation already accepted', async function () {
+        await this.wallet.acceptInvitation(this.requestId, { from: testAddr });
+        try {
+          await this.wallet.rejectInvitation(this.requestId, { from: testAddr });
+          expect.fail();
+        } catch (err) { }
+      });
+
+      it('should throw if invitation already rejected', async function () {
+        await this.wallet.rejectInvitation(this.requestId, { from: testAddr });
+        try {
+          await this.wallet.rejectInvitation(this.requestId, { from: testAddr });
+          expect.fail();
+        } catch (err) { }
+      });
+
+      it('should throw if invalid request id is passed', async function () {
+        try {
+          await this.wallet.rejectInvitation(-1, { from: testAddr });
+          expect.fail();
+        } catch (err) { }
+
+        try {
+          await this.wallet.rejectInvitation(2, { from: testAddr });
+          expect.fail();
+        } catch (err) { }
+      });
+    });
+
+    describe('Functionality:', function () {
+      it('should set request accepted property to 3 (Rejected)', async function () {
+        await this.wallet.rejectInvitation(this.requestId, { from: testAddr });
+        const isAccepted = await this.wallet.checkRequestIsAcceptedById(this.requestId);
+
+        expect(isAccepted.words[0]).to.equal(3);
+      });
+
+      it('should set request approved property to true not matter of members\' votes', async function () {
+        await this.wallet.acceptInvitation(this.requestId, { from: testAddr });
+        await this.wallet.createRequest(0, 0, randomAddr, { from: creator });
+        const requestId = (await this.wallet.requestsCounter()) - 1;
+        await this.wallet.rejectInvitation(requestId, { from: randomAddr });
+
+        const isApproved = await this.wallet.checkRequestIsApprovedById(requestId);
+        expect(isApproved).to.be.true;
+      });
+
     });
   });
 
