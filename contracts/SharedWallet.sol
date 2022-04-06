@@ -137,11 +137,14 @@ contract SharedWallet is Voting {
         require(_request.requestType == _requestType, "Wrong request id!");
         require(_request.approved == true, "Request is not approved yet!");
     }
-    
-    function _sendInvitation(address _user) internal override {
-        _walletsStorage.removeUserInvitation(_user);
+
+    function _sendInvitation(address _user, uint256 _requestId)
+        internal
+        override
+    {
+        _walletsStorage.sendUserInvitation(_user, _requestId);
     }
-    
+
     function _removeInvitation(address _user) internal override {
         _walletsStorage.removeUserInvitation(_user);
     }

@@ -114,14 +114,15 @@ abstract contract Voting {
         request.proVotersCount = 1;
         request.voters[msg.sender] = true;
 
+        uint256 requestID = _requestsCounter;
+
         if (request.requestType == RequestTypes.AddMember) {
             request.invitationAccepted = InvitationState.Pending;
-            _sendInvitation(address(_data));
+            _sendInvitation(address(_data), requestID);
         } else {
             request.invitationAccepted = InvitationState.None;
         }
 
-        uint256 requestID = _requestsCounter;
         _requestsCounter++;
 
         _tryApproveRequest(requestID);
@@ -191,8 +192,10 @@ abstract contract Voting {
         return _total / 2 + 1;
     }
 
-    function _sendInvitation(address _user) internal virtual {}
+    function _sendInvitation(address _user, uint256 _requestId)
+        internal
+        virtual
+    {}
 
     function _removeInvitation(address _user) internal virtual {}
-    
 }

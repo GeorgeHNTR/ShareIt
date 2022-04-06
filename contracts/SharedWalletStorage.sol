@@ -4,27 +4,48 @@ pragma solidity ^0.8.0;
 import "./SharedWallet.sol";
 
 contract SharedWalletStorage {
+    struct Invitation {
+        address wallet;
+        uint256 requestId;
+    }
+
     mapping(address => address[]) private _usersWallets;
-    mapping(address => address[]) private _invitations;
+    mapping(address => Invitation[]) private _invitations;
 
     function userWallets() public view returns (address[] memory) {
         return _usersWallets[msg.sender];
     }
 
-    function userInvitations() public view returns (address[] memory) {
-        return _invitations[msg.sender];
+    function getInvitationsWallets() public view returns (address[] memory) {
+        address[] memory _wallets;
+        for (uint256 i = 0; i < _invitations[msg.sender].length; i++)
+            _wallets[i] = _invitations[msg.sender][i].wallet;
+        return _wallets;
     }
 
-    function sendUserInvitation(address _user) external {
+    function getInvitationsRequestsIDs()
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory _requestsIDs;
+        for (uint256 i = 0; i < _invitations[msg.sender].length; i++)
+            _requestsIDs[i] = _invitations[msg.sender][i].requestId;
+        return _requestsIDs;
+    }
+
+    function sendUserInvitation(address _user, uint256 _requestId) external {
         require(!SharedWallet(msg.sender).isMember(_user));
 
-        _invitations[_user].push(msg.sender);
+        _invitations[_user].push(
+            Invitation({wallet: msg.sender, requestId: _requestId})
+        );
     }
 
     function removeUserInvitation(address _user) external {
         require(!SharedWallet(msg.sender).isMember(_user));
         for (uint256 i = 0; i < _invitations[_user].length; i++)
-            if (_invitations[_user][i] == msg.sender) {
+            if (_invitations[_user][i].wallet == msg.sender) {
                 _invitations[_user][i] = _invitations[_user][
                     _invitations[_user].length - 1
                 ];

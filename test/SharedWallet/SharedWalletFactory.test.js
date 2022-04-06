@@ -19,12 +19,11 @@ contract('SharedWalletFactory', async function (accounts) {
     });
 
     describe('Storage', async function () {
-        it('should save be saved and a getter should be provided', async function () {
+        it('should be saved and a getter should be provided', async function () {
             const factory = await SharedWalletFactory.new();
             const storageAddr = await factory.walletsStorage();
-            const storage = await SharedWalletStorage.at(storageAddr);
 
-            expect((await storage.maxWalletsPerUser()).words[0]).to.equal(8);
+            expect(await web3.eth.getCode(storageAddr)).to.not.equal('0x');
         });
     });
 

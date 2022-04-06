@@ -106,7 +106,7 @@ contract('Voting', async function (accounts) {
       });
     });
 
-    describe.only('Functionality:', async function () {
+    describe('Functionality:', async function () {
       beforeEach(async function () {
         // add new member so requests doesn't pass immediately
         await this.wallet.createRequest(0, testAddr, { from: creator });
