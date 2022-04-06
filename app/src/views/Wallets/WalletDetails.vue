@@ -43,7 +43,7 @@
           <stat-card
             v-for="requestId in requests"
             :key="requestId"
-            :text="requestId"
+            :text="String(requestId)"
             class="request-card"
             value="👁"
             link
@@ -131,7 +131,7 @@ export default {
       }
       const resolved = await Promise.all(promises)
       for (let i = 0; i <= resolved.length; i++)
-         this.requests.push(i)
+        if (resolved[i]) this.requests.push(i)
     },
     async leave() {
       try {

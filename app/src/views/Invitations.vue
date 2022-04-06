@@ -1,29 +1,64 @@
 <template>
   <base-modal class="container">
     <h2 class="title">Invitations</h2>
-    <div class="invitations" :class="!members.length && 'flex'">
-      <base-card class="no-invitations" v-if="!members.length">
+    <div class="invitations" :class="!invitations.length && 'flex'">
+      <base-card class="no-invitations" v-if="!invitations.length">
         No Invitations Yet
       </base-card>
-      <base-card v-for="member in members" :key="member" class="invitation">{{
-        member
-      }}</base-card>
+      <base-card
+        v-for="invitation in invitations"
+        :key="invitation.wallet"
+        class="invitation"
+        >{{ invitation.wallet }}</base-card
+      >
     </div>
   </base-modal>
 </template>
 
 <script>
-import SharedWalletAt from "../web3/contracts/SharedWallet"
-
 export default {
   data() {
     return {
-      members: [],
+      invitations: [],
     }
   },
   computed: {
     userAddress() {
       return this.$store.getters["user/userAddress"]
+    },
+  },
+  watch: {
+    async userAddress() {
+      await this.getInvitations()
+    },
+  },
+  async created() {
+    await this.getInvitations()
+  },
+  methods: {
+    async getInvitations() {
+      console.log(this.userAddress)
+      const [wallets, requestsIDs] = await Promise.all([
+        this.$store.getters["contracts/storage"].methods
+          .getInvitationsWallets()
+          .call({
+            from: this.userAddress,
+          }),
+        this.$store.getters["contracts/storage"].methods
+          .getInvitationsWallets()
+          .call({
+            from: this.userAddress,
+          }),
+      ])
+
+      console.log(wallets)
+      console.log(requestsIDs)
+
+      for (let i = 0; i < wallets.length; i++)
+        this.invitations.push({
+          wallet: wallets[i],
+          requestId: requestsIDs[i],
+        })
     },
   },
 }
@@ -32,11 +67,20 @@ export default {
 <style scoped>
 .title {
   position: fixed;
+  display: flex;
+  justify-content: center;
   padding: 1.2rem 0;
   font-size: 3.5rem;
   text-align: center;
   width: 100%;
   background-color: rgb(20, 0, 10);
+  border-bottom: 1px solid white;
+  box-shadow: 0 10px 10px 5px rgba(0, 0, 0, 0.5);
+  transition: all 0.35s ease-in-out;
+}
+
+.title:hover {
+  font-size: 3.6rem;
 }
 
 .container {
@@ -86,13 +130,19 @@ export default {
   padding: 2rem 1rem;
   text-align: center;
   font-size: 2.2rem;
+  transition: all 0.35s ease-in-out;
+}
+
+.no-invitations:hover {
+  padding: 1.9rem 1.1rem;
+  font-size: 2.3rem;
 }
 
 .flex {
   height: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 /* scrollbar */
