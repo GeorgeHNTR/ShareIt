@@ -19,7 +19,7 @@
         <h3>{{ dataLabel }}:</h3>
       </div>
       <div class="stat-value">
-        <input v-model="requestData" />
+        <input :type="inputType" v-model="requestData" />
       </div>
     </base-card>
     <base-button class="requests-create" link to="/requests/new">+</base-button>
@@ -37,6 +37,9 @@ export default {
   computed: {
     dataLabel() {
       return this.requestType === "withdraw" ? "Amount" : "Address"
+    },
+    inputType() {
+      return this.requestType === "withdraw" ? "number" : "text"
     },
   },
 }
@@ -160,5 +163,4 @@ h2 {
   width: 7rem;
   height: 9%;
 }
-
 </style>

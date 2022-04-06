@@ -36,30 +36,24 @@
       </base-card>
       <base-card class="requests">
         <h2 class="requests-heading">Requests</h2>
-        <div class="stats">
+        <div :class="!requests.length ? 'stats' : 'stats-requests'">
+          <base-card class="no-requests" v-if="!requests.length">
+            No Requests Yet
+          </base-card>
           <stat-card
-            text="0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
+            v-for="requestId in requests"
+            :key="requestId"
+            :text="requestId"
+            class="request-card"
             value="👁"
             link
-            to="/requests/0xFA3AB3F3ac1d8080FD2608A187a2dc94b2C459DA"
-          ></stat-card>
-          <stat-card
-            text="0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
-            value="👁"
-            link
-            to="/requests/0x4F056464f6E0af5f2e8c0429BA61098481E4449E"
-          ></stat-card>
-          <stat-card
-            text="0xA153E837fE6cd51D72658C1746b952279199D434"
-            value="👁"
-            link
-            to="/requests/0xA153E837fE6cd51D72658C1746b952279199D434"
+            :to="`/requests/${requestId}`"
           ></stat-card>
         </div>
+      </base-card>
         <base-button class="requests-create" link to="/requests/new"
           >+</base-button
         >
-      </base-card>
     </div>
     <base-loader v-if="loading" />
   </div>
@@ -77,6 +71,7 @@ export default {
       wallet: undefined,
       balance: 0,
       members: [],
+      requests: [],
       loading: false,
     }
   },
@@ -90,6 +85,7 @@ export default {
       else {
         this.setBalance()
         this.setMembers()
+        this.setRequests()
       }
     } catch (err) {
       // theres no shared wallet contract at this address
@@ -110,6 +106,13 @@ export default {
     },
     async setMembers() {
       this.members = await this.wallet.methods.members().call()
+    },
+    async setRequests() {
+      const allRequestCount = await this.wallet.methods.requestsCounter().call()
+      for (let i = 0; i < allRequestCount; i++) {
+        if (!(await this.wallet.checkRequestIsApprovedById(i).call()))
+          this.requests.push(i)
+      }
     },
     async leave() {
       this.loading = true
@@ -149,7 +152,7 @@ export default {
 }
 
 .requests {
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   grid-area: requests;
   min-width: calc((55vw - 5vw) / 3 * 1);
@@ -188,12 +191,30 @@ export default {
   font-size: 2.2rem;
 }
 
-.stats {
+.stats,
+.stats-requests {
   height: 67%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+}
+
+.stats-requests {
+  overflow: auto;
+  justify-content: flex-start;
+  padding: 2rem 0;
+  height: 57%;
+}
+
+.request-card {
+  margin-bottom: 1.8rem;
+  min-height: 3.25rem;
+  max-height: 3.25rem;
+}
+
+.request-card:last-child {
+  margin-bottom: 0;
 }
 
 .requests-create,
@@ -225,16 +246,39 @@ export default {
   left: 70%;
 }
 
+.requests-create {
+  left: 85%;
+  width: 10%;
+}
+
 .requests-create:hover,
 .details-button:hover {
   transform: translateX(-50%) translateY(50%);
+}
+
+.requests-create:hover {
   font-size: 2.5rem;
-  width: 32%;
-  height: 9%;
+  width: 9%;
+  height: 8%;
 }
 
 .details-button:hover {
   font-size: 1.6rem;
+  width: 32%;
+  height: 9%;
+}
+
+.no-requests {
+  text-align: center;
+  font-size: 1.3rem;
+  padding: 1.5rem 0.8rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.no-requests:hover {
+  text-align: center;
+  font-size: 1.35rem;
+  padding: 1.3rem 0.4rem;
 }
 
 @media only screen and (max-width: 1628px) {

@@ -74,29 +74,6 @@ export default {
   margin-bottom: 0;
 }
 
-/* scrollbar */
-::-webkit-scrollbar {
-  width: 15px;
-}
-
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgb(0, 0, 0);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, rgb(33, 0, 43) 0, rgb(60, 0, 60) 75%);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to right,
-    rgba(33, 0, 43, 0.75) 0,
-    rgba(60, 0, 60, 0.75) 75%
-  );
-}
-
 @media only screen and (max-width: 1508px) {
   .members {
     width: 40vw;
