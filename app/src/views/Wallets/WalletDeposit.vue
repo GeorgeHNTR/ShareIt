@@ -41,6 +41,8 @@ export default {
         this.$router.push(`/wallets/${this.$route.params.id}`)
       } catch (err) {
         // theres no shared wallet contract at this address
+        // or user rejected transaction
+        this.loading = false
       }
     },
   },

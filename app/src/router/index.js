@@ -42,12 +42,12 @@ const router = createRouter({
     },
     {
       name: 'RequestCreate',
-      path: '/requests/new',
+      path: '/wallets/:id/requests/new',
       component: () => import('../views/Requests/RequestCreate.vue'),
     },
     {
       name: 'RequestDetails',
-      path: '/requests/:id',
+      path: '/wallets/:id/requests/:id',
       component: () => import('../views/Requests/RequestDetails.vue'),
     },
     {

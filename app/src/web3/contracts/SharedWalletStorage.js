@@ -16,15 +16,59 @@ const SharedWalletStorageABI = [
     },
     {
         "inputs": [],
-        "name": "maxWalletsPerUser",
+        "name": "getInvitationsWallets",
         "outputs": [
             {
-                "internalType": "uint8",
+                "internalType": "address[]",
                 "name": "",
-                "type": "uint8"
+                "type": "address[]"
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getInvitationsRequestsIDs",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_requestId",
+                "type": "uint256"
+            }
+        ],
+        "name": "sendUserInvitation",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            }
+        ],
+        "name": "removeUserInvitation",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

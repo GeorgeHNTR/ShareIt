@@ -47,13 +47,16 @@
             class="request-card"
             value="👁"
             link
-            :to="`/requests/${requestId}`"
+            :to="`${this.$route.path}/requests/${requestId}`"
           ></stat-card>
         </div>
       </base-card>
-        <base-button class="requests-create" link to="/requests/new"
-          >+</base-button
-        >
+      <base-button
+        class="requests-create"
+        link
+        :to="`${this.$route.path}/requests/new`"
+        >+</base-button
+      >
     </div>
     <base-loader v-if="loading" />
   </div>
@@ -78,9 +81,7 @@ export default {
   async created() {
     try {
       await this.setWallet()
-      const isAuth = this.wallet.methods
-        .isMember(this.$store.getters["user/userAddress"])
-        .call()
+      const isAuth = await this.isAuth()
       if (!isAuth) this.$router.push({ name: "NotFound" })
       else {
         this.setBalance()
@@ -92,7 +93,22 @@ export default {
       this.$router.push({ name: "NotFound" })
     }
   },
+  computed: {
+    userAddress() {
+      return this.$store.getters["user/userAddress"]
+    },
+  },
+  watch: {
+    async userAddress() {
+      if (!(await this.isAuth())) this.$router.push({ name: "NotFound" })
+    },
+  },
   methods: {
+    async isAuth() {
+      return this.wallet.methods
+        .isMember(this.$store.getters["user/userAddress"])
+        .call()
+    },
     seeRequest(_requests) {
       this.$router.push(`/requests/${_requests}`)
     },
@@ -109,18 +125,27 @@ export default {
     },
     async setRequests() {
       const allRequestCount = await this.wallet.methods.requestsCounter().call()
+      const promises = []
       for (let i = 0; i < allRequestCount; i++) {
-        if (!(await this.wallet.checkRequestIsApprovedById(i).call()))
-          this.requests.push(i)
+        promises.push(this.wallet.methods.checkRequestIsApprovedById(i).call())
       }
+      const resolved = await Promise.all(promises)
+      for (let i = 0; i <= resolved.length; i++)
+         this.requests.push(i)
     },
     async leave() {
-      this.loading = true
-      await this.wallet.methods
-        .leave()
-        .send({ from: this.$store.getters["user/userAddress"] })
-      this.$router.push("/wallets")
-      this.loading = false
+      try {
+        this.loading = true
+        await this.wallet.methods
+          .leave()
+          .send({ from: this.$store.getters["user/userAddress"] })
+        this.$router.push("/wallets")
+        this.loading = false
+      } catch (err) {
+        // user rejected transaction
+
+        this.loading = false
+      }
     },
   },
 }

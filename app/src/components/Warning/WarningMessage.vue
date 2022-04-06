@@ -20,7 +20,7 @@ export default {
 
 <style scoped>
 .b-card {
-  padding: 2rem 1rem;
+  padding: 2rem 1.5rem;
   width: 20rem;
   display: none;
   transition: all 0.5s ease-in-out;
@@ -37,6 +37,6 @@ export default {
 
 p {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 </style>

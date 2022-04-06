@@ -1,45 +1,167 @@
 <template>
-  <base-modal class="container">
-    <h2>Post Request</h2>
-    <base-card class="stat">
-      <div class="stat-title">
-        <h3>Type:</h3>
+  <div>
+    <base-modal class="container">
+      <h2>Post Request</h2>
+      <base-card class="stat">
+        <div class="stat-title">
+          <h3>Type:</h3>
+        </div>
+        <div class="stat-value">
+          <select v-model="requestType">
+            <option value="add-member">Add Member</option>
+            <option value="remove-member">Remove Member</option>
+            <option value="withdraw">Withdraw</option>
+            <option value="destroy">Destroy</option>
+          </select>
+        </div>
+      </base-card>
+      <base-card class="stat">
+        <div class="stat-title">
+          <h3>{{ dataLabel }}:</h3>
+        </div>
+        <div class="stat-value">
+          <input
+            ref="data"
+            @focus="warningMessage = ''"
+            :type="inputType"
+            v-model="requestData"
+          />
+        </div>
+      </base-card>
+      <div class="warning" v-if="warningMessage">
+        {{ warningMessage }}
       </div>
-      <div class="stat-value">
-        <select v-model="requestType">
-          <option value="add-member">Add Member</option>
-          <option value="remove-member">Remove Member</option>
-          <option value="withdraw">Withdraw</option>
-          <option value="destroy">Destroy</option>
-        </select>
-      </div>
-    </base-card>
-    <base-card class="stat">
-      <div class="stat-title">
-        <h3>{{ dataLabel }}:</h3>
-      </div>
-      <div class="stat-value">
-        <input :type="inputType" v-model="requestData" />
-      </div>
-    </base-card>
-    <base-button class="requests-create" link to="/requests/new">+</base-button>
-  </base-modal>
+      <base-button class="requests-create" @click="post">+</base-button>
+    </base-modal>
+    <base-loader v-if="loading" />
+  </div>
 </template>
 
 <script>
+import SharedWalletAt from "../../web3/contracts/SharedWallet"
+
 export default {
   data() {
     return {
       requestType: "withdraw",
       requestData: "",
+      validRequestTypes: ["add-member", "remove-member", "withdraw", "destroy"],
+      wallet: undefined,
+      requestTypesTable: {
+        "add-member": 0,
+        "remove-member": 1,
+        withdraw: 2,
+        destroy: 3,
+      },
+      loading: false,
+      warningMessage: "",
+      dataLabel: "Amount",
+    }
+  },
+  async created() {
+    try {
+      await this.setWallet()
+      const isAuth = await this.isAuth(this.userAddress)
+      if (!isAuth) this.$router.push({ name: "NotFound" })
+    } catch (err) {
+      // there's no shared wallet contract at this address
+      this.$router.push({ name: "NotFound" })
     }
   },
   computed: {
-    dataLabel() {
-      return this.requestType === "withdraw" ? "Amount" : "Address"
+    userAddress() {
+      return this.$store.getters["user/userAddress"]
     },
     inputType() {
       return this.requestType === "withdraw" ? "number" : "text"
+    },
+  },
+  watch: {
+    requestType(_new, _old) {
+      if (_new === "withdraw") {
+        this.dataLabel = "Amount"
+        this.requestData = ""
+      } else if (_old === "withdraw") {
+        this.dataLabel = "Address"
+        this.requestData = ""
+      }
+    },
+    async userAddress(_new, _old) {
+      if (!(await this.isAuth(_new))) this.$router.push({ name: "NotFound" })
+    },
+  },
+  methods: {
+    async isAuth(_address) {
+      return this.wallet.methods.isMember(_address).call()
+    },
+    async setWallet() {
+      this.wallet = await SharedWalletAt(this.$route.params.id)
+    },
+    async validateInput() {
+      const requestData = this.$refs.data.value
+      if (!this.validRequestTypes.includes(this.requestType)) return false
+      if (requestData.length === 0) {
+        this.warningMessage = "Data field cannot be empty!"
+        return false
+      }
+      if (
+        this.requestType === "withdraw" &&
+        (Number.isNaN(requestData) ||
+          Number(requestData) <= 0 ||
+          Number(requestData) >
+            (await this.$store.getters.web3.eth.getBalance(
+              this.wallet._address
+            )))
+      ) {
+        this.warningMessage = "Invalid withdrawal amount!"
+        return false
+      }
+      if (
+        this.requestType !== "withdraw" &&
+        (!requestData.startsWith("0x") || requestData.length !== 42) &&
+        !requestData.endsWith(".eth")
+      ) {
+        this.warningMessage = "Invalid address!"
+        return false
+      }
+      if (
+        this.requestType === "remove-member" &&
+        !(await this.isAuth(requestData))
+      ) {
+        this.warningMessage = "Can not request removing non-member!"
+        return false
+      }
+      if (
+        this.requestType === "add-member" &&
+        (await this.isAuth(requestData))
+      ) {
+        this.warningMessage = "Can not request adding member!"
+        return false
+      }
+      return true
+    },
+    async post() {
+      console.log(1)
+      if (await this.validateInput()) {
+        console.log(2)
+        this.loading = true
+        try {
+          await this.wallet.methods
+            .createRequest(
+              this.requestTypesTable[this.requestType],
+              this.requestType === "withdraw"
+                ? this.$refs.data.value
+                : this.$store.getters.web3.utils.toBN(this.$refs.data.value)
+            )
+            .send({ from: this.$store.getters["user/userAddress"] })
+        } catch (err) {
+          console.log(err)
+        } finally {
+          this.loading = false
+          this.requestData = false
+          this.$router.push(`/wallets/${this.$route.params.id}`)
+        }
+      }
     },
   },
 }
@@ -162,5 +284,10 @@ h2 {
   font-size: 2.5rem;
   width: 7rem;
   height: 9%;
+}
+
+.warning {
+  color: red;
+  font-weight: 600;
 }
 </style>

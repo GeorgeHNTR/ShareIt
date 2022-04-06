@@ -10,7 +10,7 @@
     <the-footer class="footer" />
     <warning-pair
       class="warning-pair"
-      message="If you are experiencing any problems connecting with metamask try reloading the page or switch to Chrome browser if not already."
+      message="You might face problems trying to connect with metamask at initial browser loading due to a bug with the provider api. If so try reloading the page several times. "
     />
   </div>
   <div class="mobile msg">Mobile not supported</div>
