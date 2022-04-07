@@ -126,12 +126,13 @@ export default {
     async setRequests() {
       this.requests = []
       const allRequestCount = await this.wallet.methods.requestsCounter().call()
+      console.log(allRequestCount)
       const promises = []
       for (let i = 0; i < allRequestCount; i++) {
         promises.push(this.wallet.methods.checkRequestIsApprovedById(i).call())
       }
       const resolved = await Promise.all(promises)
-      for (let i = 0; i <= resolved.length; i++)
+      for (let i = 0; i < resolved.length; i++)
         if (!resolved[i]) this.requests.push(i)
     },
     async leave() {
