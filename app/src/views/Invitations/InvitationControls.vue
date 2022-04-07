@@ -27,6 +27,15 @@ export default {
       loading: false,
     }
   },
+  async created() {
+    if (
+      await SharedWalletAt(this.$route.params.walletId)
+        .methods.checkRequestIsAcceptedById(this.$route.params.requestId)
+        .call()
+    ) {
+      this.$router.push({ name: "NotFound" })
+    }
+  },
   methods: {
     openAtEtherscan() {
       window.open(
@@ -43,7 +52,7 @@ export default {
       } catch (err) {
       } finally {
         this.loading = false
-        this.$router.push(`/wallets/${this.$route.walletsId}`)
+        this.$router.push(`/wallets/${this.$route.params.walletsId}`)
       }
     },
     async reject() {

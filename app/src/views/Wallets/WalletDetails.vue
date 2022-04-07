@@ -79,19 +79,7 @@ export default {
     }
   },
   async created() {
-    try {
-      await this.setWallet()
-      const isAuth = await this.isAuth()
-      if (!isAuth) this.$router.push({ name: "NotFound" })
-      else {
-        this.setBalance()
-        this.setMembers()
-        this.setRequests()
-      }
-    } catch (err) {
-      // theres no shared wallet contract at this address
-      this.$router.push({ name: "NotFound" })
-    }
+    this.atCreation()
   },
   computed: {
     userAddress() {
@@ -101,9 +89,25 @@ export default {
   watch: {
     async userAddress() {
       if (!(await this.isAuth())) this.$router.push({ name: "NotFound" })
+      else this.atCreation()
     },
   },
   methods: {
+    async atCreation() {
+      try {
+        await this.setWallet()
+        const isAuth = await this.isAuth()
+        if (!isAuth) this.$router.push({ name: "NotFound" })
+        else {
+          this.setBalance()
+          this.setMembers()
+          this.setRequests()
+        }
+      } catch (err) {
+        // theres no shared wallet contract at this address
+        this.$router.push({ name: "NotFound" })
+      }
+    },
     async isAuth() {
       return this.wallet.methods
         .isMember(this.$store.getters["user/userAddress"])
@@ -126,14 +130,19 @@ export default {
     async setRequests() {
       this.requests = []
       const allRequestCount = await this.wallet.methods.requestsCounter().call()
-      console.log(allRequestCount)
       const promises = []
       for (let i = 0; i < allRequestCount; i++) {
         promises.push(this.wallet.methods.checkRequestIsApprovedById(i).call())
       }
       const resolved = await Promise.all(promises)
       for (let i = 0; i < resolved.length; i++)
-        if (!resolved[i]) this.requests.push(i)
+        if (
+          !resolved[i] &&
+          !(await this.wallet.methods
+            .checkMemberHasVotedById(i)
+            .call({ from: this.userAddress }))
+        )
+          this.requests.push(i)
     },
     async leave() {
       try {

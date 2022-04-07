@@ -20,7 +20,7 @@ export default {
   methods: {
     go() {
       if (this.to && this.to.startsWith("https://")) {
-        window.location.href = this.to
+        window.open(this.to, "_blank")
       } else if (this.to) {
         this.$router.push(this.to)
       }
@@ -31,11 +31,7 @@ export default {
 
 <style scoped>
 button {
-  background: linear-gradient(
-    to right,
-    rgb(33, 0, 43) 0,
-    rgb(60, 0, 60) 75%
-  );
+  background: linear-gradient(to right, rgb(33, 0, 43) 0, rgb(60, 0, 60) 75%);
   color: rgb(255, 255, 255);
   border-radius: 50px;
   padding: 0.6rem 1rem;

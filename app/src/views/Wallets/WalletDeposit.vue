@@ -6,7 +6,7 @@
           <h3>Deposit amount in ETH:</h3>
         </div>
         <div :class="`deposit-value`">
-          <input ref="amount" type="number" />
+          <input v-model="amount" type="number" />
         </div>
       </base-card>
       <base-button class="deposit" @click="deposit">+</base-button>
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       loading: false,
+      amount: 0,
     }
   },
   methods: {
@@ -31,10 +32,7 @@ export default {
         await SharedWalletAt(this.$route.params.id)
           .methods.deposit()
           .send({
-            value: this.$store.getters.web3.utils.toWei(
-              this.$refs.amount.value,
-              "ether"
-            ),
+            value: this.$store.getters.web3.utils.toWei(this.amount, "ether"),
             from: this.$store.getters["user/userAddress"],
           })
         this.loading = false
@@ -43,6 +41,7 @@ export default {
         // theres no shared wallet contract at this address
         // or user rejected transaction
         this.loading = false
+        this.amount = 0
       }
     },
   },

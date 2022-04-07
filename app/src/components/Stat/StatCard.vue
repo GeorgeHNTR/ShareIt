@@ -53,8 +53,8 @@ export default {
 
 .stat-title {
   grid-area: title;
-  min-width: 66.66%;
-  max-width: 66.66%;
+  min-width: 60%;
+  max-width: 60%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -72,8 +72,8 @@ export default {
 
 .stat-value {
   grid-area: value;
-  min-width: 33.33%;
-  max-width: 33.33%;
+  min-width: 40%;
+  max-width: 40%;
 }
 
 .stat-title h3 {

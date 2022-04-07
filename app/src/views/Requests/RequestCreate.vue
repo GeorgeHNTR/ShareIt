@@ -55,7 +55,7 @@ export default {
       },
       loading: false,
       warningMessage: "",
-      dataLabel: "Amount",
+      dataLabel: "Amount (ETH)",
     }
   },
   async created() {
@@ -79,7 +79,7 @@ export default {
   watch: {
     requestType(_new, _old) {
       if (_new === "withdraw") {
-        this.dataLabel = "Amount"
+        this.dataLabel = "Amount (ETH)"
         this.requestData = ""
       } else if (_old === "withdraw") {
         this.dataLabel = "Address"
@@ -147,12 +147,18 @@ export default {
           await this.wallet.methods
             .createRequest(
               this.requestTypesTable[this.requestType],
-              this.requestType === "withdraw"
+              this.requestType !== "withdraw"
                 ? this.$refs.data.value
-                : this.$store.getters.web3.utils.toBN(this.$refs.data.value)
+                : this.$store.getters.web3.utils.toBN(
+                    this.$store.getters.web3.utils.toWei(
+                      this.$refs.data.value,
+                      "ether"
+                    )
+                  )
             )
             .send({ from: this.$store.getters["user/userAddress"] })
         } catch (err) {
+          console.log(err)
         } finally {
           this.loading = false
           this.requestData = false
