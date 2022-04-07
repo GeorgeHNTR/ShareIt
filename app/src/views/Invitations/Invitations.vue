@@ -6,6 +6,11 @@
         No Invitations Yet
       </base-card>
       <base-card
+        @click="
+          $router.push(
+            `${$route.path}/${invitation.wallet}/${invitation.requestId}`
+          )
+        "
         v-for="invitation in invitations"
         :key="invitation.wallet"
         class="invitation"
@@ -37,6 +42,7 @@ export default {
   },
   methods: {
     async getInvitations() {
+      this.invitations = []
       const [wallets, requestsIDs] = await Promise.all([
         this.$store.getters["contracts/storage"].methods
           .getInvitationsWallets()
@@ -44,7 +50,7 @@ export default {
             from: this.userAddress,
           }),
         this.$store.getters["contracts/storage"].methods
-          .getInvitationsWallets()
+          .getInvitationsRequestsIDs()
           .call({
             from: this.userAddress,
           }),

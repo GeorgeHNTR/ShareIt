@@ -47,13 +47,18 @@ const router = createRouter({
     },
     {
       name: 'RequestDetails',
-      path: '/wallets/:id/requests/:id',
+      path: '/wallets/:walletId/requests/:requestId',
       component: () => import('../views/Requests/RequestDetails.vue'),
     },
     {
       name: 'Invitations',
       path: '/invitations',
-      component: () => import('../views/Invitations.vue'),
+      component: () => import('../views/Invitations/Invitations.vue'),
+    },
+    {
+      name: 'InvitationControls.vue',
+      path: '/invitations/:walletId/:requestId',
+      component: () => import('../views/Invitations/InvitationControls.vue'),
     },
     {
       name: 'Converter',

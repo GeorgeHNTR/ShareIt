@@ -124,6 +124,7 @@ export default {
       this.members = await this.wallet.methods.members().call()
     },
     async setRequests() {
+      this.requests = []
       const allRequestCount = await this.wallet.methods.requestsCounter().call()
       const promises = []
       for (let i = 0; i < allRequestCount; i++) {
@@ -131,7 +132,7 @@ export default {
       }
       const resolved = await Promise.all(promises)
       for (let i = 0; i <= resolved.length; i++)
-        if (resolved[i]) this.requests.push(i)
+        if (!resolved[i]) this.requests.push(i)
     },
     async leave() {
       try {
