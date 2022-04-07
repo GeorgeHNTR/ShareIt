@@ -22,26 +22,28 @@ export default {
   data() {
     return {
       loading: false,
-      amount: 0,
+      amount: "",
     }
   },
   methods: {
     async deposit() {
+      this.loading = true
       try {
-        this.loading = true
         await SharedWalletAt(this.$route.params.id)
           .methods.deposit()
           .send({
-            value: this.$store.getters.web3.utils.toWei(this.amount, "ether"),
+            value: this.$store.getters.web3.utils.toWei(
+              String(this.amount),
+              "ether"
+            ),
             from: this.$store.getters["user/userAddress"],
           })
-        this.loading = false
         this.$router.push(`/wallets/${this.$route.params.id}`)
       } catch (err) {
-        // theres no shared wallet contract at this address
-        // or user rejected transaction
+        console.log(err)
+      } finally {
         this.loading = false
-        this.amount = 0
+        this.amount = ""
       }
     },
   },
