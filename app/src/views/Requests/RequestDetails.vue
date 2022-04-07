@@ -46,9 +46,11 @@ export default {
     }
   },
   async created() {
-    if (
-      await Promise.all([this.isAlreadyApproved(), this.isAlreadyAccepted()])
-    ) {
+    const [isAlreadyApproved, isAlreadyAccepted] = await Promise.all([
+      this.isAlreadyApproved(),
+      this.isAlreadyAccepted(),
+    ])
+    if (isAlreadyApproved || isAlreadyAccepted) {
       this.$router.push({ name: "NotFound" })
       return
     }
@@ -113,9 +115,9 @@ export default {
           .methods.acceptRequest(this.$route.params.requestId)
           .send({ from: this.userAddress })
       } catch (err) {
-        console.error(err)
       } finally {
         this.loading = false
+        this.$router.push(`/wallets/${this.$route.params.walletId}`)
       }
     },
   },
