@@ -23,8 +23,5 @@
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.4",
     "chai": "^4.3.6"
-  },
-  "devDependencies": {
-    "chai-bignumber": "^3.0.0"
   }
 }

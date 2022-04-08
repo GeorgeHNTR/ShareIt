@@ -49,7 +49,7 @@ const SharedWalletFactoryABI = [
   }
 ];
 
-const SharedWalletFactoryAddress = '0xaaCf3361c0EeD23a679d27D30f2CaEeae3b1C20E';
+const SharedWalletFactoryAddress = '0xB02C35AdDb417B6879cbb2B2E21A5fAa82a457D5';
 
 const SharedWalletFactory = () => {
   return new store.getters.web3.eth.Contract(SharedWalletFactoryABI, SharedWalletFactoryAddress);

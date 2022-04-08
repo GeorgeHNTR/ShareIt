@@ -104,7 +104,6 @@ export default {
           this.setRequests()
         }
       } catch (err) {
-        // theres no shared wallet contract at this address
         this.$router.push({ name: "NotFound" })
       }
     },

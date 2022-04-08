@@ -89,6 +89,11 @@ contract SharedWallet is Voting {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Destroy);
 
+        for (uint256 i; i < _members.length; i++) {
+            _isMember[_members[i]] = false;
+            _walletsStorage.removeWalletForUser(address(this), _members[i]);
+        }
+
         selfdestruct(payable(address(request.data)));
     }
 

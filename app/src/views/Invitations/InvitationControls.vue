@@ -2,16 +2,11 @@
   <div>
     <base-modal class="container">
       <h2 class="title">Invitation</h2>
-      <h3 class="wallet" @click="openAtEtherscan">
-        Wallet: {{ $route.params.walletId }}
-      </h3>
+      <h3 class="wallet" @click="openAtEtherscan">Wallet address: {{ $route.params.walletId }}</h3>
+      <h3 class="wallet" @click="openAtEtherscan">Wallet name: {{ walletName }}</h3>
       <div class="controls">
-        <base-button @click="accept" class="controls-btn accept"
-          >Accept</base-button
-        >
-        <base-button @click="reject" class="controls-btn reject"
-          >Reject</base-button
-        >
+        <base-button @click="accept" class="controls-btn accept">Accept</base-button>
+        <base-button @click="reject" class="controls-btn reject">Reject</base-button>
       </div>
     </base-modal>
     <base-loader v-if="loading" />
@@ -19,55 +14,63 @@
 </template>
 
 <script>
-import SharedWalletAt from "../../web3/contracts/SharedWallet"
+import SharedWalletAt from "../../web3/contracts/SharedWallet";
 
 export default {
   data() {
     return {
       loading: false,
-    }
+      wallet: undefined,
+      walletName: ""
+    };
   },
   async created() {
+    await this.setWallet();
     if (
-      await SharedWalletAt(this.$route.params.walletId)
-        .methods.checkRequestIsAcceptedById(this.$route.params.requestId)
-        .call()
+      (await this.wallet.methods
+        .checkRequestIsAcceptedById(this.$route.params.requestId)
+        .call()) != 1
     ) {
-      this.$router.push({ name: "NotFound" })
+      this.$router.push({ name: "NotFound" });
     }
   },
   methods: {
+    async setWallet() {
+      this.wallet = SharedWalletAt(this.$route.params.walletId);
+      this.walletName = await this.wallet.methods.name().call();
+    },
     openAtEtherscan() {
       window.open(
         `https://ropsten.etherscan.io/address/${this.$route.params.walletId}`,
         "_blank"
-      )
+      );
     },
     async accept() {
-      this.loading = true
+      this.loading = true;
       try {
-        await SharedWalletAt(this.$route.params.walletId)
-          .methods.acceptInvitation(Number(this.$route.params.requestId))
-          .send({ from: this.$store.getters["user/userAddress"] })
+        await this.wallet.methods
+          .acceptInvitation(Number(this.$route.params.requestId))
+          .send({ from: this.$store.getters["user/userAddress"] });
       } catch (err) {
       } finally {
-        this.loading = false
-        this.$router.push(`/wallets/${this.$route.params.walletsId}`)
+        this.loading = false;
+        this.$router.push(`/wallets/${this.$route.params.walletsId}`);
       }
     },
     async reject() {
-      this.loading = true
+      this.loading = true;
       try {
-        await SharedWalletAt(this.$route.params.walletId)
-          .methods.rejectInvitation(this.$route.params.requestId)
-          .send({ from: this.$store.getters["user/userAddress"] })
+        await this.wallet.methods
+          .rejectInvitation(this.$route.params.requestId)
+          .send({ from: this.$store.getters["user/userAddress"] });
       } catch (err) {
       } finally {
-        this.loading = false
+        this.loading = false;
+        this.$router.push("/");
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 
 <style scoped>
