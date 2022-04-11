@@ -63,77 +63,86 @@
 </template>
 
 <script>
-import StatCard from "../../components/Stat/StatCard.vue"
-import SharedWalletAt from "../../web3/contracts/SharedWallet"
+import StatCard from "../../components/Stat/StatCard.vue";
+import SharedWalletAt from "../../web3/contracts/SharedWallet";
 
 export default {
   components: { StatCard },
   data() {
     return {
-      title: "Family",
+      title: "",
       wallet: undefined,
       balance: 0,
       members: [],
       requests: [],
       loading: false,
-    }
+    };
   },
   async created() {
-    this.atCreation()
+    this.atCreation();
   },
   computed: {
     userAddress() {
-      return this.$store.getters["user/userAddress"]
+      return this.$store.getters["user/userAddress"];
     },
   },
   watch: {
     async userAddress() {
-      if (!(await this.isAuth())) this.$router.push({ name: "NotFound" })
-      else this.atCreation()
+      if (!(await this.isAuth())) this.$router.push({ name: "NotFound" });
+      else this.atCreation();
     },
   },
   methods: {
     async atCreation() {
       try {
-        await this.setWallet()
-        const isAuth = await this.isAuth()
-        if (!isAuth) this.$router.push({ name: "NotFound" })
+        await this.setWallet();
+        const isAuth = await this.isAuth();
+        if (!isAuth) this.$router.push({ name: "NotFound" });
         else {
-          this.setBalance()
-          this.setMembers()
-          this.setRequests()
+          this.setProps();
         }
       } catch (err) {
-        this.$router.push({ name: "NotFound" })
+        this.$router.push({ name: "NotFound" });
       }
     },
     async isAuth() {
       return this.wallet.methods
         .isMember(this.$store.getters["user/userAddress"])
-        .call()
+        .call();
     },
     seeRequest(_requests) {
-      this.$router.push(`/requests/${_requests}`)
+      this.$router.push(`/requests/${_requests}`);
+    },
+    setProps() {
+      this._setTitle();
+      this._setBalance();
+      this._setMembers();
+      this._setRequests();
     },
     async setWallet() {
-      this.wallet = await SharedWalletAt(this.$route.params.id)
+      this.wallet = await SharedWalletAt(this.$route.params.id);
     },
-    async setBalance() {
+    async _setBalance() {
       this.balance = await this.$store.getters.web3.eth.getBalance(
         this.wallet._address
-      )
+      );
     },
-    async setMembers() {
-      this.members = await this.wallet.methods.members().call()
+    async _setMembers() {
+      this.members = await this.wallet.methods.members().call();
     },
-    async setRequests() {
-      this.requests = []
-      const allRequestCount = await this.wallet.methods.requestsCounter().call()
-      const promises = []
+    async _setTitle() {
+      this.title = await this.wallet.methods.name().call();
+    },
+    async _setRequests() {
+      this.requests = [];
+      const allRequestCount = await this.wallet.methods
+        .requestsCounter()
+        .call();
+      const promises = [];
       for (let i = 0; i < allRequestCount; i++) {
-        promises.push(this.wallet.methods.checkRequestIsApprovedById(i).call())
+        promises.push(this.wallet.methods.checkRequestIsApprovedById(i).call());
       }
-      const resolved = await Promise.all(promises)
+      const resolved = await Promise.all(promises);
       for (let i = 0; i < resolved.length; i++)
         if (
           !resolved[i] &&
@@ -141,24 +150,24 @@ export default {
             .checkMemberHasVotedById(i)
             .call({ from: this.userAddress }))
         )
-          this.requests.push(i)
+          this.requests.push(i);
     },
     async leave() {
       try {
-        this.loading = true
+        this.loading = true;
         await this.wallet.methods
           .leave()
-          .send({ from: this.$store.getters["user/userAddress"] })
-        this.$router.push("/wallets")
-        this.loading = false
+          .send({ from: this.$store.getters["user/userAddress"] });
+        this.$router.push("/wallets");
+        this.loading = false;
       } catch (err) {
         // user rejected transaction
 
-        this.loading = false
+        this.loading = false;
       }
     },
   },
-}
+};
 </script>
 
 <style scoped>
