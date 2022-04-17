@@ -4,7 +4,7 @@
       <div class="content">
         <h1 class="heading">The Ultimate Shared Wallet Platform</h1>
       </div>
-      <img src="../assets/eth.svg" />
+      <img src="/eth.svg" />
     </div>
     <base-button class="learn-more" link to="/about">Learn More</base-button>
   </div>

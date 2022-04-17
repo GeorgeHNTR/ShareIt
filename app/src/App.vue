@@ -1,29 +1,31 @@
 <template>
-  <div id="background" />
-  <div class="content">
-    <the-header class="header" />
-    <router-view class="view" v-slot="{ Component }">
-      <transition name="route" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
-    <the-footer class="footer" />
-    <warning-pair
-      class="warning-pair"
-      message="You might face problems trying to connect with metamask at initial browser loading due to a bug with the provider api. If so try reloading the page several times. "
-    />
+  <div>
+    <div id="background" />
+    <div class="content">
+      <the-header class="header" />
+      <router-view class="view" v-slot="{ Component }">
+        <transition name="route" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+      <the-footer class="footer" />
+      <warning-pair
+        class="warning-pair"
+        message="You might face problems trying to connect with metamask at initial browser loading due to a bug with the provider api. If so try reloading the page several times. "
+      />
+    </div>
+    <div class="mobile msg">Mobile not supported</div>
   </div>
-  <div class="mobile msg">Mobile not supported</div>
 </template>
 
 <script>
-import TheHeader from "./components/Layout/TheHeader.vue"
-import TheFooter from "./components/Layout/TheFooter.vue"
-import WarningPair from "./components/Warning/WarningPair.vue"
+import TheHeader from "./components/Layout/TheHeader.vue";
+import TheFooter from "./components/Layout/TheFooter.vue";
+import WarningPair from "./components/Warning/WarningPair.vue";
 
 export default {
   components: { TheHeader, TheFooter, WarningPair },
-}
+};
 </script>
 
 <style>
