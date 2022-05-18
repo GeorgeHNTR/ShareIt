@@ -6,14 +6,9 @@ import "./SharedWalletStorage.sol";
 
 contract SharedWalletFactory {
     SharedWalletStorage private immutable _walletsStorage;
-    address private _lastWalletCreated;
 
     constructor() {
         _walletsStorage = new SharedWalletStorage();
-    }
-
-    function lastWalletCreated() public view returns (address) {
-        return _lastWalletCreated;
     }
 
     function walletsStorage() public view returns (address) {
@@ -25,6 +20,5 @@ contract SharedWalletFactory {
             new SharedWallet(msg.sender, address(_walletsStorage), _name)
         );
         _walletsStorage.addWalletToUser(newSharedWalletAddress, msg.sender);
-        _lastWalletCreated = newSharedWalletAddress;
     }
 }
