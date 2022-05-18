@@ -5,7 +5,7 @@ import "./Voting.sol";
 import "./SharedWalletStorage.sol";
 
 contract SharedWallet is Voting {
-    SharedWalletStorage private _walletsStorage;
+    SharedWalletStorage private immutable _walletsStorage;
     mapping(address => bool) private _isMember;
     address[] private _members;
     string private _name;

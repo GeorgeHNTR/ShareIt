@@ -5,7 +5,7 @@ import "./SharedWallet.sol";
 import "./SharedWalletStorage.sol";
 
 contract SharedWalletFactory {
-    SharedWalletStorage private _walletsStorage;
+    SharedWalletStorage private immutable _walletsStorage;
     address private _lastWalletCreated;
 
     constructor() {
