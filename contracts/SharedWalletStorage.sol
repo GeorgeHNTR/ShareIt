@@ -17,9 +17,10 @@ contract SharedWalletStorage {
     }
 
     function getInvitationsWallets() public view returns (address[] memory) {
-        address[] memory _wallets = new address[](_invitations[msg.sender].length);
-        for (uint256 i = 0; i < _invitations[msg.sender].length; i++)
-            _wallets[i] = _invitations[msg.sender][i].wallet;
+        Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
+        address[] memory _wallets = new address[](m_msgSenderInvitations.length);
+        for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
+            _wallets[i] = m_msgSenderInvitations[i].wallet;
         return _wallets;
     }
 
@@ -28,9 +29,10 @@ contract SharedWalletStorage {
         view
         returns (uint256[] memory)
     {
-        uint256[] memory _requestsIDs = new uint256[](_invitations[msg.sender].length);
-        for (uint256 i = 0; i < _invitations[msg.sender].length; i++)
-            _requestsIDs[i] = _invitations[msg.sender][i].requestId;
+        Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
+        uint256[] memory _requestsIDs = new uint256[](m_msgSenderInvitations.length);
+        for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
+            _requestsIDs[i] = m_msgSenderInvitations[i].requestId;
         return _requestsIDs;
     }
 
@@ -43,10 +45,11 @@ contract SharedWalletStorage {
     }
 
     function removeUserInvitation(address _user) external {
-        for (uint256 i = 0; i < _invitations[_user].length; i++)
-            if (_invitations[_user][i].wallet == msg.sender) {
-                _invitations[_user][i] = _invitations[_user][
-                    _invitations[_user].length - 1
+        Invitation[] memory m_userInvitations = _invitations[_user];
+        for (uint256 i = 0; i < m_userInvitations.length; i++)
+            if (m_userInvitations[i].wallet == msg.sender) {
+                _invitations[_user][i] = m_userInvitations[
+                    m_userInvitations.length - 1
                 ];
                 _invitations[_user].pop();
                 return;
@@ -63,9 +66,10 @@ contract SharedWalletStorage {
 
     function removeWalletForUser(address _oldWallet, address _user) external {
         require(!SharedWallet(_oldWallet).isMember(_user));
-        for (uint256 i = 0; i < _usersWallets[_user].length; i++)
-            if (_usersWallets[_user][i] == _oldWallet) {
-                _usersWallets[_user][i] = _usersWallets[_user][
+        address[] memory m_userWallets = _usersWallets[_user];
+        for (uint256 i = 0; i < m_userWallets.length; i++)
+            if (m_userWallets[i] == _oldWallet) {
+                _usersWallets[_user][i] = m_userWallets[
                     _usersWallets[_user].length - 1
                 ];
                 _usersWallets[_user].pop();

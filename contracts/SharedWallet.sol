@@ -63,9 +63,11 @@ contract SharedWallet is Voting {
         address memberToRemove = address(request.data);
 
         require(isMember(memberToRemove));
-        for (uint256 i = 0; i < _members.length; i++)
-            if (_members[i] == memberToRemove) {
-                _members[i] = _members[_members.length - 1];
+        
+        address[] memory m_members = _members;
+        for (uint256 i = 0; i < m_members.length; i++)
+            if (m_members[i] == memberToRemove) {
+                _members[i] = m_members[m_members.length - 1];
                 _members.pop();
                 delete _isMember[memberToRemove];
                 _walletsStorage.removeWalletForUser(
@@ -89,9 +91,10 @@ contract SharedWallet is Voting {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Destroy);
 
-        for (uint256 i; i < _members.length; i++) {
-            _isMember[_members[i]] = false;
-            _walletsStorage.removeWalletForUser(address(this), _members[i]);
+        address[] memory m_members = _members;
+        for (uint256 i; i < m_members.length; i++) {
+            _isMember[m_members[i]] = false;
+            _walletsStorage.removeWalletForUser(address(this), m_members[i]);
         }
 
         selfdestruct(payable(address(request.data)));
@@ -99,9 +102,11 @@ contract SharedWallet is Voting {
 
     function leave() external {
         require(isMember(msg.sender));
-        for (uint256 i = 0; i < _members.length; i++)
-            if (_members[i] == msg.sender) {
-                _members[i] = _members[_members.length - 1];
+        
+        address[] memory m_members = _members;
+        for (uint256 i = 0; i < m_members.length; i++)
+            if (m_members[i] == msg.sender) {
+                _members[i] = m_members[m_members.length - 1];
                 _members.pop();
                 delete _isMember[msg.sender];
                 _walletsStorage.removeWalletForUser(address(this), msg.sender);
