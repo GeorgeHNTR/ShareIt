@@ -63,7 +63,7 @@ contract SharedWallet is Voting {
         address memberToRemove = address(request.data);
 
         require(isMember(memberToRemove));
-        
+
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
             if (m_members[i] == memberToRemove) {
@@ -84,7 +84,7 @@ contract SharedWallet is Voting {
 
         require(request.data <= address(this).balance);
 
-        payable(request.author).transfer(request.data);
+        payable(request.author).call{value: request.data}("");
     }
 
     function _destroy(uint256 _requestId) private {
@@ -102,7 +102,7 @@ contract SharedWallet is Voting {
 
     function leave() external {
         require(isMember(msg.sender));
-        
+
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
             if (m_members[i] == msg.sender) {
