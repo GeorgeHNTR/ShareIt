@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./Voting.sol";
 import "./SharedWalletStorage.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract SharedWallet is Voting {
+contract SharedWallet is Voting, ReentrancyGuard {
     SharedWalletStorage private immutable _walletsStorage;
     mapping(address => bool) private _isMember;
     address[] private _members;
@@ -78,7 +79,7 @@ contract SharedWallet is Voting {
             }
     }
 
-    function _withdraw(uint256 _requestId) private {
+    function _withdraw(uint256 _requestId) private nonReentrant {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Withdraw);
 
