@@ -15,7 +15,7 @@ contract SharedWalletFactory {
         return address(_walletsStorage);
     }
 
-    function createNewSharedWallet(string memory _name) external {
+    function createNewSharedWallet(string calldata _name) external {
         address newSharedWalletAddress = address(
             new SharedWallet(msg.sender, address(_walletsStorage), _name)
         );
