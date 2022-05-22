@@ -6,13 +6,13 @@ import "./SharedWalletStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract SharedWallet is Voting, ReentrancyGuard {
-    SharedWalletStorage private immutable _walletsStorage;
-    mapping(address => bool) private _isMember;
+    SharedWalletStorage public immutable walletsStorage;
+    mapping(address => bool) public isMember;
     address[] private _members;
-    string private _name;
+    string public name;
 
     modifier onlyMember() override {
-        require(_isMember[msg.sender]);
+        require(isMember[msg.sender]);
         _;
     }
 
@@ -22,27 +22,15 @@ contract SharedWallet is Voting, ReentrancyGuard {
         string memory name_
     ) {
         require(bytes(name_).length != 0);
-        _walletsStorage = SharedWalletStorage(_walletsStorageAddress);
+        walletsStorage = SharedWalletStorage(_walletsStorageAddress);
 
         _members.push(_creator);
-        _isMember[_creator] = true;
-        _name = name_;
+        isMember[_creator] = true;
+        name = name;
     }
 
     function members() public view returns (address[] memory) {
         return _members;
-    }
-
-    function name() public view returns (string memory) {
-        return _name;
-    }
-
-    function walletsStorage() public view returns (SharedWalletStorage) {
-        return _walletsStorage;
-    }
-
-    function isMember(address _user) public view returns (bool) {
-        return _isMember[_user];
     }
 
     function _addMember(uint256 _requestId) private {
@@ -51,10 +39,10 @@ contract SharedWallet is Voting, ReentrancyGuard {
 
         address newMember = address(request.data);
 
-        require(!isMember(newMember));
+        require(!isMember[newMember]);
         _members.push(newMember);
-        _isMember[newMember] = true;
-        _walletsStorage.addWalletToUser(address(this), newMember);
+        isMember[newMember] = true;
+        walletsStorage.addWalletToUser(address(this), newMember);
     }
 
     function _removeMember(uint256 _requestId) private {
@@ -63,15 +51,15 @@ contract SharedWallet is Voting, ReentrancyGuard {
 
         address memberToRemove = address(request.data);
 
-        require(isMember(memberToRemove));
+        require(isMember[memberToRemove]);
 
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
             if (m_members[i] == memberToRemove) {
                 _members[i] = m_members[m_members.length - 1];
                 _members.pop();
-                delete _isMember[memberToRemove];
-                _walletsStorage.removeWalletForUser(
+                delete isMember[memberToRemove];
+                walletsStorage.removeWalletForUser(
                     address(this),
                     memberToRemove
                 );
@@ -85,7 +73,10 @@ contract SharedWallet is Voting, ReentrancyGuard {
 
         require(request.data <= address(this).balance);
 
-        payable(request.author).call{value: request.data}("");
+        (bool success, ) = payable(request.author).call{value: request.data}(
+            ""
+        );
+        require(success);
     }
 
     function _destroy(uint256 _requestId) private {
@@ -94,23 +85,23 @@ contract SharedWallet is Voting, ReentrancyGuard {
 
         address[] memory m_members = _members;
         for (uint256 i; i < m_members.length; i++) {
-            _isMember[m_members[i]] = false;
-            _walletsStorage.removeWalletForUser(address(this), m_members[i]);
+            isMember[m_members[i]] = false;
+            walletsStorage.removeWalletForUser(address(this), m_members[i]);
         }
 
         selfdestruct(payable(address(request.data)));
     }
 
     function leave() external {
-        require(isMember(msg.sender));
+        require(isMember[msg.sender]);
 
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
             if (m_members[i] == msg.sender) {
                 _members[i] = m_members[m_members.length - 1];
                 _members.pop();
-                delete _isMember[msg.sender];
-                _walletsStorage.removeWalletForUser(address(this), msg.sender);
+                delete isMember[msg.sender];
+                walletsStorage.removeWalletForUser(address(this), msg.sender);
                 return;
             }
     }
@@ -153,11 +144,11 @@ contract SharedWallet is Voting, ReentrancyGuard {
         internal
         override
     {
-        _walletsStorage.sendUserInvitation(_user, _requestId);
+        walletsStorage.sendUserInvitation(_user, _requestId);
     }
 
     function _removeInvitation(address _user) internal override {
-        _walletsStorage.removeUserInvitation(_user);
+        walletsStorage.removeUserInvitation(_user);
     }
 
     function deposit() external payable {}

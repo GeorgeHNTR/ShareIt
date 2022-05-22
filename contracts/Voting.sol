@@ -30,15 +30,11 @@ abstract contract Voting {
 
     mapping(uint256 => Request) internal _requests;
 
-    uint256 internal _requestsCounter;
+    uint256 public requestsCounter;
 
     modifier onlyMember() virtual {
         require(false);
         _;
-    }
-
-    function requestsCounter() public view returns (uint256) {
-        return _requestsCounter;
     }
 
     function checkRequestIsApprovedById(uint256 _id)
@@ -106,7 +102,7 @@ abstract contract Voting {
             require(address(_data) != address(0x0));
         }
 
-        Request storage request = _requests[_requestsCounter];
+        Request storage request = _requests[requestsCounter];
 
         request.author = msg.sender;
         request.requestType = RequestTypes(_requestTypeIdx);
@@ -114,7 +110,7 @@ abstract contract Voting {
         request.proVotersCount = 1;
         request.voters[msg.sender] = true;
 
-        uint256 requestID = _requestsCounter;
+        uint256 requestID = requestsCounter;
 
         if (request.requestType == RequestTypes.AddMember) {
             request.invitationAccepted = InvitationState.Pending;
@@ -123,7 +119,7 @@ abstract contract Voting {
             request.invitationAccepted = InvitationState.None;
         }
 
-        _requestsCounter++;
+        requestsCounter++;
 
         _tryApproveRequest(requestID);
     }
