@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract SharedWalletFactory {
     SharedWalletStorage public immutable walletsStorage;
-    address sharedWalletImpl;
+    address public immutable sharedWalletImpl;
 
     constructor() {
         walletsStorage = new SharedWalletStorage();
