@@ -49,13 +49,14 @@ abstract contract Voting {
             uint256
         )
     {
+        Request storage request = _requests[_id];
         return (
-            _requests[_id].author,
-            _requests[_id].requestType,
-            _requests[_id].data,
-            _requests[_id].invitationAccepted,
-            _requests[_id].approved,
-            _requests[_id].proVotersCount
+            request.author,
+            request.requestType,
+            request.data,
+            request.invitationAccepted,
+            request.approved,
+            request.proVotersCount
         );
     }
 
