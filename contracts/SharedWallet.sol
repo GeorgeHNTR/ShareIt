@@ -4,9 +4,10 @@ pragma solidity ^0.8.0;
 import "./Voting.sol";
 import "./SharedWalletStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract SharedWallet is Voting, ReentrancyGuard {
-    SharedWalletStorage public immutable walletsStorage;
+contract SharedWallet is Voting, Initializable, ReentrancyGuard {
+    SharedWalletStorage public walletsStorage;
     mapping(address => bool) public isMember;
     address[] private _members;
     string public name;
@@ -16,17 +17,17 @@ contract SharedWallet is Voting, ReentrancyGuard {
         _;
     }
 
-    constructor(
+    function initialize(
         address _creator,
         address _walletsStorageAddress,
-        string memory name_
-    ) {
-        require(bytes(name_).length != 0);
-        walletsStorage = SharedWalletStorage(_walletsStorageAddress);
+        string memory _name
+    ) public virtual initializer {
+        require(bytes(_name).length != 0);
 
+        walletsStorage = SharedWalletStorage(_walletsStorageAddress);
         _members.push(_creator);
         isMember[_creator] = true;
-        name = name;
+        name = _name;
     }
 
     function members() public view returns (address[] memory) {
