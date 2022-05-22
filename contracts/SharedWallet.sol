@@ -107,30 +107,15 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
             }
     }
 
-    function _tryApproveRequest(uint256 _requestId) internal override {
-        uint256 goal = _getMajority(_members.length);
-        if (
-            _requests[_requestId].proVotersCount == goal &&
-            _requests[_requestId].requestType != RequestTypes.AddMember
-        ) _requests[_requestId].approved = true;
-        else if (
-            _requests[_requestId].proVotersCount == goal &&
-            _requests[_requestId].requestType == RequestTypes.AddMember &&
-            uint8(_requests[_requestId].invitationAccepted) == 2
-        ) _requests[_requestId].approved = true;
-
-        if (_requests[_requestId].approved) _executeRequest(_requestId);
-    }
-
-    function _executeRequest(uint256 _requestId) private {
-        if (_requests[_requestId].requestType == RequestTypes.AddMember)
-            _addMember(_requestId);
-        else if (_requests[_requestId].requestType == RequestTypes.RemoveMember)
-            _removeMember(_requestId);
-        else if (_requests[_requestId].requestType == RequestTypes.Withdraw)
-            _withdraw(_requestId);
-        else if (_requests[_requestId].requestType == RequestTypes.Destroy)
-            _destroy(_requestId);
+    function _executeRequest(uint256 _requestID) internal override {
+        if (_requests[_requestID].requestType == RequestTypes.AddMember)
+            _addMember(_requestID);
+        else if (_requests[_requestID].requestType == RequestTypes.RemoveMember)
+            _removeMember(_requestID);
+        else if (_requests[_requestID].requestType == RequestTypes.Withdraw)
+            _withdraw(_requestID);
+        else if (_requests[_requestID].requestType == RequestTypes.Destroy)
+            _destroy(_requestID);
     }
 
     function _validateRequest(
@@ -150,6 +135,10 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
     function _removeInvitation(address _user) internal override {
         walletsStorage.removeUserInvitation(_user);
+    }
+
+    function _quorum() internal view override returns (uint256) {
+        return _members.length / 2 + 1;
     }
 
     function deposit() external payable {}

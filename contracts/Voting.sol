@@ -146,24 +146,23 @@ abstract contract Voting {
     }
 
     function _tryApproveRequest(uint256 _requestID) internal virtual {
-        // uint256 goal = _getMajority(1); // override
-        // if (
-        //     _requests[_requestID].proVotersCount == goal &&
-        //     _requests[_requestID].requestType != RequestTypes.AddMember
-        // ) {
-        //     _requests[_requestID].approved = true;
-        // } else if (
-        //     _requests[_requestID].proVotersCount == goal &&
-        //     _requests[_requestID].requestType == RequestTypes.AddMember &&
-        //     _requests[_requestID].accepted
-        // ) {
-        //     _requests[_requestID].approved = true;
-        // }
+        uint256 goal = _quorum();
+        if (
+            _requests[_requestID].proVotersCount == goal &&
+            _requests[_requestID].requestType != RequestTypes.AddMember
+        ) _requests[_requestID].approved = true;
+        else if (
+            _requests[_requestID].proVotersCount == goal &&
+            _requests[_requestID].requestType == RequestTypes.AddMember &&
+            uint8(_requests[_requestID].invitationAccepted) == 2
+        ) _requests[_requestID].approved = true;
+
+        if (_requests[_requestID].approved) _executeRequest(_requestID);
     }
 
-    function _getMajority(uint256 _total) internal pure returns (uint256) {
-        return _total / 2 + 1;
-    }
+    function _quorum() internal virtual returns (uint256) {}
+
+    function _executeRequest(uint256 _requestID) internal virtual {}
 
     function _sendInvitation(address _user, uint256 _requestId)
         internal
