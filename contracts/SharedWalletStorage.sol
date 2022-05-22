@@ -3,6 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./SharedWallet.sol";
 
+error UserIsMember();
+error UserIsNotMember();
+
 contract SharedWalletStorage {
     struct Invitation {
         address wallet;
@@ -18,7 +21,9 @@ contract SharedWalletStorage {
 
     function getInvitationsWallets() public view returns (address[] memory) {
         Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
-        address[] memory _wallets = new address[](m_msgSenderInvitations.length);
+        address[] memory _wallets = new address[](
+            m_msgSenderInvitations.length
+        );
         for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
             _wallets[i] = m_msgSenderInvitations[i].wallet;
         return _wallets;
@@ -30,14 +35,16 @@ contract SharedWalletStorage {
         returns (uint256[] memory)
     {
         Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
-        uint256[] memory _requestsIDs = new uint256[](m_msgSenderInvitations.length);
+        uint256[] memory _requestsIDs = new uint256[](
+            m_msgSenderInvitations.length
+        );
         for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
             _requestsIDs[i] = m_msgSenderInvitations[i].requestId;
         return _requestsIDs;
     }
 
     function sendUserInvitation(address _user, uint256 _requestId) external {
-        require(!SharedWallet(msg.sender).isMember(_user));
+        if (SharedWallet(msg.sender).isMember(_user)) revert UserIsMember();
 
         _invitations[_user].push(
             Invitation({wallet: msg.sender, requestId: _requestId})
@@ -57,15 +64,12 @@ contract SharedWalletStorage {
     }
 
     function addWalletToUser(address _newWallet, address _user) external {
-        require(
-            SharedWallet(_newWallet).isMember(_user),
-            "User is not a member of this wallet!"
-        );
+        if (!SharedWallet(_newWallet).isMember(_user)) revert UserIsNotMember();
         _usersWallets[_user].push(_newWallet);
     }
 
     function removeWalletForUser(address _oldWallet, address _user) external {
-        require(!SharedWallet(_oldWallet).isMember(_user));
+        if (SharedWallet(_oldWallet).isMember(_user)) revert UserIsMember();
         address[] memory m_userWallets = _usersWallets[_user];
         for (uint256 i = 0; i < m_userWallets.length; i++)
             if (m_userWallets[i] == _oldWallet) {

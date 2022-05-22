@@ -6,6 +6,10 @@ import "./SharedWalletStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
+error NonMemberOnly();
+error InsufficientBalance();
+error TransactionFailed();
+
 contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     SharedWalletStorage public walletsStorage;
     mapping(address => bool) public isMember;
@@ -13,7 +17,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     string public name;
 
     modifier onlyMember() override {
-        require(isMember[msg.sender]);
+        if (!isMember[msg.sender]) revert MemberOnly();
         _;
     }
 
@@ -22,7 +26,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         address _walletsStorageAddress,
         string memory _name
     ) public virtual initializer {
-        require(bytes(_name).length != 0);
+        if (bytes(_name).length == 0) revert InvalidInput();
 
         walletsStorage = SharedWalletStorage(_walletsStorageAddress);
         _members.push(_creator);
@@ -40,7 +44,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         address newMember = address(request.data);
 
-        require(!isMember[newMember]);
+        if (isMember[newMember]) revert NonMemberOnly();
         _members.push(newMember);
         isMember[newMember] = true;
         walletsStorage.addWalletToUser(address(this), newMember);
@@ -52,7 +56,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         address memberToRemove = address(request.data);
 
-        require(isMember[memberToRemove]);
+        if (isMember[memberToRemove]) revert MemberOnly();
 
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
@@ -72,12 +76,12 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         Request storage request = _requests[_requestId];
         _validateRequest(request, RequestTypes.Withdraw);
 
-        require(request.data <= address(this).balance);
+        if (request.data <= address(this).balance) revert InsufficientBalance();
 
         (bool success, ) = payable(request.author).call{value: request.data}(
             ""
         );
-        require(success);
+        if (!success) revert TransactionFailed();
     }
 
     function _destroy(uint256 _requestId) private {
@@ -93,9 +97,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         selfdestruct(payable(address(request.data)));
     }
 
-    function leave() external {
-        require(isMember[msg.sender]);
-
+    function leave() external onlyMember {
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
             if (m_members[i] == msg.sender) {
@@ -122,8 +124,8 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         Request storage _request,
         RequestTypes _requestType
     ) private view {
-        require(_request.requestType == _requestType, "Wrong request id!");
-        require(_request.approved == true, "Request is not approved yet!");
+        if (_request.requestType != _requestType || _request.approved == false)
+            revert InvalidRequest();
     }
 
     function _sendInvitation(address _user, uint256 _requestId)

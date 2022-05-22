@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 
 import "./SharedWalletStorage.sol";
 
+error MemberOnly();
+error InvalidRequest();
+error InvalidInput();
+
 abstract contract Voting {
     enum RequestTypes {
         AddMember,
@@ -33,7 +37,7 @@ abstract contract Voting {
     uint256 public requestsCounter;
 
     modifier onlyMember() virtual {
-        require(false);
+        if (false) revert MemberOnly();
         _;
     }
 
@@ -68,15 +72,16 @@ abstract contract Voting {
         external
         onlyMember
     {
-        require(
-            _requestTypeIdx <= uint256(type(RequestTypes).max),
-            "Invalid request type!"
-        );
+        if (_requestTypeIdx > uint256(type(RequestTypes).max))
+            revert InvalidInput();
 
-        if (_requestTypeIdx == uint8(RequestTypes.Withdraw)) {
-            require(_data > 0 && _data <= address(this).balance);
-        } else {
-            require(address(_data) != address(0x0));
+        if (
+            _requestTypeIdx == uint8(RequestTypes.Withdraw) &&
+            (_data <= 0 || _data > address(this).balance)
+        ) {
+            revert InvalidInput();
+        } else if (address(_data) == address(0x0)) {
+            revert InvalidInput();
         }
 
         Request storage request = _requests[requestsCounter];
@@ -102,44 +107,32 @@ abstract contract Voting {
     }
 
     function acceptRequest(uint256 _requestID) external onlyMember {
-        require(
-            _requests[_requestID].approved == false,
-            "Request has already passed!"
-        );
-        require(
-            _requests[_requestID].voters[msg.sender] == false,
-            "Already voted to this request!"
-        );
+        if (
+            _requests[_requestID].approved == true ||
+            _requests[_requestID].voters[msg.sender] == true
+        ) revert InvalidRequest();
         _requests[_requestID].voters[msg.sender] = true;
         _requests[_requestID].proVotersCount++;
         _tryApproveRequest(_requestID);
     }
 
     function acceptInvitation(uint256 _requestID) external {
-        require(
-            _requests[_requestID].requestType == RequestTypes.AddMember,
-            "Wrong request id!"
-        );
-        require(address(_requests[_requestID].data) == msg.sender);
-        require(
-            _requests[_requestID].invitationAccepted == InvitationState.Pending,
-            "Invitation already accepted!"
-        );
+        if (
+            _requests[_requestID].requestType != RequestTypes.AddMember ||
+            address(_requests[_requestID].data) != msg.sender ||
+            _requests[_requestID].invitationAccepted != InvitationState.Pending
+        ) revert InvalidRequest();
         _requests[_requestID].invitationAccepted = InvitationState.Accepted;
         _removeInvitation(msg.sender);
         _tryApproveRequest(_requestID);
     }
 
     function rejectInvitation(uint256 _requestID) external {
-        require(
-            _requests[_requestID].requestType == RequestTypes.AddMember,
-            "Wrong request id!"
-        );
-        require(address(_requests[_requestID].data) == msg.sender);
-        require(
-            _requests[_requestID].invitationAccepted == InvitationState.Pending,
-            "Invitation already accepted!"
-        );
+        if (
+            _requests[_requestID].requestType != RequestTypes.AddMember ||
+            address(_requests[_requestID].data) != msg.sender ||
+            _requests[_requestID].invitationAccepted == InvitationState.Pending
+        ) revert InvalidRequest();
         _requests[_requestID].invitationAccepted = InvitationState.Rejected;
         _removeInvitation(msg.sender);
         _requests[_requestID].approved = true; // setting approved to true so members cannot vote anymore but the request leaves not accepted and not executed
