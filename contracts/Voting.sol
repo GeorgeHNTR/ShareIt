@@ -37,54 +37,30 @@ abstract contract Voting {
         _;
     }
 
-    function checkRequestIsApprovedById(uint256 _id)
+    function getRequestDetails(uint256 _id)
         public
         view
-        returns (bool)
+        returns (
+            address,
+            RequestTypes,
+            uint160,
+            InvitationState,
+            bool,
+            uint256
+        )
     {
-        return _requests[_id].approved;
-    }
-
-    function checkRequestIsAcceptedById(uint256 _id)
-        public
-        view
-        returns (uint8)
-    {
-        return uint8(_requests[_id].invitationAccepted);
+        return (
+            _requests[_id].author,
+            _requests[_id].requestType,
+            _requests[_id].data,
+            _requests[_id].invitationAccepted,
+            _requests[_id].approved,
+            _requests[_id].proVotersCount
+        );
     }
 
     function checkMemberHasVotedById(uint256 _id) public view returns (bool) {
         return _requests[_id].voters[msg.sender];
-    }
-
-    function getRequestAuthorById(uint256 _id) public view returns (address) {
-        return _requests[_id].author;
-    }
-
-    function getRequestTypeById(uint256 _id)
-        public
-        view
-        returns (RequestTypes)
-    {
-        return _requests[_id].requestType;
-    }
-
-    function getRequestAddrById(uint256 _id) public view returns (address) {
-        require(_requests[_id].requestType != RequestTypes.Withdraw);
-        return address(_requests[_id].data);
-    }
-
-    function getRequestValueById(uint256 _id) public view returns (uint160) {
-        require(_requests[_id].requestType == RequestTypes.Withdraw);
-        return _requests[_id].data;
-    }
-
-    function getRequestProVotersCountById(uint256 _id)
-        public
-        view
-        returns (uint256)
-    {
-        return _requests[_id].proVotersCount;
     }
 
     function createRequest(uint256 _requestTypeIdx, uint160 _data)
