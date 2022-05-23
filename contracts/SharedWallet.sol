@@ -40,7 +40,6 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
     function _addMember(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
-        _validateRequest(request, RequestTypes.AddMember);
 
         address newMember = address(request.data);
 
@@ -52,7 +51,6 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
     function _removeMember(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
-        _validateRequest(request, RequestTypes.RemoveMember);
 
         address memberToRemove = address(request.data);
 
@@ -74,7 +72,6 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
     function _withdraw(uint256 _requestId) private nonReentrant {
         Request storage request = _requests[_requestId];
-        _validateRequest(request, RequestTypes.Withdraw);
 
         if (request.data <= address(this).balance) revert InsufficientBalance();
 
@@ -86,7 +83,6 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
     function _destroy(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
-        _validateRequest(request, RequestTypes.Destroy);
 
         address[] memory m_members = _members;
         for (uint256 i; i < m_members.length; i++) {
@@ -118,14 +114,6 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
             _withdraw(_requestID);
         else if (_requests[_requestID].requestType == RequestTypes.Destroy)
             _destroy(_requestID);
-    }
-
-    function _validateRequest(
-        Request storage _request,
-        RequestTypes _requestType
-    ) private view {
-        if (_request.requestType != _requestType || _request.approved == false)
-            revert InvalidRequest();
     }
 
     function _sendInvitation(address _user, uint256 _requestId)
