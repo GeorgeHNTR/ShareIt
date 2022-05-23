@@ -73,7 +73,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     function _withdraw(uint256 _requestId) private nonReentrant {
         Request storage request = _requests[_requestId];
 
-        if (request.data <= address(this).balance) revert InsufficientBalance();
+        if (request.data > address(this).balance) revert InsufficientBalance();
 
         (bool success, ) = payable(request.author).call{value: request.data}(
             ""
