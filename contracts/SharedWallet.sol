@@ -54,7 +54,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         address memberToRemove = address(request.data);
 
-        if (isMember[memberToRemove]) revert MemberOnly();
+        if (!isMember[memberToRemove]) revert MemberOnly();
 
         address[] memory m_members = _members;
         for (uint256 i = 0; i < m_members.length; i++)
