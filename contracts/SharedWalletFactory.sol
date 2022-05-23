@@ -9,6 +9,8 @@ contract SharedWalletFactory {
     SharedWalletStorage public immutable walletsStorage;
     address public immutable sharedWalletImpl;
 
+    event WalletCreated(address wallet);
+
     constructor() {
         walletsStorage = new SharedWalletStorage();
         sharedWalletImpl = address(new SharedWallet());
@@ -17,6 +19,7 @@ contract SharedWalletFactory {
     function createNewSharedWallet(string calldata _name) external {
         address newSharedWallet = _cloneSharedWallet(_name);
         walletsStorage.addWalletToUser(newSharedWallet, msg.sender);
+        emit WalletCreated(newSharedWallet);
     }
 
     function _cloneSharedWallet(string calldata _name)
