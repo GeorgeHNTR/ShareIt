@@ -131,7 +131,7 @@ abstract contract Voting {
         if (
             _requests[_requestID].requestType != RequestTypes.AddMember ||
             address(_requests[_requestID].data) != msg.sender ||
-            _requests[_requestID].invitationAccepted == InvitationState.Pending
+            _requests[_requestID].invitationAccepted != InvitationState.Pending
         ) revert InvalidRequest();
         _requests[_requestID].invitationAccepted = InvitationState.Rejected;
         _removeInvitation(msg.sender);
