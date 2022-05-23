@@ -15,8 +15,16 @@ contract('SharedWalletStorage', function (accounts) {
         this.storageAddr = await this.factory.walletsStorage();
         this.storage = await SharedWalletStorage.at(this.storageAddr);
 
+        let promiseResolver;
+        const walletAddrPromise = new Promise((resolve, reject) => {
+            promiseResolver = resolve;
+        });
+        this.factory.WalletCreated()
+            .on('data', event => {
+                promiseResolver(event.args.wallet);
+            });
         await this.factory.createNewSharedWallet(name, { from: creator });
-        this.walletAddr = await this.factory.lastWalletCreated();
+        this.walletAddr = await walletAddrPromise;
         this.wallet = await SharedWallet.at(this.walletAddr);
 
     });

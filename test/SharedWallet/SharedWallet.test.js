@@ -7,7 +7,6 @@ const SharedWalletStorage = artifacts.require('SharedWalletStorage');
 contract('SharedWallet', function (accounts) {
     const [creator, testAddr, testAddr2, nonMember] = accounts;
     const name = 'test';
-    const nullAddress = "0x0000000000000000000000000000000000000000";
 
     beforeEach(async function () {
         this.factory = await SharedWalletFactory.new();
@@ -15,8 +14,16 @@ contract('SharedWallet', function (accounts) {
         this.storageAddr = await this.factory.walletsStorage();
         this.storage = await SharedWalletStorage.at(this.storageAddr);
 
+        let promiseResolver;
+        const walletAddrPromise = new Promise((resolve, reject) => {
+            promiseResolver = resolve;
+        });
+        this.factory.WalletCreated()
+            .on('data', event => {
+                promiseResolver(event.args.wallet);
+            });
         await this.factory.createNewSharedWallet(name, { from: creator });
-        this.walletAddr = await this.factory.lastWalletCreated();
+        this.walletAddr = await walletAddrPromise;
         this.wallet = await SharedWallet.at(this.walletAddr);
     });
 
@@ -101,8 +108,12 @@ contract('SharedWallet', function (accounts) {
             });
 
             it('should remove member from contract and storage', async function () {
-                await this.wallet.createRequest(1, creator, { from: creator });
-
+                try {
+                    await this.wallet.createRequest(1, creator, { from: creator });
+                }
+                catch (err) {
+                    console.log(err);
+                }
                 expect(await this.wallet.members()).to.have.lengthOf(0);
                 expect(await this.wallet.isMember(creator)).to.be.false;
                 expect(await this.storage.userWallets({ from: creator })).to.not.include(this.walletAddr);

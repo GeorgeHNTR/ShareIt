@@ -2,7 +2,6 @@ const { expect } = require('chai');
 
 const SharedWallet = artifacts.require('SharedWallet');
 const SharedWalletFactory = artifacts.require('SharedWalletFactory');
-const SharedWalletStorage = artifacts.require('SharedWalletStorage');
 
 contract('SharedWalletFactory', async function (accounts) {
     const [creator] = accounts;
@@ -30,8 +29,18 @@ contract('SharedWalletFactory', async function (accounts) {
     describe('Creating new shared wallet', async function () {
         it('should save last created wallet address and provide a getter', async function () {
             const factory = await SharedWalletFactory.new();
+
+            let promiseResolver;
+            const walletAddrPromise = new Promise((resolve, reject) => {
+                promiseResolver = resolve;
+            });
+            factory.WalletCreated()
+                .on('data', event => {
+                    promiseResolver(event.args.wallet);
+                });
             await factory.createNewSharedWallet(name, { from: creator });
-            const walletAddr = await factory.lastWalletCreated();
+            const walletAddr = await walletAddrPromise;
+
 
             const wallet = await SharedWallet.at(walletAddr);
             expect(await wallet.isMember(creator)).to.be.true;
