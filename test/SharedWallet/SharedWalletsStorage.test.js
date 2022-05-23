@@ -31,7 +31,7 @@ contract('SharedWalletStorage', function (accounts) {
 
     it('should pass correct properties to newly created wallet', async function () {
         expect(await this.wallet.name()).to.equal(name);
-        expect((await this.wallet.members())[0]).to.equal(creator);
+        expect(await this.wallet.isMember(creator)).to.be.true;
         expect(await this.wallet.walletsStorage()).to.equal(this.storageAddr);
     });
 

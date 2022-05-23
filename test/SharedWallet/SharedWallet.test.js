@@ -29,7 +29,6 @@ contract('SharedWallet', function (accounts) {
 
     describe('Upon creation', function () {
         it('should save creator as a member', async function () {
-            expect((await this.wallet.members())[0]).to.equal(creator);
             expect(await this.wallet.isMember(creator)).to.be.true;
         });
 
@@ -93,7 +92,6 @@ contract('SharedWallet', function (accounts) {
                 const requestId = (await this.wallet.requestsCounter()) - 1;
                 await this.wallet.acceptInvitation(requestId, { from: testAddr });
 
-                expect((await this.wallet.members())[1]).to.equal(testAddr);
                 expect(await this.wallet.isMember(testAddr)).to.be.true;
                 expect(await this.storage.userWallets({ from: testAddr })).to.include(this.walletAddr);
             });
@@ -114,7 +112,6 @@ contract('SharedWallet', function (accounts) {
                 catch (err) {
                     console.log(err);
                 }
-                expect(await this.wallet.members()).to.have.lengthOf(0);
                 expect(await this.wallet.isMember(creator)).to.be.false;
                 expect(await this.storage.userWallets({ from: creator })).to.not.include(this.walletAddr);
             });
@@ -177,7 +174,6 @@ contract('SharedWallet', function (accounts) {
             it('should remove member from contract and storage', async function () {
                 await this.wallet.leave({ from: creator });
 
-                expect(await this.wallet.members()).to.have.lengthOf(0);
                 expect(await this.wallet.isMember(creator)).to.be.false;
                 expect(await this.storage.userWallets({ from: creator })).to.not.include(this.walletAddr);
             });
@@ -199,7 +195,8 @@ contract('SharedWallet', function (accounts) {
             await this.wallet.acceptInvitation(this.requestId, { from: testAddr2 });
             // not accepted by 51% of member (only 50%) so it is still not approved
 
-            expect(await this.wallet.members()).to.have.lengthOf(2); // only the creator and the first testAddr
+            expect(await this.wallet.isMember(creator)).to.be.true;
+            expect(await this.wallet.isMember(testAddr)).to.be.true;
             expect(await this.wallet.isMember(testAddr2)).to.be.false;
         });
 
@@ -208,7 +205,7 @@ contract('SharedWallet', function (accounts) {
             // not accepted by 51% of member (only 50%) so it is still not approved
 
             // testAddr should not be removed yet
-            expect(await this.wallet.members()).to.have.lengthOf(2);
+            expect(await this.wallet.isMember(creator)).to.be.true;
             expect(await this.wallet.isMember(testAddr)).to.be.true;
 
         });
@@ -235,13 +232,13 @@ contract('SharedWallet', function (accounts) {
             const requestId = (await this.wallet.requestsCounter()) - 1;
             await this.wallet.acceptInvitation(requestId, { from: testAddr }); // passes
 
-            expect((await this.wallet.members())[1]).to.equal(testAddr);
+            expect(await this.wallet.isMember(testAddr)).to.be.true;
         });
 
         it('should auto execute remove member option when voting of type 1 passes', async function () {
             await this.wallet.createRequest(1, creator, { from: creator });
 
-            expect(await this.wallet.members()).to.have.lengthOf(0);
+            expect(await this.wallet.isMember(creator)).to.be.false;
         });
 
         it('should auto execute withdraw option when voting of type 2 passes', async function () {

@@ -13,7 +13,8 @@ error TransactionFailed();
 contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     SharedWalletStorage public walletsStorage;
     mapping(address => bool) public isMember;
-    address[] private _members;
+    address[] _membersLog;
+    uint256 public membersCount;
     string public name;
 
     modifier onlyMember() override {
@@ -29,13 +30,10 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         if (bytes(_name).length == 0) revert InvalidInput();
 
         walletsStorage = SharedWalletStorage(_walletsStorageAddress);
-        _members.push(_creator);
+        _membersLog.push(_creator);
+        membersCount++;
         isMember[_creator] = true;
         name = _name;
-    }
-
-    function members() public view returns (address[] memory) {
-        return _members;
     }
 
     function _addMember(uint256 _requestId) private {
@@ -44,7 +42,8 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         address newMember = address(request.data);
 
         if (isMember[newMember]) revert NonMemberOnly();
-        _members.push(newMember);
+        _membersLog.push(newMember);
+        membersCount++;
         isMember[newMember] = true;
         walletsStorage.addWalletToUser(address(this), newMember);
     }
@@ -56,18 +55,9 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         if (!isMember[memberToRemove]) revert MemberOnly();
 
-        address[] memory m_members = _members;
-        for (uint256 i = 0; i < m_members.length; i++)
-            if (m_members[i] == memberToRemove) {
-                _members[i] = m_members[m_members.length - 1];
-                _members.pop();
-                delete isMember[memberToRemove];
-                walletsStorage.removeWalletForUser(
-                    address(this),
-                    memberToRemove
-                );
-                return;
-            }
+        membersCount--;
+        delete isMember[memberToRemove];
+        walletsStorage.removeWalletForUser(address(this), memberToRemove);
     }
 
     function _withdraw(uint256 _requestId) private nonReentrant {
@@ -84,25 +74,24 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     function _destroy(uint256 _requestId) private {
         Request storage request = _requests[_requestId];
 
-        address[] memory m_members = _members;
-        for (uint256 i; i < m_members.length; i++) {
-            isMember[m_members[i]] = false;
-            walletsStorage.removeWalletForUser(address(this), m_members[i]);
+        address[] memory m_membersLog = _membersLog;
+        for (uint256 i; i < m_membersLog.length; i++) {
+            if (isMember[m_membersLog[i]]) {
+                delete isMember[m_membersLog[i]];
+                walletsStorage.removeWalletForUser(
+                    address(this),
+                    m_membersLog[i]
+                );
+            }
         }
 
         selfdestruct(payable(address(request.data)));
     }
 
     function leave() external onlyMember {
-        address[] memory m_members = _members;
-        for (uint256 i = 0; i < m_members.length; i++)
-            if (m_members[i] == msg.sender) {
-                _members[i] = m_members[m_members.length - 1];
-                _members.pop();
-                delete isMember[msg.sender];
-                walletsStorage.removeWalletForUser(address(this), msg.sender);
-                return;
-            }
+        membersCount--;
+        delete isMember[msg.sender];
+        walletsStorage.removeWalletForUser(address(this), msg.sender);
     }
 
     function _executeRequest(uint256 _requestID) internal override {
@@ -128,7 +117,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     }
 
     function _quorum() internal view override returns (uint256) {
-        return _members.length / 2 + 1;
+        return membersCount / 2 + 1;
     }
 
     function deposit() external payable {}
