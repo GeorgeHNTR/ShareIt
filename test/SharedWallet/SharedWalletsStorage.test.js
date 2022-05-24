@@ -12,7 +12,7 @@ contract('SharedWalletStorage', function (accounts) {
     beforeEach(async function () {
         this.factory = await SharedWalletFactory.new();
 
-        this.storageAddr = await this.factory.walletsStorage();
+        this.storageAddr = await this.factory.SHARED_WALLETS_STORAGE();
         this.storage = await SharedWalletStorage.at(this.storageAddr);
 
         let promiseResolver;
@@ -32,7 +32,7 @@ contract('SharedWalletStorage', function (accounts) {
     it('should pass correct properties to newly created wallet', async function () {
         expect(await this.wallet.name()).to.equal(name);
         expect(await this.wallet.isMember(creator)).to.be.true;
-        expect(await this.wallet.walletsStorage()).to.equal(this.storageAddr);
+        expect(await this.wallet.SHARED_WALLETS_STORAGE()).to.equal(this.storageAddr);
     });
 
     it('should add wallets to member\'s list', async function () {
@@ -44,6 +44,8 @@ contract('SharedWalletStorage', function (accounts) {
 
     it('should remove wallets from member\'s list', async function () {
         await this.wallet.createRequest(1, creator, { from: creator });
+        console.log(await this.storage.userWallets({ from: creator }));
+        console.log(await this.storage.userWallets({ from: creator }));
         expect((await this.storage.userWallets({ from: creator })).length).to.equal(0);
     });
 

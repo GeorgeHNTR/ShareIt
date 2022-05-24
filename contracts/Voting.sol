@@ -7,6 +7,8 @@ error MemberOnly();
 error InvalidRequest();
 error InvalidInput();
 
+/// @author Georgi Nikolaev Georgiev
+/// @notice Manages a shared wallet's members' requests and invitation
 abstract contract Voting {
     enum RequestTypes {
         AddMember,
@@ -34,6 +36,8 @@ abstract contract Voting {
 
     mapping(uint256 => Request) internal _requests;
 
+    /// @notice The ID of the next request
+    /// @dev Increments to create unique IDs for each request
     uint256 public requestsCounter;
 
     modifier onlyMember() virtual {
@@ -41,6 +45,11 @@ abstract contract Voting {
         _;
     }
 
+    /// @notice Creates and posts new requests
+    /// @dev If there is only one wallet member, it automatically passes
+    /// @param _requestTypeIdx A number which represents the request type
+    /// @param _data A number or an address
+    /// @dev The _data param is casted to address if the request type is not "Withdraw"
     function createRequest(uint256 _requestTypeIdx, uint160 _data)
         external
         onlyMember
@@ -66,6 +75,7 @@ abstract contract Voting {
         request.voters[msg.sender] = true;
 
         uint256 requestID = requestsCounter;
+        requestsCounter++;
 
         if (request.requestType == RequestTypes.AddMember) {
             request.invitationAccepted = InvitationState.Pending;
@@ -74,11 +84,11 @@ abstract contract Voting {
             request.invitationAccepted = InvitationState.None;
         }
 
-        requestsCounter++;
-
         _tryApproveRequest(requestID);
     }
 
+    /// @notice Invoked by each member that has not voted for a specific requset yet
+    /// @param _requestID The ID of the request the user wants to accept
     function acceptRequest(uint256 _requestID) external onlyMember {
         if (
             _requests[_requestID].approved == true ||
@@ -89,6 +99,8 @@ abstract contract Voting {
         _tryApproveRequest(_requestID);
     }
 
+    /// @notice Invoked by a member that has been invited to join this wallet and wants to
+    /// @param _requestID The ID of a request of type "AddMember"
     function acceptInvitation(uint256 _requestID) external {
         if (
             _requests[_requestID].requestType != RequestTypes.AddMember ||
@@ -100,6 +112,8 @@ abstract contract Voting {
         _tryApproveRequest(_requestID);
     }
 
+    /// @notice Invoked by a member that has been invited to join this wallet, but does not want to
+    /// @param _requestID The ID of a request of type "AddMember"
     function rejectInvitation(uint256 _requestID) external {
         if (
             _requests[_requestID].requestType != RequestTypes.AddMember ||
@@ -111,6 +125,14 @@ abstract contract Voting {
         _requests[_requestID].approved = true; // setting approved to true so members cannot vote anymore but the request leaves not accepted and not executed
     }
 
+    /// @param _id The ID of the request
+    /// @return address The address of the request author
+    /// @return RequestTypes The request type
+    /// @return uint160 The data attached to the request
+    /// @dev The data can be kept as a number or casted to address on the client if needed
+    /// @return InvitationState The state of the request invitation (if there is one)
+    /// @return bool Is the request approved yet
+    /// @return uint256 The number of positive voters of this request
     function getRequestDetails(uint256 _id)
         public
         view
@@ -134,6 +156,9 @@ abstract contract Voting {
         );
     }
 
+    /// @notice Checks if a member has voted positive for a specific request
+    /// @param _id The ID of the request
+    /// @return bool Has the msg.sender already accepted for this request
     function checkMemberHasVotedById(uint256 _id) public view returns (bool) {
         return _requests[_id].voters[msg.sender];
     }
@@ -156,7 +181,7 @@ abstract contract Voting {
     function _quorum() internal virtual returns (uint256) {}
 
     function _executeRequest(uint256 _requestID) internal virtual {}
-    
+
     function _sendInvitation(address _user, uint256 _requestId)
         internal
         virtual

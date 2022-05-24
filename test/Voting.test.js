@@ -194,7 +194,7 @@ contract('Voting', async function (accounts) {
       });
 
       it('should save request with correct properties - withdraw request type', async function () {
-        await this.wallet.deposit({ from: creator, value: 1 });
+        await this.wallet.sendTransaction({ from: creator, value: 1 });
         await this.wallet.createRequest(2, 1, { from: creator });
         const requestId = (await this.wallet.requestsCounter()) - 1;
 
@@ -300,7 +300,7 @@ contract('Voting', async function (accounts) {
         await this.wallet.acceptInvitation(requestId, { from: testAddr });
 
         // create withdrawal request
-        await this.wallet.deposit({ value: 1, from: creator });
+        await this.wallet.sendTransaction({ value: 1, from: creator });
         await this.wallet.createRequest(2, 1, { from: creator });
         this.requestId = (await this.wallet.requestsCounter()) - 1;
 

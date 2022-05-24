@@ -43,6 +43,6 @@ export async function setupWeb3() {
 
 export async function setupContracts() {
     store.commit('contracts/factory', SharedWalletFactory());
-    const SharedWalletStorageAddress = await store.getters['contracts/factory'].methods.walletsStorage().call();
+    const SharedWalletStorageAddress = await store.getters['contracts/factory'].methods.SHARED_WALLETS_STORAGE().call();
     store.commit('contracts/storage', SharedWalletStorageAt(SharedWalletStorageAddress));
 }

@@ -11,7 +11,7 @@ contract('SharedWallet', function (accounts) {
     beforeEach(async function () {
         this.factory = await SharedWalletFactory.new();
 
-        this.storageAddr = await this.factory.walletsStorage();
+        this.storageAddr = await this.factory.SHARED_WALLETS_STORAGE();
         this.storage = await SharedWalletStorage.at(this.storageAddr);
 
         let promiseResolver;
@@ -34,7 +34,7 @@ contract('SharedWallet', function (accounts) {
 
         it('should save the properties passed by the factory contract and provide getters', async function () {
             expect(await this.wallet.name()).to.equal(name);
-            expect(await this.wallet.walletsStorage()).to.equal(this.storageAddr);
+            expect(await this.wallet.SHARED_WALLETS_STORAGE()).to.equal(this.storageAddr);
         });
 
         it('should revert if empty string is passed as a name', async function () {
@@ -129,8 +129,7 @@ contract('SharedWallet', function (accounts) {
                 const walletInitialBalance = Number(await web3.eth.getBalance(this.walletAddr));
                 const creatorInitialBalance = Number(await web3.eth.getBalance(creator));
                 const testAddrInitialBalance = Number(await web3.eth.getBalance(testAddr));
-
-                await this.wallet.deposit({ from: creator, value: web3.utils.toWei('1', 'ether') });
+                await this.wallet.sendTransaction({ from: creator, value: web3.utils.toWei('1', 'ether') });
 
                 // adding second member so he can withdraw what the creator has deposited
                 await this.wallet.createRequest(0, testAddr, { from: creator });
@@ -156,7 +155,7 @@ contract('SharedWallet', function (accounts) {
 
             it('should send contract balance to request address', async function () {
                 const testAddrInitialBalance = Number(await web3.eth.getBalance(testAddr));
-                await this.wallet.deposit({ from: creator, value: web3.utils.toWei('1', 'ether') });
+                await this.wallet.sendTransaction({ from: creator, value: web3.utils.toWei('1', 'ether') });
                 await this.wallet.createRequest(3, testAddr, { from: creator });
 
                 expect(Number(await web3.eth.getBalance(testAddr))).to.be.greaterThan(testAddrInitialBalance);
@@ -211,7 +210,7 @@ contract('SharedWallet', function (accounts) {
         });
 
         it('should not withdraw if request is not approved', async function () {
-            await this.wallet.deposit({ from: creator, value: 1 });
+            await this.wallet.sendTransaction({ from: creator, value: 1 });
             await this.wallet.createRequest(2, 1, { from: creator });
             // not accepted by 51% of member (only 50%) so it is still not approved
 
@@ -242,7 +241,7 @@ contract('SharedWallet', function (accounts) {
         });
 
         it('should auto execute withdraw option when voting of type 2 passes', async function () {
-            await this.wallet.deposit({ from: creator, value: 1 });
+            await this.wallet.sendTransaction({ from: creator, value: 1 });
             const balanceBeforeWithdrawal = Number(await web3.eth.getBalance(this.walletAddr));
             await this.wallet.createRequest(2, 1, { from: creator });
             const balanceAfterWithdrawal = Number(await web3.eth.getBalance(this.walletAddr));
@@ -258,12 +257,12 @@ contract('SharedWallet', function (accounts) {
 
     describe('Payments', function () {
         it('should accept payments from members', async function () {
-            await this.wallet.deposit({ from: creator, value: 1 });
+            await this.wallet.sendTransaction({ from: creator, value: 1 });
             expect(await web3.eth.getBalance(this.walletAddr)).to.equal('1');
         });
 
         it('should accept payments from non-members', async function () {
-            await this.wallet.deposit({ from: nonMember, value: 1 });
+            await this.wallet.sendTransaction({ from: nonMember, value: 1 });
             expect(await web3.eth.getBalance(this.walletAddr)).to.equal('1');
         });
     });

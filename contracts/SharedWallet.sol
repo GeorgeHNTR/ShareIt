@@ -11,11 +11,24 @@ error NonMemberOnly();
 error InsufficientBalance();
 error TransactionFailed();
 
+/// @author Georgi Nikolaev Georgiev
+/// @notice Manage members' funds and executes approved requests
+/// @dev Constructor missing because of minimal proxy pattern (EIP1167)
 contract SharedWallet is Voting, Initializable, ReentrancyGuard {
+    /// @notice The storage contract
     SharedWalletStorage public SHARED_WALLETS_STORAGE;
+
+    /// @notice The name of the this wallet
     string public name;
+
+    /// @notice The number of members in this wallet
     uint256 public membersCount;
+
+    /// @notice Tracks all the members that have ever joined this wallet
+    /// @dev Used in order to iterate through them when destroying the wallet
     address[] _membersLog;
+
+    /// @notice Current wallet members' tracker
     mapping(address => bool) public isMember;
 
     modifier onlyMember() override {
@@ -23,6 +36,11 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         _;
     }
 
+    /// @notice Initializes the wallet clone (acts as a constructor)
+    /// @dev Can be invoked only ones (and is by the factory contract)
+    /// @param _creator The first member of this wallet
+    /// @param _walletsStorageAddress The address of the storage contract
+    /// @param _name The name of this wallet chosen by the creator
     function initialize(
         address _creator,
         address _walletsStorageAddress,
@@ -37,12 +55,15 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         name = _name;
     }
 
+    /// @notice Allows sending ETH to fund this wallet
+    /// @dev ERC20 tokens cannot be sent through this fucntion
     receive() external payable {}
 
+    /// @notice Allowes each member to leave (no voting required)
     function leave() external onlyMember {
         membersCount--;
         delete isMember[msg.sender];
-        SHARED_WALLETS_STORAGE.removeWalletForUser(payable(this), msg.sender);
+        SHARED_WALLETS_STORAGE.removeWalletForUser(msg.sender);
     }
 
     function _executeRequest(uint256 _requestID) internal override {
@@ -79,8 +100,8 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         if (isMember[newMember]) revert NonMemberOnly();
         _membersLog.push(newMember);
         membersCount++;
+        SHARED_WALLETS_STORAGE.addWalletToUser(newMember);
         isMember[newMember] = true;
-        SHARED_WALLETS_STORAGE.addWalletToUser(payable(this), newMember);
     }
 
     function _removeMember(uint256 _requestId) private {
@@ -92,7 +113,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         membersCount--;
         delete isMember[memberToRemove];
-        SHARED_WALLETS_STORAGE.removeWalletForUser(payable(this), memberToRemove);
+        SHARED_WALLETS_STORAGE.removeWalletForUser(memberToRemove);
     }
 
     function _withdraw(uint256 _requestId) private nonReentrant {
@@ -113,10 +134,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         for (uint256 i; i < m_membersLog.length; i++) {
             if (isMember[m_membersLog[i]]) {
                 delete isMember[m_membersLog[i]];
-                SHARED_WALLETS_STORAGE.removeWalletForUser(
-                    payable(this),
-                    m_membersLog[i]
-                );
+                SHARED_WALLETS_STORAGE.removeWalletForUser(m_membersLog[i]);
             }
         }
 
