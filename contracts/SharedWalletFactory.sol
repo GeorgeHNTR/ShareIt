@@ -7,19 +7,19 @@ import "./SharedWallet.sol";
 import "./SharedWalletStorage.sol";
 
 contract SharedWalletFactory {
-    SharedWalletStorage public immutable walletsStorage;
-    address public immutable sharedWalletImpl;
+    SharedWalletStorage public immutable SHARED_WALLETS_STORAGE;
+    address public immutable SHARED_WALLET_IMPLEMENTATION;
 
     event WalletCreated(address wallet);
 
     constructor() {
-        walletsStorage = new SharedWalletStorage();
-        sharedWalletImpl = address(new SharedWallet());
+        SHARED_WALLETS_STORAGE = new SharedWalletStorage();
+        SHARED_WALLET_IMPLEMENTATION = address(new SharedWallet());
     }
 
     function createNewSharedWallet(string calldata _name) external {
         address newSharedWallet = _cloneSharedWallet(_name);
-        walletsStorage.addWalletToUser(payable(newSharedWallet), msg.sender);
+        SHARED_WALLETS_STORAGE.addWalletToUser(payable(newSharedWallet), msg.sender);
         emit WalletCreated(newSharedWallet);
     }
 
@@ -27,10 +27,10 @@ contract SharedWalletFactory {
         private
         returns (address)
     {
-        address _newSharedWallet = Clones.clone(sharedWalletImpl);
+        address _newSharedWallet = Clones.clone(SHARED_WALLET_IMPLEMENTATION);
         SharedWallet(payable(_newSharedWallet)).initialize(
             msg.sender,
-            address(walletsStorage),
+            address(SHARED_WALLETS_STORAGE),
             _name
         );
         return _newSharedWallet;

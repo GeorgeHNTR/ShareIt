@@ -41,33 +41,6 @@ abstract contract Voting {
         _;
     }
 
-    function getRequestDetails(uint256 _id)
-        public
-        view
-        returns (
-            address,
-            RequestTypes,
-            uint160,
-            InvitationState,
-            bool,
-            uint256
-        )
-    {
-        Request storage request = _requests[_id];
-        return (
-            request.author,
-            request.requestType,
-            request.data,
-            request.invitationAccepted,
-            request.approved,
-            request.proVotersCount
-        );
-    }
-
-    function checkMemberHasVotedById(uint256 _id) public view returns (bool) {
-        return _requests[_id].voters[msg.sender];
-    }
-
     function createRequest(uint256 _requestTypeIdx, uint160 _data)
         external
         onlyMember
@@ -138,6 +111,33 @@ abstract contract Voting {
         _requests[_requestID].approved = true; // setting approved to true so members cannot vote anymore but the request leaves not accepted and not executed
     }
 
+    function getRequestDetails(uint256 _id)
+        public
+        view
+        returns (
+            address,
+            RequestTypes,
+            uint160,
+            InvitationState,
+            bool,
+            uint256
+        )
+    {
+        Request storage request = _requests[_id];
+        return (
+            request.author,
+            request.requestType,
+            request.data,
+            request.invitationAccepted,
+            request.approved,
+            request.proVotersCount
+        );
+    }
+
+    function checkMemberHasVotedById(uint256 _id) public view returns (bool) {
+        return _requests[_id].voters[msg.sender];
+    }
+
     function _tryApproveRequest(uint256 _requestID) internal virtual {
         uint256 goal = _quorum();
         if (
@@ -156,7 +156,7 @@ abstract contract Voting {
     function _quorum() internal virtual returns (uint256) {}
 
     function _executeRequest(uint256 _requestID) internal virtual {}
-
+    
     function _sendInvitation(address _user, uint256 _requestId)
         internal
         virtual

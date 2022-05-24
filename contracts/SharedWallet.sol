@@ -12,11 +12,11 @@ error InsufficientBalance();
 error TransactionFailed();
 
 contract SharedWallet is Voting, Initializable, ReentrancyGuard {
-    SharedWalletStorage public walletsStorage;
-    mapping(address => bool) public isMember;
-    address[] _membersLog;
-    uint256 public membersCount;
+    SharedWalletStorage public SHARED_WALLETS_STORAGE;
     string public name;
+    uint256 public membersCount;
+    address[] _membersLog;
+    mapping(address => bool) public isMember;
 
     modifier onlyMember() override {
         if (!isMember[msg.sender]) revert MemberOnly();
@@ -30,11 +30,45 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     ) public virtual initializer {
         if (bytes(_name).length == 0) revert InvalidInput();
 
-        walletsStorage = SharedWalletStorage(_walletsStorageAddress);
+        SHARED_WALLETS_STORAGE = SharedWalletStorage(_walletsStorageAddress);
         _membersLog.push(_creator);
         membersCount++;
         isMember[_creator] = true;
         name = _name;
+    }
+
+    receive() external payable {}
+
+    function leave() external onlyMember {
+        membersCount--;
+        delete isMember[msg.sender];
+        SHARED_WALLETS_STORAGE.removeWalletForUser(payable(this), msg.sender);
+    }
+
+    function _executeRequest(uint256 _requestID) internal override {
+        if (_requests[_requestID].requestType == RequestTypes.AddMember)
+            _addMember(_requestID);
+        else if (_requests[_requestID].requestType == RequestTypes.RemoveMember)
+            _removeMember(_requestID);
+        else if (_requests[_requestID].requestType == RequestTypes.Withdraw)
+            _withdraw(_requestID);
+        else if (_requests[_requestID].requestType == RequestTypes.Destroy)
+            _destroy(_requestID);
+    }
+
+    function _sendInvitation(address _user, uint256 _requestId)
+        internal
+        override
+    {
+        SHARED_WALLETS_STORAGE.sendUserInvitation(_user, _requestId);
+    }
+
+    function _removeInvitation(address _user) internal override {
+        SHARED_WALLETS_STORAGE.removeUserInvitation(_user);
+    }
+
+    function _quorum() internal view override returns (uint256) {
+        return membersCount / 2 + 1;
     }
 
     function _addMember(uint256 _requestId) private {
@@ -46,7 +80,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         _membersLog.push(newMember);
         membersCount++;
         isMember[newMember] = true;
-        walletsStorage.addWalletToUser(payable(this), newMember);
+        SHARED_WALLETS_STORAGE.addWalletToUser(payable(this), newMember);
     }
 
     function _removeMember(uint256 _requestId) private {
@@ -58,7 +92,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         membersCount--;
         delete isMember[memberToRemove];
-        walletsStorage.removeWalletForUser(payable(this), memberToRemove);
+        SHARED_WALLETS_STORAGE.removeWalletForUser(payable(this), memberToRemove);
     }
 
     function _withdraw(uint256 _requestId) private nonReentrant {
@@ -79,7 +113,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         for (uint256 i; i < m_membersLog.length; i++) {
             if (isMember[m_membersLog[i]]) {
                 delete isMember[m_membersLog[i]];
-                walletsStorage.removeWalletForUser(
+                SHARED_WALLETS_STORAGE.removeWalletForUser(
                     payable(this),
                     m_membersLog[i]
                 );
@@ -88,38 +122,4 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         selfdestruct(payable(address(request.data)));
     }
-
-    function leave() external onlyMember {
-        membersCount--;
-        delete isMember[msg.sender];
-        walletsStorage.removeWalletForUser(payable(this), msg.sender);
-    }
-
-    function _executeRequest(uint256 _requestID) internal override {
-        if (_requests[_requestID].requestType == RequestTypes.AddMember)
-            _addMember(_requestID);
-        else if (_requests[_requestID].requestType == RequestTypes.RemoveMember)
-            _removeMember(_requestID);
-        else if (_requests[_requestID].requestType == RequestTypes.Withdraw)
-            _withdraw(_requestID);
-        else if (_requests[_requestID].requestType == RequestTypes.Destroy)
-            _destroy(_requestID);
-    }
-
-    function _sendInvitation(address _user, uint256 _requestId)
-        internal
-        override
-    {
-        walletsStorage.sendUserInvitation(_user, _requestId);
-    }
-
-    function _removeInvitation(address _user) internal override {
-        walletsStorage.removeUserInvitation(_user);
-    }
-
-    function _quorum() internal view override returns (uint256) {
-        return membersCount / 2 + 1;
-    }
-
-    receive() external payable {}
 }

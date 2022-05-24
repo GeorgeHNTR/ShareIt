@@ -15,34 +15,6 @@ contract SharedWalletStorage {
     mapping(address => address[]) private _usersWallets;
     mapping(address => Invitation[]) private _invitations;
 
-    function userWallets() public view returns (address[] memory) {
-        return _usersWallets[msg.sender];
-    }
-
-    function getInvitationsWallets() public view returns (address[] memory) {
-        Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
-        address[] memory _wallets = new address[](
-            m_msgSenderInvitations.length
-        );
-        for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
-            _wallets[i] = m_msgSenderInvitations[i].wallet;
-        return _wallets;
-    }
-
-    function getInvitationsRequestsIDs()
-        public
-        view
-        returns (uint256[] memory)
-    {
-        Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
-        uint256[] memory _requestsIDs = new uint256[](
-            m_msgSenderInvitations.length
-        );
-        for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
-            _requestsIDs[i] = m_msgSenderInvitations[i].requestId;
-        return _requestsIDs;
-    }
-
     function sendUserInvitation(address _user, uint256 _requestId) external {
         if (SharedWallet(payable(msg.sender)).isMember(_user)) revert UserIsMember();
 
@@ -79,5 +51,33 @@ contract SharedWalletStorage {
                 _usersWallets[_user].pop();
                 return;
             }
+    }
+
+    function userWallets() public view returns (address[] memory) {
+        return _usersWallets[msg.sender];
+    }
+
+    function getInvitationsRequestsIDs()
+        public
+        view
+        returns (uint256[] memory)
+    {
+        Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
+        uint256[] memory _requestsIDs = new uint256[](
+            m_msgSenderInvitations.length
+        );
+        for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
+            _requestsIDs[i] = m_msgSenderInvitations[i].requestId;
+        return _requestsIDs;
+    }
+
+    function getInvitationsWallets() public view returns (address[] memory) {
+        Invitation[] memory m_msgSenderInvitations = _invitations[msg.sender];
+        address[] memory _wallets = new address[](
+            m_msgSenderInvitations.length
+        );
+        for (uint256 i = 0; i < m_msgSenderInvitations.length; i++)
+            _wallets[i] = m_msgSenderInvitations[i].wallet;
+        return _wallets;
     }
 }
