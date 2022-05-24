@@ -16,7 +16,7 @@ contract CompoundLender {
 
     /// @notice Lends ERC20 tokens
     /// @dev The underlying token amount must already be sent to this contract
-    function supplyERC20(address cTokenAddress, uint256 underlyingAmount)
+    function _supplyERC20(address cTokenAddress, uint256 underlyingAmount)
         internal
     {
         CTokenInterface cToken = CTokenInterface(cTokenAddress);
@@ -27,7 +27,7 @@ contract CompoundLender {
     }
 
     /// @notice Redeems ERC20 tokens to this contract
-    function redeemERC20(address cTokenAddress, uint256 cTokenAmount) internal {
+    function _redeemERC20(address cTokenAddress, uint256 cTokenAmount) internal {
         CTokenInterface cToken = CTokenInterface(cTokenAddress);
         uint256 result = cToken.redeem(cTokenAmount);
         if (result != 0) revert Compound__RedeemFailed();
@@ -35,13 +35,13 @@ contract CompoundLender {
 
     /// @notice Lends ether
     /// @dev The ether amount must already be sent to this contract
-    function supplyETH(uint256 cEthAmount) internal {
+    function _supplyETH(uint256 cEthAmount) internal {
         CEthInterface cEth = CEthInterface(CETH_ADDRESS);
         cEth.mint{value: cEthAmount}();
     }
 
     /// @notice Redeems ether to this contract
-    function redeemETH(uint256 cEthAmount) internal {
+    function _redeemETH(uint256 cEthAmount) internal {
         CEthInterface cEth = CEthInterface(CETH_ADDRESS);
         uint256 result = cEth.redeem(cEthAmount);
         if (result != 0) revert Compound__RedeemFailed();

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 import "./Voting.sol";
 import "./SharedWalletStorage.sol";
+import "./CompoundLender.sol";
 
 error NonMemberOnly();
 error InsufficientBalance();
@@ -14,7 +15,12 @@ error TransactionFailed();
 /// @author Georgi Nikolaev Georgiev
 /// @notice Manage members' funds and executes approved requests
 /// @dev Constructor missing because of minimal proxy pattern (EIP1167)
-contract SharedWallet is Voting, Initializable, ReentrancyGuard {
+contract SharedWallet is
+    Voting,
+    CompoundLender,
+    Initializable,
+    ReentrancyGuard
+{
     /// @notice The storage contract
     SharedWalletStorage public SHARED_WALLETS_STORAGE;
 
@@ -55,15 +61,30 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         name = _name;
     }
 
-    /// @notice Allows sending ETH to fund this wallet
-    /// @dev ERC20 tokens cannot be sent through this fucntion
-    receive() external payable {}
+    /// @notice Delegates the funds to compound
+    receive() external payable {
+        _supplyETH(msg.value);
+    }
 
-    /// @notice Allowes each member to leave (no voting required)
+    /// @notice Allows each member to leave (no voting required)
     function leave() external onlyMember {
         membersCount--;
         delete isMember[msg.sender];
         SHARED_WALLETS_STORAGE.removeWalletForUser(msg.sender);
+    }
+
+    /// @notice Delegates the funds to compound
+    /// @dev The underlying token amount must already be sent to this contract
+    function supplyERC20(address cTokenAddress, uint256 amount) external {
+        _supplyERC20(cTokenAddress, amount);
+    }
+
+    // Todo: Think of a way for voting this
+    function redeemERC20(address cTokenAddress, uint256 amount)
+        external
+        onlyMember
+    {
+        _redeemERC20(cTokenAddress, amount);
     }
 
     function _executeRequest(uint256 _requestID) internal override {
@@ -120,6 +141,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         Request storage request = _requests[_requestId];
 
         if (request.data > address(this).balance) revert InsufficientBalance();
+        _redeemETH(request.data);
 
         (bool success, ) = payable(request.author).call{value: request.data}(
             ""
