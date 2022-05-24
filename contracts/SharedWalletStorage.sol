@@ -44,7 +44,7 @@ contract SharedWalletStorage {
     }
 
     function sendUserInvitation(address _user, uint256 _requestId) external {
-        if (SharedWallet(msg.sender).isMember(_user)) revert UserIsMember();
+        if (SharedWallet(payable(msg.sender)).isMember(_user)) revert UserIsMember();
 
         _invitations[_user].push(
             Invitation({wallet: msg.sender, requestId: _requestId})
@@ -64,12 +64,12 @@ contract SharedWalletStorage {
     }
 
     function addWalletToUser(address _newWallet, address _user) external {
-        if (!SharedWallet(_newWallet).isMember(_user)) revert UserIsNotMember();
+        if (!SharedWallet(payable(_newWallet)).isMember(_user)) revert UserIsNotMember();
         _usersWallets[_user].push(_newWallet);
     }
 
     function removeWalletForUser(address _oldWallet, address _user) external {
-        if (SharedWallet(_oldWallet).isMember(_user)) revert UserIsMember();
+        if (SharedWallet(payable(_oldWallet)).isMember(_user)) revert UserIsMember();
         address[] memory m_userWallets = _usersWallets[_user];
         for (uint256 i = 0; i < m_userWallets.length; i++)
             if (m_userWallets[i] == _oldWallet) {

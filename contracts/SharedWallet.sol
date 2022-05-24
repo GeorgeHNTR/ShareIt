@@ -1,10 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Voting.sol";
-import "./SharedWalletStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+
+import "./Voting.sol";
+import "./SharedWalletStorage.sol";
 
 error NonMemberOnly();
 error InsufficientBalance();
@@ -45,7 +46,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         _membersLog.push(newMember);
         membersCount++;
         isMember[newMember] = true;
-        walletsStorage.addWalletToUser(address(this), newMember);
+        walletsStorage.addWalletToUser(payable(this), newMember);
     }
 
     function _removeMember(uint256 _requestId) private {
@@ -57,7 +58,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
 
         membersCount--;
         delete isMember[memberToRemove];
-        walletsStorage.removeWalletForUser(address(this), memberToRemove);
+        walletsStorage.removeWalletForUser(payable(this), memberToRemove);
     }
 
     function _withdraw(uint256 _requestId) private nonReentrant {
@@ -79,7 +80,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
             if (isMember[m_membersLog[i]]) {
                 delete isMember[m_membersLog[i]];
                 walletsStorage.removeWalletForUser(
-                    address(this),
+                    payable(this),
                     m_membersLog[i]
                 );
             }
@@ -91,7 +92,7 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
     function leave() external onlyMember {
         membersCount--;
         delete isMember[msg.sender];
-        walletsStorage.removeWalletForUser(address(this), msg.sender);
+        walletsStorage.removeWalletForUser(payable(this), msg.sender);
     }
 
     function _executeRequest(uint256 _requestID) internal override {
@@ -120,5 +121,5 @@ contract SharedWallet is Voting, Initializable, ReentrancyGuard {
         return membersCount / 2 + 1;
     }
 
-    function deposit() external payable {}
+    receive() external payable {}
 }

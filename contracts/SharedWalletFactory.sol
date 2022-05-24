@@ -1,9 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/proxy/Clones.sol";
+
 import "./SharedWallet.sol";
 import "./SharedWalletStorage.sol";
-import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract SharedWalletFactory {
     SharedWalletStorage public immutable walletsStorage;
@@ -18,7 +19,7 @@ contract SharedWalletFactory {
 
     function createNewSharedWallet(string calldata _name) external {
         address newSharedWallet = _cloneSharedWallet(_name);
-        walletsStorage.addWalletToUser(newSharedWallet, msg.sender);
+        walletsStorage.addWalletToUser(payable(newSharedWallet), msg.sender);
         emit WalletCreated(newSharedWallet);
     }
 
@@ -27,7 +28,7 @@ contract SharedWalletFactory {
         returns (address)
     {
         address _newSharedWallet = Clones.clone(sharedWalletImpl);
-        SharedWallet(_newSharedWallet).initialize(
+        SharedWallet(payable(_newSharedWallet)).initialize(
             msg.sender,
             address(walletsStorage),
             _name
