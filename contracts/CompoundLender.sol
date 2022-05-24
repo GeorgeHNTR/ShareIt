@@ -12,10 +12,12 @@ error Compound__RedeemFailed();
 /// @author Georgi Nikolaev Georgiev
 /// @notice Responsible for compound lending
 contract CompoundLender {
+    address constant CETH_ADDRESS = 0x859e9d8a4edadfEDb5A2fF311243af80F85A91b8;
+
     /// @notice Lends ERC20 tokens
     /// @dev The underlying token amount must already be sent to this contract
     function supplyERC20(address cTokenAddress, uint256 underlyingAmount)
-        public
+        internal
     {
         CTokenInterface cToken = CTokenInterface(cTokenAddress);
         address underlyingAddress = cToken.underlying();
@@ -25,7 +27,7 @@ contract CompoundLender {
     }
 
     /// @notice Redeems ERC20 tokens to this contract
-    function redeemERC20(address cTokenAddress, uint256 cTokenAmount) external {
+    function redeemERC20(address cTokenAddress, uint256 cTokenAmount) internal {
         CTokenInterface cToken = CTokenInterface(cTokenAddress);
         uint256 result = cToken.redeem(cTokenAmount);
         if (result != 0) revert Compound__RedeemFailed();
@@ -33,14 +35,14 @@ contract CompoundLender {
 
     /// @notice Lends ether
     /// @dev The ether amount must already be sent to this contract
-    function supplyETH(address cEthAddress, uint256 cEthAmount) public payable {
-        CEthInterface cEth = CEthInterface(cEthAddress);
+    function supplyETH(uint256 cEthAmount) internal {
+        CEthInterface cEth = CEthInterface(CETH_ADDRESS);
         cEth.mint{value: cEthAmount}();
     }
 
     /// @notice Redeems ether to this contract
-    function redeemETH(address cEthAddress, uint256 cEthAmount) external {
-        CEthInterface cEth = CEthInterface(cEthAddress);
+    function redeemETH(uint256 cEthAmount) internal {
+        CEthInterface cEth = CEthInterface(CETH_ADDRESS);
         uint256 result = cEth.redeem(cEthAmount);
         if (result != 0) revert Compound__RedeemFailed();
     }
