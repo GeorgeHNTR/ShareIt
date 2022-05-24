@@ -28,6 +28,7 @@ abstract contract Voting {
         address author;
         RequestTypes requestType;
         uint160 data;
+        uint160 data2; //additional data if needed
         InvitationState invitationAccepted;
         bool approved;
         uint256 proVotersCount;
@@ -46,14 +47,27 @@ abstract contract Voting {
     }
 
     /// @notice Creates and posts new requests
-    /// @dev If there is only one wallet member, it automatically passes
     /// @param _requestTypeIdx A number which represents the request type
     /// @param _data A number or an address
-    /// @dev The _data param is casted to address if the request type is not "Withdraw"
     function createRequest(uint256 _requestTypeIdx, uint160 _data)
         external
         onlyMember
     {
+        createRequest(_requestTypeIdx, _data, 0);
+    }
+
+    /// @notice Creates and posts new requests
+    /// @dev If there is only one wallet member, it automatically passes
+    /// @param _requestTypeIdx A number which represents the request type
+    /// @param _data A number or an address
+    /// @param _data2 Additional data param
+    /// @dev The _data param is casted to address if the request type is not "Withdraw"
+    /// @dev The _data2 param is used when withdrawing ERC20s to point at the cToken address
+    function createRequest(
+        uint256 _requestTypeIdx,
+        uint160 _data,
+        uint160 _data2
+    ) public onlyMember {
         if (_requestTypeIdx > uint256(type(RequestTypes).max))
             revert InvalidInput();
 
@@ -71,6 +85,7 @@ abstract contract Voting {
         request.author = msg.sender;
         request.requestType = RequestTypes(_requestTypeIdx);
         request.data = _data;
+        request.data2 = _data2;
         request.proVotersCount = 1;
         request.voters[msg.sender] = true;
 
@@ -129,6 +144,7 @@ abstract contract Voting {
     /// @return address The address of the request author
     /// @return RequestTypes The request type
     /// @return uint160 The data attached to the request
+    /// @return uint160 The additional data attached to the request
     /// @dev The data can be kept as a number or casted to address on the client if needed
     /// @return InvitationState The state of the request invitation (if there is one)
     /// @return bool Is the request approved yet
@@ -140,6 +156,7 @@ abstract contract Voting {
             address,
             RequestTypes,
             uint160,
+            uint160,
             InvitationState,
             bool,
             uint256
@@ -150,6 +167,7 @@ abstract contract Voting {
             request.author,
             request.requestType,
             request.data,
+            request.data2,
             request.invitationAccepted,
             request.approved,
             request.proVotersCount
@@ -165,17 +183,15 @@ abstract contract Voting {
 
     function _tryApproveRequest(uint256 _requestID) internal virtual {
         uint256 goal = _quorum();
-        if (
-            _requests[_requestID].proVotersCount == goal &&
-            _requests[_requestID].requestType != RequestTypes.AddMember
-        ) _requests[_requestID].approved = true;
-        else if (
-            _requests[_requestID].proVotersCount == goal &&
-            _requests[_requestID].requestType == RequestTypes.AddMember &&
-            uint8(_requests[_requestID].invitationAccepted) == 2
-        ) _requests[_requestID].approved = true;
+        if (_requests[_requestID].proVotersCount != goal) return;
 
-        if (_requests[_requestID].approved) _executeRequest(_requestID);
+        if (
+            _requests[_requestID].requestType == RequestTypes.AddMember &&
+            _requests[_requestID].invitationAccepted != InvitationState.Accepted
+        ) return;
+
+        _requests[_requestID].approved = true;
+        _executeRequest(_requestID);
     }
 
     function _quorum() internal virtual returns (uint256) {}

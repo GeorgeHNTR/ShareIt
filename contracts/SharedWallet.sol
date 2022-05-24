@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 import "./Voting.sol";
-import "./SharedWalletStorage.sol";
 import "./CompoundLender.sol";
 
 error NonMemberOnly();
@@ -79,21 +78,15 @@ contract SharedWallet is
         _supplyERC20(cTokenAddress, amount);
     }
 
-    // Todo: Think of a way for voting this
-    function redeemERC20(address cTokenAddress, uint256 amount)
-        external
-        onlyMember
-    {
-        _redeemERC20(cTokenAddress, amount);
-    }
-
     function _executeRequest(uint256 _requestID) internal override {
         if (_requests[_requestID].requestType == RequestTypes.AddMember)
             _addMember(_requestID);
         else if (_requests[_requestID].requestType == RequestTypes.RemoveMember)
             _removeMember(_requestID);
         else if (_requests[_requestID].requestType == RequestTypes.Withdraw)
-            _withdraw(_requestID);
+            _requests[_requestID].data2 == 0
+                ? _withdraw(_requestID)
+                : _withdrawERC20(_requestID);
         else if (_requests[_requestID].requestType == RequestTypes.Destroy)
             _destroy(_requestID);
     }
@@ -147,6 +140,13 @@ contract SharedWallet is
             ""
         );
         if (!success) revert TransactionFailed();
+    }
+
+    function _withdrawERC20(uint256 _requestId) private nonReentrant {
+        Request storage request = _requests[_requestId];
+        uint256 amount = request.data;
+        address cTokenAddress = address(request.data2);
+        _redeemERC20(cTokenAddress, amount);
     }
 
     function _destroy(uint256 _requestId) private {
